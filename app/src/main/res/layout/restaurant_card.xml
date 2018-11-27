@@ -4,37 +4,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_base"
-    android:background="@drawable/rounded_bg"
-    android:layout_width="wrap_content"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:padding="4dp"
+    android:background="@drawable/rounded_bg"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:orientation="vertical">
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="4dp">
 
     <!-- Horizontal linear layout containing the restaurant logo and the restaurant name. -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="100dp"
-        android:gravity="bottom"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <!-- The restaurant logo displayed through a 2D ImageView -->
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/restaurant_logo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             app:srcCompat="@drawable/popeye_logo" />
 
         <!-- The restaurant name displayed through a 2D TextView -->
         <TextView
             android:id="@+id/restaurant_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:fontFamily="sans-serif"
-            android:text="Popeye's"
+            android:text="restaurant name"
             android:textAlignment="center"
             android:textSize="30sp" />
 
@@ -42,11 +44,9 @@
 
     <!-- The rating bar displaying the rating of the restaurant. -->
     <RatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/restaurant_rating"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:isIndicator="false"
+        android:layout_height="50dp"
         android:numStars="5"
         android:rating="3"
         android:stepSize="1"
