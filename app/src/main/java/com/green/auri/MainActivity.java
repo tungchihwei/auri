@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     DataTransfer[0] = mMap;
                     DataTransfer[1] = url;
                     Log.d("onClick", url);
-                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData(latitude, longitude);
                     getNearbyPlacesData.execute(DataTransfer);
                     Toast.makeText(MainActivity.this,"Nearby Restaurants", Toast.LENGTH_LONG).show();
                 }
