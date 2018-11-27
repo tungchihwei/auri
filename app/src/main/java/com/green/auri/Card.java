@@ -45,7 +45,9 @@ public class Card extends Fragment {
     public void setInfo(String[] info){
         rname = info[0];
         raddress = info[1];
-        rating = Float.parseFloat(info[2]);
+        if (info.length > 2) {
+            rating = Float.parseFloat(info[2]);
+        }
     }
 
 }
