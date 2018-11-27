@@ -44,6 +44,4 @@ dependencies {
 
     // Provides ArFragment, and other UX resources.
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.5.1'
-
-    // Implementation project(path: ':dsensor')
 }

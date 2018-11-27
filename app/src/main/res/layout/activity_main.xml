@@ -54,7 +54,7 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="com.example.tz1993.auri.Card"
+            android:name="com.green.auri.Card"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
