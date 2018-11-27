@@ -37,10 +37,10 @@
         </activity>
         <activity android:name=".RegActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".IndexActivity" />
+        <activity android:name=".arview.IndexActivity" />
         <activity android:name=".PlaceAPI" />
         <activity android:name=".Camdir" />
-        <activity android:name=".Intro"></activity>
+        <activity android:name=".onboarding.Intro"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
