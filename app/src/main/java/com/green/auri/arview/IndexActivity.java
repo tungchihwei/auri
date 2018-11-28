@@ -20,7 +20,6 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.green.auri.DisplayRotationHelper;
 import com.green.auri.R;
 
 import java.util.ArrayList;
