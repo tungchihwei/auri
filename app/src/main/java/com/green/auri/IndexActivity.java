@@ -65,7 +65,6 @@ public class IndexActivity extends AppCompatActivity {
 
         installRequested = false;
 
-
         // TESTING
         arSceneView.setOnTouchListener(new View.OnTouchListener() {
             public boolean done = false;
@@ -135,9 +134,6 @@ public class IndexActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (arSceneView != null) {
-            arSceneView.destroy();
-        }
     }
 
     // TESTING

@@ -30,7 +30,7 @@ public class searchAndPosition {
     }
 
     public void updateAuri(){
-        
+
     }
 
 
