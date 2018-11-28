@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.List;
 
-public class searchAndPosition {
+public class SearchAndPosition {
 
     public void executeSearchAndPosition(){
         //GetCurrentLocation

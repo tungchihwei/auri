@@ -54,7 +54,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 //        PositionNearbyPlaces(nearbyPlacesList);
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
-    
+
 
     private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
 
