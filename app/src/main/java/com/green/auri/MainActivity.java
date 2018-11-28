@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onClick(View v) {
                     Log.d("onClick", "Button is Clicked");
+
+                    getDeviceLocation(); // get the Location of device
+
                     mMap.clear();
                     String url = getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurants
                     Object[] DataTransfer = new Object[2];
@@ -139,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         try{
             if(mLocation){ // if allow to find device location
-                final Task location = mFusedLocationProviderClient.getLastLocation();
+                Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     // Perform the location listener
                     @Override
