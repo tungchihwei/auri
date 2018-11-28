@@ -44,4 +44,5 @@ dependencies {
 
     // Provides ArFragment, and other UX resources.
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.5.1'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
 }
