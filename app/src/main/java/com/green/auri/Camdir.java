@@ -15,7 +15,7 @@ public class Camdir extends AppCompatActivity {
     private TextView res;
     private TextView res_;
 
-    private int OFFSET = 40;
+    private int OFFSET = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

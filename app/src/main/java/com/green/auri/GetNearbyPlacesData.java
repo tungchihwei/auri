@@ -26,7 +26,6 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     protected GetNearbyPlacesData(double latitude, double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
-
     }
 
     @Override
@@ -56,67 +55,6 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
 
-    private void PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList){
-        Log.i("Position", "My Position: "+latitude+" "+longitude);
-        for (int i = 0; i < nearbyPlacesList.size(); i++) {
-            HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-            double lat = Double.parseDouble(googlePlace.get("lat"));
-            double lng = Double.parseDouble(googlePlace.get("lng"));
-            String placeName = googlePlace.get("place_name");
-            Log.i("Position", "Place: "+placeName+" Position: "+lat+" "+lng);
-            double[] relativePositionList = RelativePosition(lat,lng);
-            Log.i("Position", relativePositionList[0]+ " " +relativePositionList[1]);
-        }
-    }
-
-    private double[] RelativePosition(double lat, double lng){
-        double latChange = latitude - lat;
-        double lngChange = longitude - lng;
-        Log.i("Position","latChange"+latChange);
-        Log.i("Position","lngChange"+lngChange);
-
-        double r = Math.sqrt(latChange*latChange + lngChange*lngChange);
-
-        double unitLat = latChange/r;
-        double unitLng = lngChange/r;
-
-        double theta = Math.toDegrees(Math.atan((lngChange)/(latChange)));
-
-//        Log.i("Position","theta: "+theta);
-//        Log.i("Position","distance: "+r);
-
-        Log.i("Position","unitLat: "+unitLat);
-        Log.i("Position","unitLng: "+unitLng);
-
-
-        return new double[]{unitLat, unitLng};
-
-//        if (latChange>SIGNIFICANCE_THRESHOLD && lngChange>SIGNIFICANCE_THRESHOLD){
-//            return "North East";
-//        }
-//        if (latChange>SIGNIFICANCE_THRESHOLD && lngChange<-SIGNIFICANCE_THRESHOLD){
-//            return "South East";
-//        }
-//        if (latChange<-SIGNIFICANCE_THRESHOLD && lngChange<-SIGNIFICANCE_THRESHOLD) {
-//            return "South West";
-//        }
-//        if (latChange<-SIGNIFICANCE_THRESHOLD && lngChange>SIGNIFICANCE_THRESHOLD){
-//            return "North West";
-//        }
-//        if (latChange>SIGNIFICANCE_THRESHOLD){
-//            return "East";
-//        }
-//        if (latChange<-SIGNIFICANCE_THRESHOLD){
-//            return "West";
-//        }
-//        if (lngChange>SIGNIFICANCE_THRESHOLD){
-//            return "North";
-//        }
-//        if (lngChange<-SIGNIFICANCE_THRESHOLD){
-//            return "South";
-//        }
-//        return "SAME";
-    }
 
     private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
 
