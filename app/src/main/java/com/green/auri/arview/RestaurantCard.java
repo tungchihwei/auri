@@ -1,4 +1,4 @@
-package com.green.auri;
+package com.green.auri.arview;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +14,7 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
+import com.green.auri.R;
 
 /**
  * TODO: document your custom view class.
