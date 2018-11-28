@@ -23,9 +23,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     private double longitude;
     private final double SIGNIFICANCE_THRESHOLD = .001;
 
-    protected GetNearbyPlacesData(double latitude, double longitude){
-        this.latitude = latitude;
-        this.longitude = longitude;
+    protected GetNearbyPlacesData(){
     }
 
     @Override
