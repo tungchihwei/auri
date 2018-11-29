@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.green.auri;
+package com.green.auri.arview;
 
 import android.Manifest;
 import android.app.Activity;

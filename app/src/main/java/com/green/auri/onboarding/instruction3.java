@@ -1,4 +1,4 @@
-package com.green.auri;
+package com.green.auri.onboarding;
 
 
 import android.content.Intent;
@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.green.auri.LoginActivity;
+import com.green.auri.R;
 
 
 /**
@@ -25,8 +28,8 @@ public class instruction3 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_instruction3, container, false);
-        View rootView = inflater.inflate(R.layout.fragment_instruction3, container, false);
+//        return inflater.inflate(R.layout.fragment_intro_page_3, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_intro_page_3, container, false);
         btn = (Button) rootView.findViewById(R.id.btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,12 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -22,29 +18,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.green.auri.arview.IndexActivity;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -69,16 +60,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button auri_mode;
     private SharedPreferences sp;
 
-//    String rname;
-//    String raddress;
-//    float rating;
-//    private TextView txt_rname;
-//    private TextView txt_raddress;
-//    private RatingBar rb;
     private FragmentManager fm;
     private FragmentTransaction transaction;
     private boolean cardHidden = true;
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -108,13 +92,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onClick(View v) {
                     Log.d("onClick", "Button is Clicked");
+
                     mMap.clear();
                     String url = getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurants
                     Object[] DataTransfer = new Object[2];
                     DataTransfer[0] = mMap;
                     DataTransfer[1] = url;
                     Log.d("onClick", url);
-                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData(latitude, longitude);
+                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                     getNearbyPlacesData.execute(DataTransfer);
                     Toast.makeText(MainActivity.this,"Nearby Restaurants", Toast.LENGTH_LONG).show();
                 }
@@ -146,8 +131,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         try{
             if(mLocation){ // if allow to find device location
-                final Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
+                Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() { // @onLocationReturned and LocationListener
                     // Perform the location listener
                     @Override
                     public void onComplete(@NonNull Task task) {
