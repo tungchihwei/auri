@@ -1,16 +1,8 @@
 package com.green.auri;
 
-import android.location.Location;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +14,7 @@ public class SearchAndPosition {
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
 
-    public void executeSearchAndPosition(){
+    public void executeSearchAndPosition(double angle){
         //GetCurrentLocation
         //GetnearbyPlaces
         //GetCameraDirection
@@ -36,14 +28,14 @@ public class SearchAndPosition {
 
         List<HashMap<String, String>> myNearbyPlacesList = getNearbyPlacesList();
 
-        double angleFromNorth = getCameraDirection();
+        double angleFromNorth = angle;
 
         //Name of restaurant
         //X coordinate as string
         //Y coordinate as string
         //Rating
         //Image URL
-        HashMap<String, String> PositionNearbyPlaces
+//        HashMap<String, String> PositionNearbyPlaces
 
 
 
@@ -60,13 +52,8 @@ public class SearchAndPosition {
     }
 
     public List<HashMap<String, String>> getNearbyPlacesList(){
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        GetNearbyPlacesTask getNearbyPlacesTask = new GetNearbyPlacesTask();
         return null;
-    }
-
-    public double getCameraDirection(){
-        Camdir sensor = new Camdir();
-        return sensor.getAngle();
     }
 
     public void updateAuri(){

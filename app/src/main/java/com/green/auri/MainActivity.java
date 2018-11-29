@@ -26,18 +26,25 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.green.auri.arview.IndexActivity;
+import com.green.auri.utils.PlaceSearchListener;
+import com.green.auri.utils.PlaceSearchUtils;
+
+import java.util.HashMap;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, PlaceSearchListener {
 
     SupportMapFragment mapFragment;
     private Boolean mLocation = false;
@@ -49,13 +56,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final float DEFAULT_ZOOM = 15f;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private GoogleMap mMap;
-    private int PROXIMITY_RADIUS = 500; // 500 meters or 0.3 miles away
     double latitude;
     Location mLastLocation;
     double longitude;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    private String api_key = "AIzaSyCSSgGt6d67TiIUl0SiwEvkVkvGU1PL1-U";
+
     private Button auri_mode;
     private SharedPreferences sp;
 
@@ -96,13 +102,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("onClick", "Button is Clicked");
 
                     mMap.clear();
-                    String url = getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurants
-                    Object[] DataTransfer = new Object[2];
-                    DataTransfer[0] = mMap;
-                    DataTransfer[1] = url;
+                    String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
                     Log.d("onClick", url);
-                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                    getNearbyPlacesData.execute(DataTransfer);
+                    new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) MainActivity.this);
                     Toast.makeText(MainActivity.this,"Nearby Restaurants", Toast.LENGTH_LONG).show();
                 }
             });
@@ -111,18 +113,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
-        // parse the url function
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append("&type=" + nearbyPlace);
-        googlePlacesUrl.append("&opennow=true");
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + api_key);
-        Log.d("getUrl", googlePlacesUrl.toString());
-        return (googlePlacesUrl.toString());
-    }
 
     private void getDeviceLocation() { // get the device location
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
@@ -345,5 +335,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        rating = Float.parseFloat(info[2]);
 
         return false;
+    }
+
+    @Override
+    public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
+        // Iterate through the nearby places that were returned
+        // and place a marker for each.
+        for (int i = 0; i < nearbyPlacesList.size(); i++) {
+            Log.d("onPostExecute","Entered into showing locations");
+
+            try {
+                MarkerOptions markerOptions = new MarkerOptions();
+                HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+                double lat = Double.parseDouble(googlePlace.get("lat"));
+                double lng = Double.parseDouble(googlePlace.get("lng"));
+                String placeName = googlePlace.get("place_name");
+                String vicinity = googlePlace.get("vicinity");
+                String rating = googlePlace.get("rating");
+
+                // Set up the marker:
+                LatLng latLng = new LatLng(lat, lng);
+                markerOptions.position(latLng);
+                markerOptions.title(placeName + " : " + vicinity + " : " + rating);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                // Add the marker and move the camera to make it visible.
+                mMap.addMarker(markerOptions);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            } catch (NullPointerException e) {
+                continue;
+            }
+        }
     }
 }

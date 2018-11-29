@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,12 +21,16 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.green.auri.GetNearbyPlacesTask;
+import com.green.auri.MainActivity;
 import com.green.auri.R;
 import com.green.auri.dsensor.DProcessedSensor;
 import com.green.auri.dsensor.DSensor;
 import com.green.auri.dsensor.DSensorEvent;
 import com.green.auri.dsensor.DSensorManager;
 import com.green.auri.dsensor.interfaces.DProcessedEventListener;
+import com.green.auri.utils.PlaceSearchListener;
+import com.green.auri.utils.PlaceSearchUtils;
 
 import java.util.ArrayList;
 
@@ -160,6 +165,14 @@ public class IndexActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void updateNearbyPlaces() {
+
+//        String Restaurant = "restaurant";
+//        String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
+//        Log.d("onClick", url);
+//        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) IndexActivity.this);
     }
 
     // TESTING
