@@ -56,14 +56,13 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="com.green.auri.Card"
+            android:name="com.green.auri.defaultcard"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </LinearLayout>
 
     <include layout="@layout/content_main" />
-
 
 
 </LinearLayout>
