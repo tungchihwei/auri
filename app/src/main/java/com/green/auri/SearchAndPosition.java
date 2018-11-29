@@ -43,7 +43,7 @@ public class SearchAndPosition {
         //Y coordinate as string
         //Rating
         //Image URL
-        HashMap<String, String> PositionNearbyPlaces
+        HashMap<String, String> PositionNearbyPlaces;
 
 
 

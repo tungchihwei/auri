@@ -59,13 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button auri_mode;
     private SharedPreferences sp;
 
-//    String rname;
-//    String raddress;
-//    float rating;
-//    private TextView txt_rname;
-//    private TextView txt_raddress;
-//    private RatingBar rb;
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
