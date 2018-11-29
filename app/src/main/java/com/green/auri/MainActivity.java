@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationServices;
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button auri_mode;
     private SharedPreferences sp;
 
+    private FragmentManager fm;
+    private FragmentTransaction transaction;
+    private boolean cardHidden = true;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
@@ -107,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
 
             mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
+
+
         }
     }
 
@@ -203,8 +210,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        txt_rname.setText(rname);
 //        txt_raddress.setText(raddress);
 //        rb.setRating(rating);
+//        fm = getSupportFragmentManager();
+//        transaction = fm.beginTransaction();
 
+//        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
+//        myFab.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                //
+//            }
+//        });
 
+    }
+
+    private void goToAuriMode(){
+        Log.d("Aurimode", "Button is Clicked");
+        Intent auri_intent = new Intent(MainActivity.this, IndexActivity.class);
+        startActivity(auri_intent);
     }
 
     private void getLocationPermission() {
@@ -253,6 +274,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             logout(); // if clicked, signs the user out
+            return true;
+        }else if (id == R.id.action_auri){
+            goToAuriMode();
+            return true;
+        }else if (id == R.id.action_settings){
+            Log.d("Settings", "Button is Clicked");
+            // to do
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -320,11 +348,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String[] info = title.split(":");
 
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
+        fm = getSupportFragmentManager();
+        transaction = fm.beginTransaction();
 
         Card curCard = new Card();
         curCard.setInfo(info);
+
+        if (cardHidden) {
+            cardHidden = false;
+            TextView tv = (TextView) findViewById(R.id.defaultTxt);
+            tv.setText("");
+        }
 
         transaction.replace(R.id.fragment, curCard);
         transaction.commit();

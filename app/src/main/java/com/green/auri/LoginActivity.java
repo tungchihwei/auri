@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                         }else {
                             // else toast that there's an error
                             Toast.makeText(LoginActivity.this, "Couldn't Log In, Please check your info!",
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 });

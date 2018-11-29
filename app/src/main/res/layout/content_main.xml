@@ -9,4 +9,18 @@
     tools:showIn="@layout/activity_main">
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        app:fabSize="auto"
+        app:fabCustomSize="@dimen/fab_icon_size"
+        android:src="@drawable/floatingbutton" />
+
+
 </RelativeLayout>
