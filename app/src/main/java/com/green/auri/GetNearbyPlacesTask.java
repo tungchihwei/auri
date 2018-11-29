@@ -44,6 +44,7 @@ public class GetNearbyPlacesTask extends AsyncTask<Object, String, String> {
         Log.d("GooglePlacesReadTask", "onPostExecute Entered");
         List<HashMap<String, String>> nearbyPlacesList;
         nearbyPlacesList = PlaceSearchUtils.parse(result); // parse json file and store in a HashMap
+        Log.i("POSITIONED", String.valueOf(nearbyPlacesList));
         psl.onPlaceSearchComplete(nearbyPlacesList);
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }

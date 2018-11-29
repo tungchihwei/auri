@@ -37,6 +37,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.green.auri.arview.IndexActivity;
+import com.green.auri.utils.LocationListener;
+import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
 
@@ -44,7 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, PlaceSearchListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, PlaceSearchListener, LocationListener {
 
     SupportMapFragment mapFragment;
     private Boolean mLocation = false;
@@ -57,10 +59,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private GoogleMap mMap;
     double latitude;
-    Location mLastLocation;
     double longitude;
     private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
+
 
     private Button auri_mode;
     private SharedPreferences sp;
@@ -84,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.getUiSettings().setZoomControlsEnabled(true);
 
-            getDeviceLocation(); // get the Location of device
+//            getDeviceLocation(); // get the Location of device
+            LocationUtils.getCurrentLocation(MainActivity.this, this);
 
             // Reference to the button to find nearby restaurants
             Button btnRestaurant = (Button) findViewById(R.id.restu);
@@ -107,44 +111,44 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void getDeviceLocation() { // get the device location
-        Log.d(TAG, "getDeviceLocation: getting the devices current location");
-        // use the location service
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        try{
-            if(mLocation){ // if allow to find device location
-                Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() { // @onLocationReturned and LocationListener
-                    // Perform the location listener
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()){
-                            Log.d(TAG, "onComplete: found location!");
-                            mLastLocation = (Location) task.getResult();
-                            // move map camera
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastLocation.getLatitude(),
-                                            mLastLocation.getLongitude()), DEFAULT_ZOOM));
-
-                            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                            latitude = mLastLocation.getLatitude();
-                            longitude = mLastLocation.getLongitude();
-
-                            Toast.makeText(MainActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
-                            Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
-
-                        }else{ // Error of finding the current location
-                            Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(MainActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }catch (SecurityException e){
-            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
-        }
-    }
+//    private void getDeviceLocation() { // get the device location
+//        Log.d(TAG, "getDeviceLocation: getting the devices current location");
+//        // use the location service
+//        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//
+//        try{
+//            if(mLocation){ // if allow to find device location
+//                Task location = mFusedLocationProviderClient.getLastLocation();
+//                location.addOnCompleteListener(new OnCompleteListener() { // @onLocationReturned and LocationListener
+//                    // Perform the location listener
+//                    @Override
+//                    public void onComplete(@NonNull Task task) {
+//                        if(task.isSuccessful()){
+//                            Log.d(TAG, "onComplete: found location!");
+//                            mLastLocation = (Location) task.getResult();
+//                            // move map camera
+//                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+//                                    new LatLng(mLastLocation.getLatitude(),
+//                                            mLastLocation.getLongitude()), DEFAULT_ZOOM));
+//
+//                            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+//                            latitude = mLastLocation.getLatitude();
+//                            longitude = mLastLocation.getLongitude();
+//
+//                            Toast.makeText(MainActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
+//                            Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
+//
+//                        }else{ // Error of finding the current location
+//                            Log.d(TAG, "onComplete: current location is null");
+//                            Toast.makeText(MainActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        }catch (SecurityException e){
+//            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+//        }
+//    }
 
 //    private void moveCamera(LatLng latLng, float zoom){ //
 //        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
@@ -294,7 +298,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onSaveInstanceState(Bundle outState) {
         if (mMap != null) {
             outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, mLastLocation);
+            outState.putDouble(KEY_LATITUDE, latitude);
+            outState.putDouble(KEY_LONGITUDE, longitude);
             super.onSaveInstanceState(outState);
         }
     }
@@ -359,5 +364,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
             }
         }
+    }
+
+    @Override
+    public void onLocationUpdated(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(latitude,
+                        longitude), DEFAULT_ZOOM));
     }
 }

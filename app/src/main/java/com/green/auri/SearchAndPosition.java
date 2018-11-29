@@ -14,19 +14,7 @@ public class SearchAndPosition {
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
 
-    public void executeSearchAndPosition(double angle){
-        //GetCurrentLocation
-        //GetnearbyPlaces
-        //GetCameraDirection
-
-        //Then
-        //PositionNearbyPlaces
-        //Update AR
-        double[] myCoordinates = getCurrentLocation();
-        double myLatitude = myCoordinates[0];
-        double myLongitude = myCoordinates[1];
-
-        List<HashMap<String, String>> myNearbyPlacesList = getNearbyPlacesList();
+    public static void executeSearchAndPosition(double myLatitude, double myLongitude, double angle, List<HashMap<String, String>> myNearbyPlacesList){
 
         double angleFromNorth = angle;
 
@@ -38,27 +26,6 @@ public class SearchAndPosition {
 //        HashMap<String, String> PositionNearbyPlaces
 
 
-
-
-    }
-
-    public double[] getCurrentLocation(){
-//        double[] currentLocation = findDeviceLocation();
-//        int failArray[] = {-1,-1};
-//        if (currentLocation.equals(failArray)){
-//            Log.i(TAG, "Failed to get current location");
-//        }
-//        return currentLocation;
-        return null;
-    }
-
-    public List<HashMap<String, String>> getNearbyPlacesList(){
-        GetNearbyPlacesTask getNearbyPlacesTask = new GetNearbyPlacesTask();
-        return null;
-    }
-
-    public void updateAuri(){
-
     }
 
 
@@ -68,7 +35,7 @@ public class SearchAndPosition {
 
     // Position nearby places relative to current location
     // Iterate over nearbyPlaceList and get each position unit vector based on a reference angle
-    public List<HashMap<String, String>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
+    public static List<HashMap<String, String>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
         Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
         List<HashMap<String, String>> positionedPlaces = new ArrayList<>();
 
@@ -108,7 +75,7 @@ public class SearchAndPosition {
     // 1. Calculate unit vector from current location
     // 2. Rotate from true north using rotation matrix
     // 3. Return position array
-    private double[] RelativePosition(double myLatitude, double myLongitude, double lat, double lng, double theta){
+    private static double[] RelativePosition(double myLatitude, double myLongitude, double lat, double lng, double theta){
         //get deltas from your position
         double latChange = myLatitude - lat;
         double lngChange = myLongitude - lng;
