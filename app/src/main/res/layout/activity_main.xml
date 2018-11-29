@@ -74,14 +74,14 @@
             />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restaurants"
-            android:textSize="10sp"
-            android:textColor="@color/teal"
-            android:background="@color/colorAccent"
-            android:layout_margin="10dp"
-            android:id="@+id/restu"/>
+            android:id="@+id/restu"
+            android:layout_width="64dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/resticon" />
     </RelativeLayout>
 
 </LinearLayout>
