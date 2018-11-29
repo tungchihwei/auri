@@ -21,6 +21,11 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.green.auri.R;
+import com.green.auri.dsensor.DProcessedSensor;
+import com.green.auri.dsensor.DSensor;
+import com.green.auri.dsensor.DSensorEvent;
+import com.green.auri.dsensor.DSensorManager;
+import com.green.auri.dsensor.interfaces.DProcessedEventListener;
 
 import java.util.ArrayList;
 
@@ -45,6 +50,10 @@ public class IndexActivity extends AppCompatActivity {
     */
     private ArFragment arFragment;
     private ArSceneView arSceneView;
+
+
+    private double angle;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -118,11 +127,27 @@ public class IndexActivity extends AppCompatActivity {
         }
 
         displayRotationHelper.onResume();
+
+
+        DSensorManager.startDProcessedSensor(this, DProcessedSensor.TYPE_COMPASS_FLAT_ONLY_AND_DEPRECIATED_ORIENTATION,
+                new DProcessedEventListener() {
+                    @Override
+                    public void onProcessedValueChanged(DSensorEvent dSensorEvent) {
+                        // update UI
+                        // dSensorEvent.values[0] is the azimuth.
+                        if (dSensorEvent.sensorType == DSensor.TYPE_DEPRECIATED_ORIENTATION) {
+                            angle = Math.round(dSensorEvent.values[0]);
+                        }
+                    }
+                });
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        DSensorManager.stopDSensor();
+
         if (arSceneView != null) {
             // GLSurfaceView is paused first so that it does not try
             // to query the session. If Session is paused before GLSurfaceView, GLSurfaceView may
