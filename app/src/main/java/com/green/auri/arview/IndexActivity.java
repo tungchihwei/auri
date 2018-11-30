@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,23 +21,34 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.green.auri.GetNearbyPlacesTask;
+import com.green.auri.MainActivity;
 import com.green.auri.R;
+import com.green.auri.SearchAndPosition;
 import com.green.auri.dsensor.DProcessedSensor;
 import com.green.auri.dsensor.DSensor;
 import com.green.auri.dsensor.DSensorEvent;
 import com.green.auri.dsensor.DSensorManager;
 import com.green.auri.dsensor.interfaces.DProcessedEventListener;
+import com.green.auri.utils.LocationListener;
+import com.green.auri.utils.LocationUtils;
+import com.green.auri.utils.PlaceSearchListener;
+import com.green.auri.utils.PlaceSearchUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 /* The main activity that is loaded by the launcher to display the camera screen */
-public class IndexActivity extends AppCompatActivity {
+public class IndexActivity extends AppCompatActivity implements LocationListener, PlaceSearchListener {
     /* Requested to install the ARCore package. */
     private boolean installRequested;
     private DisplayRotationHelper displayRotationHelper;
 
     /* List of Anchors for the current session */
     private final ArrayList<Node> nodes = new ArrayList<>();
+    private final int MAX_LOCK_SIZE = 2;
 
     /* A renderable Restaurant Card = A Customized 2D Layout: res/layout/restaurant_card.xml */
     private ViewRenderable restaurantCard;
@@ -51,8 +63,13 @@ public class IndexActivity extends AppCompatActivity {
     private ArFragment arFragment;
     private ArSceneView arSceneView;
 
-
+    private double latitude;
+    private double longitude;
     private double angle;
+    private List<HashMap<String, String>> nearbyPlaceList;
+    private int lock = MAX_LOCK_SIZE;
+    private boolean gotLocation = false;
+    private boolean gotPlaces = false;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -84,9 +101,11 @@ public class IndexActivity extends AppCompatActivity {
                 if (arSceneView.getSession() == null) {
                     return false;
                 }
+                updateNearbyPlaces();
 
                 if (!done) {
-                    createDirectionalCards();
+//                    createDirectionalCards();
+
                     done = true;
                 }
                 return false;
@@ -162,6 +181,35 @@ public class IndexActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    private void updateNearbyPlaces() {
+        gotLocation = false;
+        gotPlaces = false;
+        String Restaurant = "restaurant";
+        String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
+        Log.d("onClick", url);
+        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) IndexActivity.this);
+        LocationUtils.getCurrentLocation(IndexActivity.this, this);
+    }
+
+    private void getPositionedPlaces(){
+
+        Log.i("POSITIONED", String.valueOf(nearbyPlaceList));
+        Log.i("POSITIONED", String.valueOf(latitude));
+        Log.i("POSITIONED", String.valueOf(longitude));
+        Log.i("POSITIONED", String.valueOf(angle));
+        Log.i("POSITIONED", String.valueOf(lock));
+        List<HashMap<String,String>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
+        for (int i = 0; i < result.size(); i++) {
+            HashMap<String, String> currentGooglePlace = result.get(i);
+            Log.i("POSITIONED",currentGooglePlace.get("Name"));
+            Log.i("POSITIONED",currentGooglePlace.get("Rating"));
+            Log.i("POSITIONED",currentGooglePlace.get("X"));
+            Log.i("POSITIONED",currentGooglePlace.get("Y"));
+            Log.i("POSITIONED",currentGooglePlace.get("Distance"));
+            Log.i("POSITIONED",currentGooglePlace.get("URL"));
+        }
+    }
+
     // TESTING
     public void createDirectionalCards() {
         Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
@@ -225,5 +273,27 @@ public class IndexActivity extends AppCompatActivity {
                                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    @Override
+    public void onLocationUpdated(double latitude, double longitude) {
+        Log.i("POSITIONED", "Location updated");
+        this.latitude = latitude;
+        this.longitude = longitude;
+        gotLocation = true;
+        if(gotPlaces){
+            getPositionedPlaces();
+        }
+    }
+
+    @Override
+    public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
+        Log.i("POSITIONED", "Nearby Places updated" + String.valueOf(nearbyPlacesList));
+        this.nearbyPlaceList = nearbyPlacesList;
+        gotPlaces = true;
+        if(gotLocation){
+            getPositionedPlaces();
+        }
+
     }
 }

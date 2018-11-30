@@ -13,13 +13,10 @@ import com.google.android.gms.tasks.Task;
 
 public class LocationUtils {
 
-    public double latitude;
-    public double longitude;
-    Location mLastLocation;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Boolean mLocation = true;
+    private static FusedLocationProviderClient mFusedLocationProviderClient;
+    private static Boolean mLocation = true;
 
-    public void getCurrLoc(Context context) { // get the device location
+    public static void getCurrentLocation(Context context, LocationListener locationListener) { // get the device location
         Log.d("thisClass", "getDeviceLocation: getting the devices current location");
         // use the location service
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
@@ -33,11 +30,14 @@ public class LocationUtils {
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
                             Log.d("thisClass", "onComplete: found location!");
-                            mLastLocation = (Location) task.getResult();
+                            Location mLastLocation = (Location) task.getResult();
 
                             LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                            latitude = mLastLocation.getLatitude();
-                            longitude = mLastLocation.getLongitude();
+                            double latitude = mLastLocation.getLatitude();
+                            double longitude = mLastLocation.getLongitude();
+
+                            locationListener.onLocationUpdated(latitude, longitude);
+
 
                             Log.d("thisClass", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
 

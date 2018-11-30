@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_logout"
-        android:title="Log out"
-        android:icon="@drawable/ic_settings_black_24dp"
+        android:id="@+id/action_nearbyRest"
+        android:title="Nearby Restaurant"
+        android:icon="@drawable/ic_restaurant_menu_black_24dp"
         android:orderInCategory="0"
         android:visible="true" />
 

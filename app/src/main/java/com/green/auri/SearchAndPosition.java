@@ -1,16 +1,8 @@
 package com.green.auri;
 
-import android.location.Location;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,54 +14,17 @@ public class SearchAndPosition {
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
 
-    public void executeSearchAndPosition(){
-        //GetCurrentLocation
-        //GetnearbyPlaces
-        //GetCameraDirection
+    public static void executeSearchAndPosition(double myLatitude, double myLongitude, double angle, List<HashMap<String, String>> myNearbyPlacesList){
 
-        //Then
-        //PositionNearbyPlaces
-        //Update AR
-        double[] myCoordinates = getCurrentLocation();
-        double myLatitude = myCoordinates[0];
-        double myLongitude = myCoordinates[1];
-
-        List<HashMap<String, String>> myNearbyPlacesList = getNearbyPlacesList();
-
-        double angleFromNorth = getCameraDirection();
+        double angleFromNorth = angle;
 
         //Name of restaurant
         //X coordinate as string
         //Y coordinate as string
         //Rating
         //Image URL
-        HashMap<String, String> PositionNearbyPlaces;
+//        HashMap<String, String> PositionNearbyPlaces
 
-
-
-    }
-
-    public double[] getCurrentLocation(){
-//        double[] currentLocation = findDeviceLocation();
-//        int failArray[] = {-1,-1};
-//        if (currentLocation.equals(failArray)){
-//            Log.i(TAG, "Failed to get current location");
-//        }
-//        return currentLocation;
-        return null;
-    }
-
-    public List<HashMap<String, String>> getNearbyPlacesList(){
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-        return null;
-    }
-
-    public double getCameraDirection(){
-        Camdir sensor = new Camdir();
-        return sensor.getAngle();
-    }
-
-    public void updateAuri(){
 
     }
 
@@ -80,7 +35,7 @@ public class SearchAndPosition {
 
     // Position nearby places relative to current location
     // Iterate over nearbyPlaceList and get each position unit vector based on a reference angle
-    public List<HashMap<String, String>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
+    public static List<HashMap<String, String>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
         Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
         List<HashMap<String, String>> positionedPlaces = new ArrayList<>();
 
@@ -120,7 +75,7 @@ public class SearchAndPosition {
     // 1. Calculate unit vector from current location
     // 2. Rotate from true north using rotation matrix
     // 3. Return position array
-    private double[] RelativePosition(double myLatitude, double myLongitude, double lat, double lng, double theta){
+    private static double[] RelativePosition(double myLatitude, double myLongitude, double lat, double lng, double theta){
         //get deltas from your position
         double latChange = myLatitude - lat;
         double lngChange = myLongitude - lng;
