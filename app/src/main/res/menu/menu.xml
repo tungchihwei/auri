@@ -3,18 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_logout"
-        android:title="Log Out"
+        android:title="Log out"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:orderInCategory="0"
         android:visible="true" />
 
     <item
         android:id="@+id/action_auri"
         android:title="Auri Mode"
         android:visible="true"
+        android:icon="@drawable/ic_navigation_black_24dp"
+        android:orderInCategory="1"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_settings"
         android:title="Settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:orderInCategory="2"
         android:visible="true" />
 
 </menu>

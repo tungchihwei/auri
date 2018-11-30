@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -36,6 +37,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.green.auri.arview.IndexActivity;
+
+import io.github.yavski.fabspeeddial.FabSpeedDial;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -225,6 +228,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                //
 //            }
 //        });
+
+        FabSpeedDial fab2 = (FabSpeedDial) findViewById(R.id.fab2);
+        fab2.setMenuListener(new FabSpeedDial.MenuListener() {
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                return true; // false: don't show menu
+            }
+
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                String title = menuItem.getTitle().toString();
+                Log.i("!!!",title);
+                if (title.equals("Auri Mode")){
+                    goToAuriMode();
+                }else if (title.equals("Settings")){
+                    Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();;
+                }
+                return true;
+            }
+
+            @Override
+            public void onMenuClosed() {
+
+            }
+        });
 
     }
 
