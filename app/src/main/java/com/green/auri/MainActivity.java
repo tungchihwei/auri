@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,6 +47,8 @@ import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FragmentManager fm;
     private FragmentTransaction transaction;
     private boolean cardHidden = true;
+
+    List<String> lstResName = new ArrayList<>();
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -245,6 +250,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("onClick", url);
                     new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) MainActivity.this);
                     Toast.makeText(MainActivity.this,"Nearby Restaurants", Toast.LENGTH_LONG).show();
+
+                    // get nearby restaurant information and set cardview
+                    initData();
+                    Log.i("!!!", String.valueOf(lstResName.isEmpty()));
+                    setCardCycle();
                 }
                 return true;
             }
@@ -255,8 +265,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+    }
 
+    private void initData() {
+        lstResName.add("Name1");
+        lstResName.add("Name2");
+        lstResName.add("Name3");
+        lstResName.add("Name4");
+    }
 
+    private void setCardCycle(){
+        HorizontalInfiniteCycleViewPager pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
+        CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
+        pager.setAdapter(adapter);
     }
 
     private void goToAuriMode(){
