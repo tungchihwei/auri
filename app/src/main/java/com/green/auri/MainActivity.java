@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // hide status bar
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_main);
