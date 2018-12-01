@@ -128,6 +128,12 @@ public class PlaceAPI extends Activity {
     }
 }
 
+class Reviews {
+    String rev_author;
+    String rev_date;
+    String rev_review;
+}
+
 // List view for reviews
 class ReviewAdapter extends BaseAdapter {
 
@@ -174,9 +180,9 @@ class ReviewAdapter extends BaseAdapter {
         txt_reviews = (TextView) row.findViewById(R.id.txt_reviews);
 
         // Set reviews
-        txt_author.setText("Author: " + this.main.place_reviews.get(position).rev_author);
-        txt_date.setText("Posted Time: " + this.main.place_reviews.get(position).rev_date);
-        txt_reviews.setText("Review: \n" + this.main.place_reviews.get(position).rev_review);
+        txt_author.setText(this.main.place_reviews.get(position).rev_author);
+        txt_date.setText(this.main.place_reviews.get(position).rev_date);
+        txt_reviews.setText(this.main.place_reviews.get(position).rev_review);
 
         return row;
     }

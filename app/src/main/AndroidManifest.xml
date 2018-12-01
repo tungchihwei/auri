@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.green.auri">
 
@@ -12,13 +13,14 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!-- Indicates that app requires ARCore ("AR Required"). Ensures app is only
-        visible in the Google Play Store on devices that support ARCore. -->
+    <!--
+         Indicates that app requires ARCore ("AR Required"). Ensures app is only
+        visible in the Google Play Store on devices that support ARCore.
+    -->
 
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
-
 
     <application
         android:allowBackup="true"
@@ -27,7 +29,6 @@
         android:roundIcon="@mipmap/ic_auri_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,12 +41,13 @@
         <activity android:name=".arview.IndexActivity" />
         <activity android:name=".PlaceAPI" />
         <activity android:name=".Camdir" />
+        <activity android:name=".Intro" />
+        <activity android:name=".FavoriteCheck" />
         <activity android:name=".onboarding.Intro"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBRUsvkYevFwwKze5MBIM6kBBF168ZOyEw" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -62,5 +64,8 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
+        <activity android:name=".FavoriteDetail"></activity>
     </application>
+
 </manifest>
