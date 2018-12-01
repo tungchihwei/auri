@@ -15,7 +15,13 @@ public class Camdir extends AppCompatActivity {
     private TextView res;
     private TextView res_;
 
-    private int OFFSET = 40;
+    private int OFFSET = 0;
+
+    public double getAngle() {
+        return angle;
+    }
+
+    private double angle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,8 @@ public class Camdir extends AppCompatActivity {
                             }else if (v > 292.5 && v < 337.5) {
                                 res.setText("NORTH WEST");
                             }
+
+                            angle = v;
                             res_.setText(String.valueOf(v));
                         }
                     }

@@ -39,6 +39,9 @@ public class RegActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // hide status bar
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_reg);
 
         email = (EditText) findViewById(R.id.textInputEditTextEmail);
@@ -119,8 +122,8 @@ public class RegActivity extends AppCompatActivity{
                             }else{
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(RegActivity.this, "Couldn't Register, Try Again",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegActivity.this, "Please make sure it is an Email & Password must be at least 6 characters!",
+                                        Toast.LENGTH_LONG).show();
                             }
                         }catch (Exception e){
                             e.printStackTrace();

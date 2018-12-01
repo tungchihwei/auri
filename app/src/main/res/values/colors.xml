@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#51d8c7</color>
-    <color name="colorPrimaryDark">#51d8c7</color>
-    <color name="colorAccent">#FFFFFF</color>
-    <color name="colorBackground">#413e4f</color>
-    <color name="colorText">#FF0000</color>
-    <color name="colorTextHint">#51d8c7</color>
-    <color name="teal">#008080</color>
+    <color name="colorPrimary">#ffffbc00</color>
+    <color name="colorPrimaryDark">#ffffaa00</color>
+    <color name="colorAccent">#fff</color>
+    <!--<color name="colorPrimary">#51d8c7</color>-->
+    <!--<color name="colorPrimaryDark">#51d8c7</color>-->
+    <!--<color name="colorAccent">#FFFFFF</color>-->
+    <!--<color name="colorBackground">#413e4f</color>-->
+    <!--<color name="colorText">#FF0000</color>-->
+    <color name="colorBackground">#fff</color>
+    <color name="colorText">#ff4c4c4c</color>
+    <color name="colorTextHint">#ffffaa00</color>
+    <!--<color name="teal">#008080</color>-->
+    <color name="teal">#ffffbc00</color>
     <color name="yellow">#FFFF00</color>
     <color name="fuchsia">#ff00ff</color>
     <color name="red">#FF0000</color>
@@ -25,4 +31,5 @@
     <color name="white">#FFFFFF</color>
     <color name="holo_orange_light">#ffffaa00</color>
     <color name="holo_dark">#ff4c4c4c</color>
+    <color name="holo_purple">#ffaa66cc</color>
 </resources>

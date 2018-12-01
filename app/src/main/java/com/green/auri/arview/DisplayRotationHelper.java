@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.green.auri;
+package com.green.auri.arview;
 
 import android.app.Activity;
 import android.content.Context;
