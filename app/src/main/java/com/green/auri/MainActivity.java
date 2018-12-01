@@ -252,9 +252,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.makeText(MainActivity.this,"Nearby Restaurants", Toast.LENGTH_LONG).show();
 
                     // get nearby restaurant information and set cardview
-                    initData();
-                    Log.i("!!!", String.valueOf(lstResName.isEmpty()));
-                    setCardCycle();
+//                    initData();
+//                    Log.i("lst", String.valueOf(lstResName.isEmpty()));
+//                    setCardCycle();
                 }
                 return true;
             }
@@ -267,14 +267,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private void initData() {
-        lstResName.add("Name1");
-        lstResName.add("Name2");
-        lstResName.add("Name3");
-        lstResName.add("Name4");
-    }
+//    private void initData() {
+//        lstResName.add("Name1");
+//        lstResName.add("Name2");
+//        lstResName.add("Name3");
+//        lstResName.add("Name4");
+//    }
 
-    private void setCardCycle(){
+    public void setCardCycle(){
         HorizontalInfiniteCycleViewPager pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
         CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
         pager.setAdapter(adapter);
@@ -440,6 +440,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 double lat = Double.parseDouble(googlePlace.get("lat"));
                 double lng = Double.parseDouble(googlePlace.get("lng"));
                 String placeName = googlePlace.get("place_name");
+                Log.i("placesNames", placeName);
+                lstResName.add(placeName);
                 String vicinity = googlePlace.get("vicinity");
                 String rating = googlePlace.get("rating");
 
@@ -456,6 +458,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
             }
         }
+        setCardCycle();
+        Log.i("lst", String.valueOf(lstResName.isEmpty()));
+//        for (int j = 0; j < lstResName.size(); j++) {
+////            String tmp = lstResName.get(j);
+////            Log.i("lstREE", tmp);
+////        }
+
     }
 
     @Override
