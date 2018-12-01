@@ -25,6 +25,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+
     <ImageView
         android:id="@+id/img_favorite"
         android:layout_width="0dp"
