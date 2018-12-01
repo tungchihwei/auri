@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FragmentTransaction transaction;
     private boolean cardHidden = true;
 
-    List<String> lstResName = new ArrayList<>();
+//    List<String> lstResName = new ArrayList<>();
+    List<List<String>> lstResInfo = new ArrayList<>();
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -276,7 +277,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void setCardCycle(){
         HorizontalInfiniteCycleViewPager pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
-        CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
+//        CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
+        CardAdapter adapter = new CardAdapter(lstResInfo,getBaseContext());
         pager.setAdapter(adapter);
     }
 
@@ -441,9 +443,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 double lng = Double.parseDouble(googlePlace.get("lng"));
                 String placeName = googlePlace.get("place_name");
                 Log.i("placesNames", placeName);
-                lstResName.add(placeName);
+//                lstResName.add(placeName);
                 String vicinity = googlePlace.get("vicinity");
                 String rating = googlePlace.get("rating");
+
+                // store info in lstResInfo
+                List<String> cur = new ArrayList<>();
+                cur.add(placeName);
+                cur.add(vicinity);
+                cur.add(rating);
+                lstResInfo.add(cur);
 
                 // Set up the marker:
                 LatLng latLng = new LatLng(lat, lng);
@@ -459,7 +468,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         setCardCycle();
-        Log.i("lst", String.valueOf(lstResName.isEmpty()));
+        Log.i("lst", String.valueOf(lstResInfo.isEmpty()));
+//        Log.i("lst", String.valueOf(lstResName.isEmpty()));
 //        for (int j = 0; j < lstResName.size(); j++) {
 ////            String tmp = lstResName.get(j);
 ////            Log.i("lstREE", tmp);

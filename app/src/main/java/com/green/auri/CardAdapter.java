@@ -9,26 +9,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 public class CardAdapter extends PagerAdapter {
 
-    List<String> lstResName; // need include name, address, rating, if favorite, res image?
+//    List<String> lstResName; // need include 0:name, 1:address, 2:rating, if favorite, res image?
+    List<List<String>> lstResInfo;
     Context context;
     LayoutInflater layoutInflater;
 
-    public CardAdapter(List<String> lstResName, Context context) {
-        this.lstResName = lstResName;
+    public CardAdapter(List<List<String>> lstResInfo, Context context) {
+//        this.lstResName = lstResName;
+        this.lstResInfo = lstResInfo;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return lstResName.size();
+        return lstResInfo.size();
     }
 
     @Override
@@ -46,10 +48,16 @@ public class CardAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.card_item, container, false);
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.cycle_card);
-        TextView tv = (TextView) ll.findViewById(R.id.txtResName);
-        tv.setText(lstResName.get(position));
+        TextView txtResName = (TextView) ll.findViewById(R.id.txtResName);
+        txtResName.setText(String.valueOf(position + 1) + ". " + lstResInfo.get(position).get(0));
+        TextView txtResAddress = (TextView) ll.findViewById(R.id.txtResAddress);
+        txtResAddress.setText(lstResInfo.get(position).get(1));
+        TextView txtRb = (TextView) ll.findViewById(R.id.txtRb);
+        String rating = lstResInfo.get(position).get(2);
+        txtRb.setText(rating);
+        RatingBar rbRes = (RatingBar) ll.findViewById(R.id.rbRes);
+        rbRes.setRating(Float.parseFloat(rating));
         //==
-//        LinearLayout container_favorite = (LinearLayout) ll.findViewById(R.id.container_favorite);
         ImageView imageView = (ImageView) ll.findViewById(R.id.img_favorite);
         // to do: get tag from firebase and set to imageview, 1 is favorite, 0 otherwise
         imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
