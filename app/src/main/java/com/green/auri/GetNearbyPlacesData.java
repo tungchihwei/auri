@@ -128,17 +128,20 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             try {
                 MarkerOptions markerOptions = new MarkerOptions();
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+                Log.i("!!!!", googlePlace.toString());
                 double lat = Double.parseDouble(googlePlace.get("lat"));
                 double lng = Double.parseDouble(googlePlace.get("lng"));
                 String placeName = googlePlace.get("place_name");
                 String vicinity = googlePlace.get("vicinity");
                 String rating = googlePlace.get("rating");
+                String Place_Id = googlePlace.get("place_id");
 
                 // Set up the marker:
                 LatLng latLng = new LatLng(lat, lng);
                 markerOptions.position(latLng);
-                markerOptions.title(placeName + " : " + vicinity + " : " + rating);
+                markerOptions.title(placeName + " : " + vicinity + " : " + rating + " :" + Place_Id);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
 
                 // Add the marker and move the camera to make it visible.
                 mMap.addMarker(markerOptions);

@@ -2,9 +2,14 @@ package com.green.auri;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.support.annotation.NonNull;
@@ -16,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +36,12 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,6 +56,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -67,6 +86,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String api_key = "AIzaSyCSSgGt6d67TiIUl0SiwEvkVkvGU1PL1-U";
     private Button auri_mode;
     private SharedPreferences sp;
+    String accountName;
+
+    protected GeoDataClient mGeoDataClient;
+    String photo_toString;
+    int isFav;
+
 
 //    String rname;
 //    String raddress;
@@ -183,9 +208,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mGeoDataClient = Places.getGeoDataClient(this);
+
         sp = getSharedPreferences("login",MODE_PRIVATE);
         // ask device for location permission
         getLocationPermission();
+
+        // get the account name
+        accountName = sp.getString("account", "NA");
 
         // Reference to Auri Mode Button
         Button auri_mode = (Button) findViewById(R.id.AuriMode);
@@ -219,6 +250,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(camdir_intent);
             }
         });
+
+        // Reference to Camdir Mode Button (Camdir activity)
+        Button fav_list = (Button) findViewById(R.id.btn_fav);
+        fav_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Favorite", "Button is Clicked");
+                Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+                startActivity(fav_intent);
+            }
+        });
+
+
 
 //        txt_rname = (TextView) findViewById(R.id.txt_rname);
 //        txt_raddress = (TextView) findViewById(R.id.txt_raddress);
@@ -288,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        sp.edit().putString("account", "").apply();
         sp.edit().putBoolean("logged",false).apply();
         finish();
     }
@@ -335,25 +380,68 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String lat = String.valueOf(ll.latitude);
         String lng = String.valueOf(ll.longitude);
 
-        Log.i("!!!",title);
-        Log.i("!!!",lat);
-        Log.i("!!!",lng);
+        // Set default photo
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
 
-        // info[0] is restaurant name; info[1] is address; info[2] is rating
+        // info[0] is restaurant name; info[1] is address; info[2] is rating; info[3] is Place_id
         String[] info = title.split(":");
+        String id = info[3].replace(" ", "");
 
+        Card curCard = new Card();
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
 
-        Card curCard = new Card();
-        curCard.setInfo(info);
+        // Get Place photo
+        Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(id);
+        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                // Get the list of photos.
+                PlacePhotoMetadataResponse photos = task.getResult();
+                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                // Get the first photo in the list.
 
+                try {
+                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                    // Get the attribution text.
+                    CharSequence attribution = photoMetadata.getAttributions();
+                    // Get a full-size bitmap for the photo.
+                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                            PlacePhotoResponse photo = task.getResult();
+                            Bitmap res_Photo = photo.getBitmap();
+
+                            // change photo bitmap to string
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            res_Photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            byte[] b = baos.toByteArray();
+                            photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                            curCard.setInfo(info, id, accountName, photo_toString, isFav);
+                        }
+                    });
+                } catch (Exception e){
+                    // Set default photo and change photo bitmap to string
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                    curCard.setInfo(info, id, accountName, photo_toString, isFav);
+                }
+            }
+        });
+
+        curCard.setInfo(info, id, accountName, photo_toString, isFav);
         transaction.replace(R.id.fragment, curCard);
         transaction.commit();
-//        rname = info[0];
-//        raddress = info[1];
-//        rating = Float.parseFloat(info[2]);
 
         return false;
     }

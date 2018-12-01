@@ -46,6 +46,19 @@
             android:id="@+id/AuriMode"
             android:layout_margin="10dp"
             android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_fav"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/teal"
+            android:text="Favorite"
+            android:textAlignment="center"
+            android:textColor="@color/yellow"
+            android:textSize="20sp" />
+
     </LinearLayout>
 
     <LinearLayout

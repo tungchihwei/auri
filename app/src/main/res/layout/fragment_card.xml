@@ -32,6 +32,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="true" />
+
+        <ToggleButton
+            android:id="@+id/btn_fav"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:background="@drawable/fav_off"
+            android:textOff=""
+            android:textOn="" />
     </LinearLayout>
 
 </FrameLayout>
