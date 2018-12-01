@@ -64,10 +64,12 @@ public class FavoriteCheck extends AppCompatActivity {
         sp = getSharedPreferences("login",MODE_PRIVATE);
         accountName = sp.getString("account", "NA");
 
+
+
         myRef.child(accountName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("checkdata", dataSnapshot.getValue().toString());
+//                    Log.i("checkdata", dataSnapshot.getValue().toString());
                 fav_count = (int)dataSnapshot.getChildrenCount();
                 favorite_list = new String[fav_count];
                 int k = 0;
@@ -88,15 +90,15 @@ public class FavoriteCheck extends AppCompatActivity {
                     }
 
                     fav_datail.add(add);
-//                    Log.i("order", favorite_list[i]);
+//                   Log.i("order", favorite_list[i]);
                     k ++;
                 }
                 list_fav.invalidateViews();
-//                fav_datail.clear();
+//               fav_datail.clear();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.i("Favorite Database Errore", databaseError.toString());
             }
         });
 
@@ -109,6 +111,8 @@ public class FavoriteCheck extends AppCompatActivity {
                 startActivity(fav_detail);
             }
         });
+
+
     }
 }
 
@@ -160,9 +164,13 @@ class FavoriteAdapter extends BaseAdapter {
         txt_resName = (TextView) row.findViewById(R.id.txt_resName);
         img_res = (ImageView) row.findViewById(R.id.img_res);
 
-        txt_resName.setText(this.main.fav_datail.get(position).fav_resName);
-        Bitmap bm = this.main.fav_datail.get(position).fav_bitmap;
-        img_res.setImageBitmap(bm);
+        try {
+            txt_resName.setText(this.main.fav_datail.get(position).fav_resName);
+            Bitmap bm = this.main.fav_datail.get(position).fav_bitmap;
+            img_res.setImageBitmap(bm);
+        } catch (Exception e) {
+            Log.i("favorite check", "database error");
+        }
 
         return row;
     }
