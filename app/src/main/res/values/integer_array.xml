@@ -3,6 +3,8 @@
     <integer-array name="fab_menu_item_colors">
         <!-- A dark Holo shade of red -->
         <item>@android:color/holo_red_dark</item>
+        <!-- A pink -->
+        <item>@color/pink</item>
         <!-- A Holo shade of purple -->
         <item>@color/colorPrimary</item>
         <!-- A light Holo shade of green -->

@@ -10,22 +10,25 @@
         android:visible="true" />
 
     <item
+        android:id="@+id/action_checkFav"
+        android:icon="@drawable/ic_favorite_red_24dp"
+        android:title="Favorites"
+        android:orderInCategory="1"
+        app:actionProviderClass="android.support.v7.app.MediaRouteActionProvider" />
+
+    <item
         android:id="@+id/action_auri"
         android:title="Auri Mode"
         android:visible="true"
         android:icon="@drawable/ic_navigation_black_24dp"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_checkFav"
-        android:icon="@drawable/floatingbutton"
-        android:title="Favorites"
-        app:actionProviderClass="android.support.v7.app.MediaRouteActionProvider" />
+
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="Settings"
         android:visible="true" />
 
