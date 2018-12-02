@@ -33,13 +33,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
 import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -114,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     List<String> lstResName = new ArrayList<>();
 
     String marker_placeId;
+
+    PlaceAutocompleteFragment autocompleteFragment;
+    String placeSearch_id;
+    int mode; // 1: nearby restaurant 2: search
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -221,49 +231,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // get the account name
         accountName = sp.getString("account", "NA");
 
-        // Reference to Auri Mode Button
-        Button auri_mode = (Button) findViewById(R.id.AuriMode);
-        auri_mode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Aurimode", "Button is Clicked");
-                Intent auri_intent = new Intent(MainActivity.this, IndexActivity.class);
-                startActivity(auri_intent);
-            }
-        });
-
-        // Reference to Normal Mode Button (PlaceAPI)
-        Button normal_mode = (Button) findViewById(R.id.NormalMode);
-        normal_mode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Normalmode", "Button is Clicked");
-                Intent normal_intent = new Intent(MainActivity.this, PlaceAPI.class);
-                startActivity(normal_intent);
-            }
-        });
-
-        // Reference to Camdir Mode Button (Camdir activity)
-        Button camdir = (Button) findViewById(R.id.camdir);
-        camdir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Camdir", "Button is Clicked");
-                Intent camdir_intent = new Intent(MainActivity.this, Camdir.class);
-                startActivity(camdir_intent);
-            }
-        });
-
-        // Reference to Camdir Mode Button (Camdir activity)
-        Button fav_list = (Button) findViewById(R.id.btn_fav);
-        fav_list.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Favorite", "Button is Clicked");
-                Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
-                startActivity(fav_intent);
-            }
-        });
+//        // Reference to Auri Mode Button
+//        Button auri_mode = (Button) findViewById(R.id.AuriMode);
+//        auri_mode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("Aurimode", "Button is Clicked");
+//                Intent auri_intent = new Intent(MainActivity.this, IndexActivity.class);
+//                startActivity(auri_intent);
+//            }
+//        });
+//
+//        // Reference to Normal Mode Button (PlaceAPI)
+//        Button normal_mode = (Button) findViewById(R.id.NormalMode);
+//        normal_mode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("Normalmode", "Button is Clicked");
+//                Intent normal_intent = new Intent(MainActivity.this, PlaceAPI.class);
+//                startActivity(normal_intent);
+//            }
+//        });
+//
+//        // Reference to Camdir Mode Button (Camdir activity)
+//        Button camdir = (Button) findViewById(R.id.camdir);
+//        camdir.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("Camdir", "Button is Clicked");
+//                Intent camdir_intent = new Intent(MainActivity.this, Camdir.class);
+//                startActivity(camdir_intent);
+//            }
+//        });
+//
+//        // Reference to Camdir Mode Button (Camdir activity)
+//        Button fav_list = (Button) findViewById(R.id.btn_fav);
+//        fav_list.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("Favorite", "Button is Clicked");
+//                Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+//                startActivity(fav_intent);
+//            }
+//        });
 
 //        txt_rname = (TextView) findViewById(R.id.txt_rname);
 //        txt_raddress = (TextView) findViewById(R.id.txt_raddress);
@@ -297,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("onClick", "Button is Clicked");
                     mMap.clear();
                     lstResInfo.clear();
+                    mode = 1;
                     String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
                     Log.d("onClick", url);
                     new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) MainActivity.this);
@@ -317,6 +328,110 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onMenuClosed() {
 
+            }
+        });
+
+        autocompleteFragment = (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // Get place id after selecting the place from the fragment
+                placeSearch_id = place.getId();
+
+                // Get Geo Data by using place id
+                mGeoDataClient.getPlaceById(placeSearch_id).addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
+                        if (task.isSuccessful()) {
+                            mode = 2;
+                            mMap.clear();
+                            lstResInfo.clear();
+                            // Get the response of the place
+                            PlaceBufferResponse places = task.getResult();
+                            // Get Place information
+                            Place myPlace = places.get(0);
+
+                            List<String> cur = new ArrayList<>();
+                            cur.add(myPlace.getName().toString());
+                            cur.add(myPlace.getAddress().toString());
+                            cur.add(Double.toString(myPlace.getRating()));
+                            cur.add(myPlace.getId());
+                            cur.add(accountName);
+
+                            Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(myPlace.getId());
+                            photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+                                @Override
+                                public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                                    // Get the list of photos.
+                                    PlacePhotoMetadataResponse photos = task.getResult();
+                                    // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                                    PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                                    // Get the first photo in the list.
+
+                                    try {
+                                        PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                                        // Get the attribution text.
+                                        CharSequence attribution = photoMetadata.getAttributions();
+                                        // Get a full-size bitmap for the photo.
+                                        Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                                        photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                                                PlacePhotoResponse photo = task.getResult();
+                                                Bitmap res_Photo = photo.getBitmap();
+
+                                                // change photo bitmap to string
+                                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                res_Photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                                byte[] b = baos.toByteArray();
+                                                photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                                                cur.add(photo_toString);
+                                                lstResInfo.add(cur);
+                                                setCardCycle();
+//                                    curCard.setInfo(info, id, accountName, photo_toString, isFav);
+                                            }
+                                        });
+                                    } catch (Exception e){
+                                        // Set default photo and change photo bitmap to string
+                                        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                        icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                        byte[] b = baos.toByteArray();
+                                        photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                                        cur.add(photo_toString);
+                                        lstResInfo.add(cur);
+                                        setCardCycle();
+//                            curCard.setInfo(info, id, accountName, photo_toString, isFav);
+                                    }
+                                }
+                            });
+
+                            MarkerOptions markerOptions = new MarkerOptions();
+//                            LatLng latLng = new LatLng(lat, lng);
+                            markerOptions.position(myPlace.getLatLng());
+                            markerOptions.title(myPlace.getName().toString() + " : " + myPlace.getAddress().toString() + " : " + Double.toString(myPlace.getRating()) + " :" + myPlace.getId());
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                            mMap.addMarker(markerOptions);
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace.getLatLng(), 15));
+//                            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+
+
+//                            String url = PlaceSearchUtils.getUrl(myPlace.getLatLng().latitude, myPlace.getLatLng().longitude, myPlace.getName().toString()); // get the url of nearby restaurant
+//                            Log.d("onClick", url);
+//                            new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) MainActivity.this);
+
+                            places.release();
+                        } else {
+
+                        }
+                    }
+                });
+            }
+            @Override
+            public void onError(Status status) {
+                Log.i("Error", "An error of autocomplete occurred: " + status);
             }
         });
 
@@ -467,12 +582,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String lat = String.valueOf(ll.latitude);
         String lng = String.valueOf(ll.longitude);
 
-        // Set default photo
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+//        // Set default photo
+//        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//        byte[] b = baos.toByteArray();
+//        photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
 
         // info[0] is restaurant name; info[1] is address; info[2] is rating; info[3] is Place_id
         String[] info = title.split(":");
