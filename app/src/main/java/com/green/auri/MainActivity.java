@@ -588,6 +588,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng ll = marker.getPosition();
         String lat = String.valueOf(ll.latitude);
         String lng = String.valueOf(ll.longitude);
+        marker.getId();
 
 
 //        // Set default photo

@@ -72,26 +72,6 @@ public class CardAdapter extends PagerAdapter {
         txtRb.setText(rating);
         RatingBar rbRes = (RatingBar) ll.findViewById(R.id.rbRes);
         rbRes.setRating(Float.parseFloat(rating));
-        //==
-//        ImageView imageView = (ImageView) ll.findViewById(R.id.img_favorite);
-//        // to do: get tag from firebase and set to imageview, 1 is favorite, 0 otherwise
-//        imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
-//        imageView.setTag(0);
-//        imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int preTag_favorite = (int) v.getTag();
-//                int curTag_favorite = preTag_favorite == 0 ? 1 : 0;
-//                v.setTag(curTag_favorite);
-//                if (curTag_favorite == 1){
-//                    imageView.setImageResource(R.drawable.ic_favorite_red_24dp);
-//                }else {
-//                    imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
-//                }
-//                // to do : store it in firebase
-//                Log.i("!!!cardview",String.valueOf((int)v.getTag()));
-//            }
-//        });
 
         String Place_id = lstResInfo.get(position).get(3);
         String accountName = lstResInfo.get(position).get(4);
