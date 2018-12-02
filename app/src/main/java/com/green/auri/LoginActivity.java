@@ -104,6 +104,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             currentUser = mAuth.getCurrentUser();
+
+                            // saved account name, so that after login can get the account name
+                            sp.edit().putString("account", currentUser.getUid()).apply();
 //                            finish();
                             // if login successful, then enter the main activity page
                             Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);

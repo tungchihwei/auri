@@ -116,6 +116,7 @@ public class PlaceSearchUtils {
         String reference = "";
         String rating = "";
         String icon = "";
+        String Place_Id = "";
 
         Log.d("getPlace", "Entered");
 
@@ -131,6 +132,7 @@ public class PlaceSearchUtils {
             reference = googlePlaceJson.getString("reference");
             rating = googlePlaceJson.getString("rating");
             icon = googlePlaceJson.getString("icon");
+            Place_Id = googlePlaceJson.getString("place_id");
             googlePlaceMap.put("place_name", placeName);
             googlePlaceMap.put("vicinity", vicinity);
             googlePlaceMap.put("lat", latitude);
@@ -138,6 +140,7 @@ public class PlaceSearchUtils {
             googlePlaceMap.put("reference", reference);
             googlePlaceMap.put("rating",rating);
             googlePlaceMap.put("icon",icon);
+            googlePlaceMap.put("place_id", Place_Id);
 
 
             Log.d("getPlace", "Putting Places");

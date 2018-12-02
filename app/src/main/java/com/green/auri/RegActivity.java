@@ -39,6 +39,9 @@ public class RegActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // hide status bar
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_reg);
 
         email = (EditText) findViewById(R.id.textInputEditTextEmail);

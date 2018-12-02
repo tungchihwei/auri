@@ -30,7 +30,8 @@
     <string name="word_instruction1_2">Have fun to find a restaurant!</string>
     <string name="word_instruction2">AR Mode to view resturants in your camera</string>
     <string name="word_instruction3">Normal Mode to view resturants around you</string>
-    <string name="default_card_instruction">Try click the <font color='#ffffaa00'>RESTAURANTS</font>
-        button and then click the red marker</string>
+    <string name="title_activity_favorite_detail">Map</string>
+    <string name="default_card_instruction">Try clicking the <font color='#ffffaa00'>RESTAURANTS</font>
+        icon and then click the red marker</string>
 
 </resources>
