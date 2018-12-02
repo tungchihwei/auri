@@ -7,81 +7,127 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <LinearLayout
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:gravity="center">
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/camdir"
-            android:layout_width="80dp"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@color/teal"
-            android:textColor="@color/yellow"
-            android:textSize="20sp"
-            android:text="CamDir" />
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:gravity="center">-->
 
-        <Button
-            android:id="@+id/NormalMode"
-            android:layout_width="80dp"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@color/teal"
-            android:text="Normal Mode"
-            android:textAlignment="center"
-            android:textColor="@color/yellow"
-            android:textSize="20sp" />
+        <!--<Button-->
+            <!--android:id="@+id/camdir"-->
+            <!--android:layout_width="80dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@color/teal"-->
+            <!--android:textColor="@color/yellow"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="CamDir" />-->
 
-        <Button
-            android:layout_width="80dp"
-            android:layout_height="60dp"
-            android:background="@color/teal"
-            android:text="Auri Mode"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textColor="@color/yellow"
-            android:id="@+id/AuriMode"
-            android:layout_margin="10dp"
-            android:layout_weight="1"/>
-    </LinearLayout>
+        <!--<Button-->
+            <!--android:id="@+id/NormalMode"-->
+            <!--android:layout_width="80dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@color/teal"-->
+            <!--android:text="Normal Mode"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textColor="@color/yellow"-->
+            <!--android:textSize="20sp" />-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        android:gravity="center">
+        <!--<Button-->
+            <!--android:layout_width="80dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:background="@color/teal"-->
+            <!--android:text="Auri Mode"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@color/yellow"-->
+            <!--android:id="@+id/AuriMode"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:layout_weight="1"/>-->
 
-        <fragment
-            android:id="@+id/card_fragment"
-            android:name="com.green.auri.RestaurantCardDisplay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <!--<Button-->
+            <!--android:id="@+id/btn_fav"-->
+            <!--android:layout_width="80dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@color/teal"-->
+            <!--android:text="Favorite"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textColor="@color/yellow"-->
+            <!--android:textSize="20sp" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="150dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:gravity="center">-->
+
+        <!--<fragment-->
+            <!--android:id="@+id/fragment"-->
+            <!--android:name="com.green.auri.defaultcard"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+    <!--</LinearLayout>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="20">
+
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
 
-        <Button
+        <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/fab2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Restaurants"
-            android:textSize="10sp"
-            android:textColor="@color/teal"
-            android:background="@color/colorAccent"
-            android:layout_margin="10dp"
-            android:id="@+id/restu"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:fabBackgroundTint="@color/holo_purple"
+            app:fabDrawableTint="@color/colorAccent"
+            app:fabGravity="top_start"
+            app:fabMenu="@menu/menu"
+            app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
+            app:miniFabDrawableTint="@android:color/white"
+            app:miniFabTitleTextColorList="@array/fab_menu_item_colors" />
+
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/layout_cycle"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_weight="2"
+        android:gravity="center">
+
+        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
+            android:id="@+id/horizontal_cycle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:icvp_center_page_scale_offset="30dp"
+            app:icvp_interpolator="@android:anim/accelerate_decelerate_interpolator"
+            app:icvp_max_page_scale="0.9"
+            app:icvp_medium_scaled="false"
+            app:icvp_min_page_scale="0.55"
+            app:icvp_min_page_scale_offset="5dp"
+            app:icvp_scroll_duration="250" />
+
+    </RelativeLayout>
 
 </LinearLayout>

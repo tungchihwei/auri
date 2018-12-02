@@ -45,4 +45,11 @@ dependencies {
     // Provides ArFragment, and other UX resources.
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.5.1'
     implementation 'com.google.firebase:firebase-database:16.0.1'
+
+    // Provides material design for UI components.
+    implementation 'com.android.support:design:28.0.0-alpha3'
+    implementation 'io.github.yavski:fab-speed-dial:1.0.6'
+
+    // Provides cardview resources.
+    implementation 'com.github.devlight:infinitecycleviewpager:1.0.2'
 }
