@@ -116,8 +116,19 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                         price_lev += "$";
                     }
                     txt_resPrice.setText(price_lev);
-                    txt_resPhone.setText(myPlace.getPhoneNumber().toString());
-                    txt_resWeb.setText(myPlace.getWebsiteUri().toString());
+                    try{
+                        txt_resPhone.setText(myPlace.getPhoneNumber().toString());
+                    } catch (Exception e){
+                        txt_resPhone.setText("No phone number available!");
+                    }
+
+                    try{
+                        txt_resWeb.setText(myPlace.getWebsiteUri().toString());
+                    } catch (Exception e){
+                        txt_resWeb.setText("No website available!");
+                    }
+
+
 
                     ReviewRequest(Place_id);
 

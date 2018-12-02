@@ -1,6 +1,7 @@
 package com.green.auri;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -159,6 +160,20 @@ public class CardAdapter extends PagerAdapter {
         });
 
         //==
+
+        LinearLayout layout_cardInfo = (LinearLayout ) ll.findViewById(R.id.layout_cardInfo);
+
+        layout_cardInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent fav_detail = new Intent(context, FavoriteDetail.class);
+                fav_detail.putExtra("place_id", Place_id);
+                fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(fav_detail);
+            }
+        });
+
+
         container.addView(view);
         return view;
     }

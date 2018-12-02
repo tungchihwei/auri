@@ -7,13 +7,14 @@
     android:layout_weight="5">
 
     <LinearLayout
+        android:id="@+id/layout_cardInfo"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:gravity="center_vertical"
         android:background="@color/whitesmoke"
-        android:paddingLeft="10dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/txtResName"
@@ -29,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textSize="15dp"/>
+            android:textSize="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,13 +39,13 @@
 
             <RatingBar
                 android:id="@+id/rbRes"
+                style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:isIndicator="true"
                 android:numStars="5"
                 android:stepSize="0.1"
-                style="?android:attr/ratingBarStyleSmall"
-                android:theme="@style/RatingBar"
-                android:isIndicator="true" />
+                android:theme="@style/RatingBar" />
 
             <TextView
                 android:id="@+id/txtRb"

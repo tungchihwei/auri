@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -264,8 +265,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
-
 //        txt_rname = (TextView) findViewById(R.id.txt_rname);
 //        txt_raddress = (TextView) findViewById(R.id.txt_raddress);
 //        rb = (RatingBar) findViewById(R.id.rb);
@@ -332,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setCardCycle(){
 
         Integer currCard = 0;
-
         try {
             for (int i = 0; i < lstResInfo.size(); i++){
                 if (marker_placeId.equals(lstResInfo.get(i).get(3))){
@@ -342,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch(Exception e) {
             Log.i("setCardCycle", "Mark not yet clicked");
         }
-
         HorizontalInfiniteCycleViewPager pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
 //        CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
         CardAdapter adapter = new CardAdapter(lstResInfo,getBaseContext());
@@ -481,64 +478,64 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String id = info[3].replace(" ", "");
         marker_placeId = id;
 
-        Card curCard = new Card();
-
-        fm = getSupportFragmentManager();
-        transaction = fm.beginTransaction();
-
-        // Get Place photo
-        Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(id);
-        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
-                // Get the list of photos.
-                PlacePhotoMetadataResponse photos = task.getResult();
-                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
-                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-                // Get the first photo in the list.
-
-                try {
-                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-                    // Get the attribution text.
-                    CharSequence attribution = photoMetadata.getAttributions();
-                    // Get a full-size bitmap for the photo.
-                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
-                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                            PlacePhotoResponse photo = task.getResult();
-                            Bitmap res_Photo = photo.getBitmap();
-
-                            // change photo bitmap to string
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            res_Photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                            byte[] b = baos.toByteArray();
-                            photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
-                            curCard.setInfo(info, id, accountName, photo_toString, isFav);
-                        }
-                    });
-                } catch (Exception e){
-                    // Set default photo and change photo bitmap to string
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                    byte[] b = baos.toByteArray();
-                    photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
-                    curCard.setInfo(info, id, accountName, photo_toString, isFav);
-                }
-            }
-        });
-
-        curCard.setInfo(info, id, accountName, photo_toString, isFav);
-
-        if (cardHidden) {
-            cardHidden = false;
-            TextView tv = (TextView) findViewById(R.id.defaultTxt);
-            tv.setText("");
-        }
-
-        transaction.replace(R.id.fragment, curCard);
-        transaction.commit();
+//        Card curCard = new Card();
+//
+//        fm = getSupportFragmentManager();
+//        transaction = fm.beginTransaction();
+//
+//        // Get Place photo
+//        Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(id);
+//        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+//            @Override
+//            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+//                // Get the list of photos.
+//                PlacePhotoMetadataResponse photos = task.getResult();
+//                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+//                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+//                // Get the first photo in the list.
+//
+//                try {
+//                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+//                    // Get the attribution text.
+//                    CharSequence attribution = photoMetadata.getAttributions();
+//                    // Get a full-size bitmap for the photo.
+//                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+//                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+//                            PlacePhotoResponse photo = task.getResult();
+//                            Bitmap res_Photo = photo.getBitmap();
+//
+//                            // change photo bitmap to string
+//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                            res_Photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                            byte[] b = baos.toByteArray();
+//                            photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+//                            curCard.setInfo(info, id, accountName, photo_toString, isFav);
+//                        }
+//                    });
+//                } catch (Exception e){
+//                    // Set default photo and change photo bitmap to string
+//                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                    byte[] b = baos.toByteArray();
+//                    photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+//                    curCard.setInfo(info, id, accountName, photo_toString, isFav);
+//                }
+//            }
+//        });
+//
+//        curCard.setInfo(info, id, accountName, photo_toString, isFav);
+//
+//        if (cardHidden) {
+//            cardHidden = false;
+//            TextView tv = (TextView) findViewById(R.id.defaultTxt);
+//            tv.setText("");
+//        }
+//
+//        transaction.replace(R.id.fragment, curCard);
+//        transaction.commit();
 
 //        for (int i = 0; i < lstResInfo.size(); i++){
 ////            Log.i("place_id", lstResInfo.get(i).toString());
