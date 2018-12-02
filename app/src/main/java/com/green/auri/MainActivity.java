@@ -296,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String Restaurant = "restaurant";
                     Log.d("onClick", "Button is Clicked");
                     mMap.clear();
+                    lstResInfo.clear();
                     String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
                     Log.d("onClick", url);
                     new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) MainActivity.this);
