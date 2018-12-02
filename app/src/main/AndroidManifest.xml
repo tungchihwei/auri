@@ -39,11 +39,11 @@
         </activity>
         <activity android:name=".RegActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".arview.IndexActivity" />
+        <activity android:name=".arview.ARActivity" />
         <activity android:name=".Camdir" />
-        <!--<activity android:name=".Intro" />-->
+        <!-- <activity android:name=".Intro" /> -->
         <activity android:name=".FavoriteCheck" />
-        <activity android:name=".onboarding.Intro"></activity>
+        <activity android:name=".onboarding.Intro" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -65,7 +65,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".FavoriteDetail"></activity>
+        <activity android:name=".FavoriteDetail" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

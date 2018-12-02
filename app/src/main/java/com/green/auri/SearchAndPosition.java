@@ -37,6 +37,7 @@ public class SearchAndPosition {
     // Iterate over nearbyPlaceList and get each position unit vector based on a reference angle
     public static List<HashMap<String, String>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
         Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
+        Log.i("POSITIONED", "Positioning nearby places");
         List<HashMap<String, String>> positionedPlaces = new ArrayList<>();
 
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
@@ -47,7 +48,7 @@ public class SearchAndPosition {
             double lng = Double.parseDouble(currentGooglePlace.get("lng"));
             String placeName = currentGooglePlace.get("place_name");
             String rating = currentGooglePlace.get("rating");
-            String URL = currentGooglePlace.get("icon");
+            String photoRef = currentGooglePlace.get("photoURL");
 
             Log.i("Position", "Place: "+placeName+" Position: "+lat+" "+lng);
 
@@ -61,7 +62,7 @@ public class SearchAndPosition {
             positionedPlace.put("Y",Double.toString(relativePositionList[1]));
             positionedPlace.put("Distance",Double.toString(relativePositionList[2]));
             positionedPlace.put("Rating",rating);
-            positionedPlace.put("URL",URL);
+            positionedPlace.put("photoRef",photoRef);
 
             positionedPlaces.add(positionedPlace);
 

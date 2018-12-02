@@ -8,6 +8,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,6 +108,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             // saved account name, so that after login can get the account name
                             sp.edit().putString("account", currentUser.getUid()).apply();
+//                            Log.i("!!!email_login", Email);
+                            sp.edit().putString("email", Email).apply();
 //                            finish();
                             // if login successful, then enter the main activity page
                             Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
