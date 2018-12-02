@@ -72,7 +72,7 @@ public class Card extends Fragment {
         txt_raddress.setText(raddress);
         rb.setRating(rating);
 
-        btn_fav = view.findViewById(R.id.btn_fav);
+        btn_fav = view.findViewById(R.id.btn_fav2);
         checked = 0;
 
         // Check if restaurant is in database (favorite)

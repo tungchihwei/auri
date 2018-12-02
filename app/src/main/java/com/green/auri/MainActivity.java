@@ -288,10 +288,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.i("!!!",title);
                 if (title.equals("Auri Mode")){
                     goToAuriMode();
-                }else if (title.equals("Settings")){
+                } else if (title.equals("Settings")){
                     Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();;
-                }
-                else if (title.equals("Nearby Restaurant")){
+                } else if (title.equals("Nearby Restaurant")){
                     // Reference to the button to find nearby restaurants
                     String Restaurant = "restaurant";
                     Log.d("onClick", "Button is Clicked");
@@ -305,6 +304,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    initData();
 //                    Log.i("lst", String.valueOf(lstResName.isEmpty()));
 //                    setCardCycle();
+                } else if (title.equals("Favorites")) {
+                    Log.d("Favorite", "Button is Clicked");
+                    Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+                    startActivity(fav_intent);
                 }
                 return true;
             }
@@ -547,7 +550,62 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 cur.add(placeName);
                 cur.add(vicinity);
                 cur.add(rating);
-                lstResInfo.add(cur);
+                cur.add(Place_id);
+                cur.add(accountName);
+
+
+                Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(Place_id);
+                photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                        // Get the list of photos.
+                        PlacePhotoMetadataResponse photos = task.getResult();
+                        // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                        PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                        // Get the first photo in the list.
+
+                        try {
+                            PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                            // Get the attribution text.
+                            CharSequence attribution = photoMetadata.getAttributions();
+                            // Get a full-size bitmap for the photo.
+                            Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                            photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                                @Override
+                                public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                                    PlacePhotoResponse photo = task.getResult();
+                                    Bitmap res_Photo = photo.getBitmap();
+
+                                    // change photo bitmap to string
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    res_Photo.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                    byte[] b = baos.toByteArray();
+                                    photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                                    cur.add(photo_toString);
+                                    lstResInfo.add(cur);
+                                    setCardCycle();
+//                                    curCard.setInfo(info, id, accountName, photo_toString, isFav);
+                                }
+                            });
+                        } catch (Exception e){
+                            // Set default photo and change photo bitmap to string
+                            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            byte[] b = baos.toByteArray();
+                            photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                            cur.add(photo_toString);
+                            lstResInfo.add(cur);
+                            setCardCycle();
+//                            curCard.setInfo(info, id, accountName, photo_toString, isFav);
+                        }
+                    }
+                });
+
+
+
+
+
 
                 // Set up the marker:
                 LatLng latLng = new LatLng(lat, lng);
@@ -562,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
             }
         }
-        setCardCycle();
+//        setCardCycle();
         Log.i("lst", String.valueOf(lstResInfo.isEmpty()));
 //        Log.i("lst", String.valueOf(lstResName.isEmpty()));
 //        for (int j = 0; j < lstResName.size(); j++) {

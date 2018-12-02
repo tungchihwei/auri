@@ -7,10 +7,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -20,6 +28,12 @@ public class CardAdapter extends PagerAdapter {
     List<List<String>> lstResInfo;
     Context context;
     LayoutInflater layoutInflater;
+//    ToggleButton btn_fav;
+    FirebaseDatabase fav_database;
+    DatabaseReference favRef;
+    DatabaseReference NameRef;
+    DatabaseReference PhotoRef;
+    Integer isFav;
 
     public CardAdapter(List<List<String>> lstResInfo, Context context) {
 //        this.lstResName = lstResName;
@@ -58,25 +72,92 @@ public class CardAdapter extends PagerAdapter {
         RatingBar rbRes = (RatingBar) ll.findViewById(R.id.rbRes);
         rbRes.setRating(Float.parseFloat(rating));
         //==
-        ImageView imageView = (ImageView) ll.findViewById(R.id.img_favorite);
-        // to do: get tag from firebase and set to imageview, 1 is favorite, 0 otherwise
-        imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
-        imageView.setTag(0);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int preTag_favorite = (int) v.getTag();
-                int curTag_favorite = preTag_favorite == 0 ? 1 : 0;
-                v.setTag(curTag_favorite);
-                if (curTag_favorite == 1){
-                    imageView.setImageResource(R.drawable.ic_favorite_red_24dp);
-                }else {
-                    imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
+//        ImageView imageView = (ImageView) ll.findViewById(R.id.img_favorite);
+//        // to do: get tag from firebase and set to imageview, 1 is favorite, 0 otherwise
+//        imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
+//        imageView.setTag(0);
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int preTag_favorite = (int) v.getTag();
+//                int curTag_favorite = preTag_favorite == 0 ? 1 : 0;
+//                v.setTag(curTag_favorite);
+//                if (curTag_favorite == 1){
+//                    imageView.setImageResource(R.drawable.ic_favorite_red_24dp);
+//                }else {
+//                    imageView.setImageResource(R.drawable.ic_favorite_gray_24dp);
+//                }
+//                // to do : store it in firebase
+//                Log.i("!!!cardview",String.valueOf((int)v.getTag()));
+//            }
+//        });
+
+        String Place_id = lstResInfo.get(position).get(3);
+        String accountName = lstResInfo.get(position).get(4);
+        String res_photo = lstResInfo.get(position).get(5);
+
+        ToggleButton btn_fav = (ToggleButton) ll.findViewById(R.id.btn_favorite);
+
+        if (accountName != null) {
+            fav_database = FirebaseDatabase.getInstance();
+            favRef = fav_database.getReference();
+            favRef.getDatabase();
+            isFav = 0;
+            favRef.child(accountName).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                        String key=childSnapshot.getKey();
+                        if (key.equals(Place_id)){
+                            isFav = 1;
+                            btn_fav.setChecked(true);
+//                            btn_fav.setBackgroundResource(R.drawable.fav_on);
+                            break;
+                        }
+                    }
+                    if (isFav == 0){
+                        btn_fav.setChecked(false);
+//                        btn_fav.setBackgroundResource(R.drawable.fav_off);
+                    }
                 }
-                // to do : store it in firebase
-                Log.i("!!!cardview",String.valueOf((int)v.getTag()));
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+
+        btn_fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    Log.i("isFav", "onCheckedChange to on");
+//                    checked = 1;
+                    // Save restaurant to database
+                    fav_database = FirebaseDatabase.getInstance();
+                    favRef = fav_database.getReference(accountName);
+                    favRef = favRef.child(Place_id);
+                    favRef = fav_database.getReference(accountName + "/" + Place_id);
+                    NameRef = favRef.child("Name");
+                    NameRef.setValue(lstResInfo.get(position).get(0));
+
+                    favRef = FirebaseDatabase.getInstance().getReference(accountName + "/" + Place_id);
+                    PhotoRef = favRef.child("Photo");
+                    PhotoRef.setValue(res_photo);
+                    btn_fav.setBackgroundResource(R.drawable.cardfav_on);
+                } else{
+                    Log.i("isFav", "onCheckedChange to off");
+                    // Delete restaurant from database
+//                    checked = 1;
+                    fav_database = FirebaseDatabase.getInstance();
+                    fav_database.getReference(accountName).child(Place_id).removeValue();
+                    btn_fav.setBackgroundResource(R.drawable.cardfav_off);
+                }
             }
         });
+
         //==
         container.addView(view);
         return view;

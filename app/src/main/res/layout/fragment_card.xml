@@ -34,7 +34,7 @@
             android:isIndicator="true" />
 
         <ToggleButton
-            android:id="@+id/btn_fav"
+            android:id="@+id/btn_fav2"
             android:layout_width="50dp"
             android:layout_height="45dp"
             android:background="@drawable/fav_off"
