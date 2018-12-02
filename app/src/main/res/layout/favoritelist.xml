@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="12"
+        android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/common_full_open_on_phone" />
 
     <Space
@@ -20,8 +21,9 @@
     <TextView
         android:id="@+id/txt_resName"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="20"
+        android:gravity="center_vertical"
         android:text="Restaurant Name"
         android:textSize="24sp" />
 
