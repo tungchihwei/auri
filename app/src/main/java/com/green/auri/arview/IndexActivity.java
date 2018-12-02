@@ -70,6 +70,7 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
     private int lock = MAX_LOCK_SIZE;
     private boolean gotLocation = false;
     private boolean gotPlaces = false;
+    private boolean executed = false;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -184,6 +185,7 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
     private void updateNearbyPlaces() {
         gotLocation = false;
         gotPlaces = false;
+        executed = false;
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
@@ -281,7 +283,8 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
         this.latitude = latitude;
         this.longitude = longitude;
         gotLocation = true;
-        if(gotPlaces){
+        if(gotPlaces && !executed){
+            executed = true;
             getPositionedPlaces();
         }
     }
@@ -291,7 +294,8 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
         Log.i("POSITIONED", "Nearby Places updated" + String.valueOf(nearbyPlacesList));
         this.nearbyPlaceList = nearbyPlacesList;
         gotPlaces = true;
-        if(gotLocation){
+        if(gotLocation && !executed){
+            executed = true;
             getPositionedPlaces();
         }
 
