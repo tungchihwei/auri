@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     List<String> lstResName = new ArrayList<>();
 
+    String marker_placeId;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
@@ -328,10 +330,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //    }
 
     public void setCardCycle(){
+
+        Integer currCard = 0;
+
+        try {
+            for (int i = 0; i < lstResInfo.size(); i++){
+                if (marker_placeId.equals(lstResInfo.get(i).get(3))){
+                    currCard = i;
+                }
+            }
+        } catch(Exception e) {
+            Log.i("setCardCycle", "Mark not yet clicked");
+        }
+
         HorizontalInfiniteCycleViewPager pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
 //        CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
         CardAdapter adapter = new CardAdapter(lstResInfo,getBaseContext());
         pager.setAdapter(adapter);
+        pager.setCurrentItem(currCard);
     }
 
     private void goToAuriMode(){
@@ -463,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // info[0] is restaurant name; info[1] is address; info[2] is rating; info[3] is Place_id
         String[] info = title.split(":");
         String id = info[3].replace(" ", "");
+        marker_placeId = id;
 
         Card curCard = new Card();
 
@@ -522,6 +539,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         transaction.replace(R.id.fragment, curCard);
         transaction.commit();
+
+//        for (int i = 0; i < lstResInfo.size(); i++){
+////            Log.i("place_id", lstResInfo.get(i).toString());
+//            if (marker_placeId.equals(lstResInfo.get(i).get(3))){
+//                Log.i("place_id", Integer.toString(i));
+//                Log.i("place_id", marker_placeId);
+//                Log.i("place_id", lstResInfo.get(i).get(3));
+//            }
+//        }
+//        Log.i("place_id", lstResInfo.get(i).toString());
+
+//        setCardCycle();
+
+        setCardCycle();
 
         return false;
     }
@@ -601,11 +632,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 });
-
-
-
-
-
 
                 // Set up the marker:
                 LatLng latLng = new LatLng(lat, lng);
