@@ -48,6 +48,9 @@ public class FavoriteCheck extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // hide status bar
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_favoritecheck);
 
         mGeoDataClient = Places.getGeoDataClient(this);
