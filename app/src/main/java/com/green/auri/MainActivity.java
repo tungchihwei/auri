@@ -66,7 +66,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
-import com.green.auri.arview.IndexActivity;
+import com.green.auri.arview.ARActivity;
 import com.green.auri.utils.LocationListener;
 import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PlaceSearchListener;
@@ -466,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void goToAuriMode(){
         Log.d("Aurimode", "Button is Clicked");
-        Intent auri_intent = new Intent(MainActivity.this, IndexActivity.class);
+        Intent auri_intent = new Intent(MainActivity.this, ARActivity.class);
         startActivity(auri_intent);
     }
 

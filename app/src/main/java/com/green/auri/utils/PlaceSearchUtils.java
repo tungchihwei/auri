@@ -117,15 +117,22 @@ public class PlaceSearchUtils {
         String rating = "";
         String icon = "";
         String Place_Id = "";
+        String photoRef = "";
+
 
         Log.d("getPlace", "Entered");
 
+        Log.i("PLACE_INFO", String.valueOf(googlePlaceJson));
         try {
             if (!googlePlaceJson.isNull("name")) {
                 placeName = googlePlaceJson.getString("name");
             }
             if (!googlePlaceJson.isNull("vicinity")) {
                 vicinity = googlePlaceJson.getString("vicinity");
+            }
+
+            if(!googlePlaceJson.isNull("photos")){
+                photoRef = googlePlaceJson.getJSONArray("photos").getJSONObject(0).getString("photo_reference");
             }
             latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
@@ -141,6 +148,7 @@ public class PlaceSearchUtils {
             googlePlaceMap.put("rating",rating);
             googlePlaceMap.put("icon",icon);
             googlePlaceMap.put("place_id", Place_Id);
+            googlePlaceMap.put("photoRef", photoRef);
 
 
             Log.d("getPlace", "Putting Places");

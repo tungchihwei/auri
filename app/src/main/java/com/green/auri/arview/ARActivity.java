@@ -2,6 +2,7 @@ package com.green.auri.arview;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,7 +42,7 @@ import java.util.List;
 
 
 /* The main activity that is loaded by the launcher to display the camera screen */
-public class ARActivity extends AppCompatActivity {
+public class ARActivity extends AppCompatActivity implements LocationListener, PlaceSearchListener {
     /* Requested to install the ARCore package. */
     private boolean installRequested;
     private DisplayRotationHelper displayRotationHelper;
@@ -71,6 +72,7 @@ public class ARActivity extends AppCompatActivity {
     private boolean gotLocation = false;
     private boolean gotPlaces = false;
     private boolean executed = false;
+    private boolean checking = false;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -104,7 +106,18 @@ public class ARActivity extends AppCompatActivity {
                 if (arSceneView.getSession() == null) {
                     return false;
                 }
+
                 updateNearbyPlaces();
+
+//                Handler handler = new Handler();
+//                int delay = 10000; //milliseconds
+//
+//                handler.postDelayed(new Runnable(){
+//                    public void run(){
+//                        updateNearbyPlaces();
+//                        handler.postDelayed(this, delay);
+//                    }
+//                }, delay);
 
                 if (!done) {
 //                    createDirectionalCards();
@@ -191,8 +204,8 @@ public class ARActivity extends AppCompatActivity {
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
-        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) IndexActivity.this);
-        LocationUtils.getCurrentLocation(IndexActivity.this, this);
+        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) ARActivity.this);
+        LocationUtils.getCurrentLocation(ARActivity.this, this);
     }
 
     private void getPositionedPlaces(){
@@ -202,15 +215,29 @@ public class ARActivity extends AppCompatActivity {
         Log.i("POSITIONED", String.valueOf(longitude));
         Log.i("POSITIONED", String.valueOf(angle));
         Log.i("POSITIONED", String.valueOf(lock));
+        Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
+        Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode.setParent(arSceneView.getScene());
         List<HashMap<String,String>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
         for (int i = 0; i < result.size(); i++) {
             HashMap<String, String> currentGooglePlace = result.get(i);
-            Log.i("POSITIONED",currentGooglePlace.get("Name"));
-            Log.i("POSITIONED",currentGooglePlace.get("Rating"));
-            Log.i("POSITIONED",currentGooglePlace.get("X"));
-            Log.i("POSITIONED",currentGooglePlace.get("Y"));
-            Log.i("POSITIONED",currentGooglePlace.get("Distance"));
-            Log.i("POSITIONED",currentGooglePlace.get("URL"));
+            String currentName = currentGooglePlace.get("Name");
+            String currentRating = currentGooglePlace.get("Rating");
+            String currentX = currentGooglePlace.get("X");
+            String currentY = currentGooglePlace.get("Y");
+            String currentDistance = currentGooglePlace.get("Distance");
+            String currentURL = currentGooglePlace.get("URL");
+
+            Log.i("POSITIONED",currentName);
+            Log.i("POSITIONED",currentRating);
+            Log.i("POSITIONED",currentX);
+            Log.i("POSITIONED",currentY);
+            Log.i("POSITIONED",currentDistance);
+            Log.i("POSITIONED",currentURL);
+
+
+            addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), new Vector3(Float.parseFloat(currentX), 0, Float.parseFloat(currentY)));
         }
     }
 
@@ -231,7 +258,7 @@ public class ARActivity extends AppCompatActivity {
         anchorNode.addChild(card);
     }
 
-    public void addAndCreateCard(AnchorNode anchorNode, String name, String logoUrl, int rating, Vector3 direction) {
+    public void addAndCreateCard(AnchorNode anchorNode, String name, String logoUrl, float rating, Vector3 direction) {
         Node card = new RestaurantCardNode(this, name, "some address",  logoUrl, rating);
         addCard(anchorNode, card, direction);
     }
@@ -280,22 +307,22 @@ public class ARActivity extends AppCompatActivity {
         Log.i("POSITIONED", "Location updated");
         this.latitude = latitude;
         this.longitude = longitude;
-        gotLocation = true;
         if(gotPlaces && !executed){
             executed = true;
             getPositionedPlaces();
         }
+        gotLocation = true;
     }
 
     @Override
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
-        Log.i("POSITIONED", "Nearby Places updated" + String.valueOf(nearbyPlacesList));
+        Log.i("POSITIONED", "Nearby Places updated: " + String.valueOf(nearbyPlacesList));
         this.nearbyPlaceList = nearbyPlacesList;
-        gotPlaces = true;
         if(gotLocation && !executed){
             executed = true;
             getPositionedPlaces();
         }
+        gotPlaces = true;
 
     }
 }

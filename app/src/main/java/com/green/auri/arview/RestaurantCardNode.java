@@ -26,7 +26,7 @@ public class RestaurantCardNode extends Node implements Node.OnTapListener {
     public String restaurantName;
     public String restaurantAddress;
     public String restaurantLogoUrl;
-    public int restaurantRating;
+    public float restaurantRating;
 
     private Context context;
     private View restaurantCard;
@@ -39,7 +39,7 @@ public class RestaurantCardNode extends Node implements Node.OnTapListener {
         this(context, name, "", "", -1);
     }
 
-    public RestaurantCardNode(Context context, String name, String address, String logoUrl, int rating) {
+    public RestaurantCardNode(Context context, String name, String address, String logoUrl, float rating) {
         // Load attributes
         this.context = context;
         restaurantCard = LayoutInflater.from(context).inflate(R.layout.restaurant_card,null);
@@ -88,7 +88,7 @@ public class RestaurantCardNode extends Node implements Node.OnTapListener {
      *
      * @param rating The rating of the restaurant to set to.
      */
-    public void setRestaurantRating(int rating) {
+    public void setRestaurantRating(float rating) {
         restaurantRating = rating;
         if (rating >= MIN_RATING && rating <= MAX_RATING) {
             rb_restaurantRating.setRating(rating);
