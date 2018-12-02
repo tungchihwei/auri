@@ -418,6 +418,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+
 //                            String url = PlaceSearchUtils.getUrl(myPlace.getLatLng().latitude, myPlace.getLatLng().longitude, myPlace.getName().toString()); // get the url of nearby restaurant
 //                            Log.d("onClick", url);
 //                            new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) MainActivity.this);
@@ -581,6 +582,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng ll = marker.getPosition();
         String lat = String.valueOf(ll.latitude);
         String lng = String.valueOf(ll.longitude);
+
 
 //        // Set default photo
 //        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
