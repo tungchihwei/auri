@@ -82,9 +82,38 @@
     <!--</LinearLayout>-->
 
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="20">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:fabBackgroundTint="@color/holo_purple"
+            app:fabDrawableTint="@color/colorAccent"
+            app:fabGravity="top_start"
+            app:fabMenu="@menu/menu"
+            app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
+            app:miniFabDrawableTint="@android:color/white"
+            app:miniFabTitleTextColorList="@array/fab_menu_item_colors" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/layout_cycle"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:layout_weight="2"
         android:gravity="center">
 
         <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
@@ -98,33 +127,6 @@
             app:icvp_min_page_scale="0.55"
             app:icvp_min_page_scale_offset="5dp"
             app:icvp_scroll_duration="250" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="match_parent"
-            />
-
-        <io.github.yavski.fabspeeddial.FabSpeedDial
-            android:id="@+id/fab2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            app:fabGravity="top_start"
-            app:fabMenu="@menu/menu"
-            app:fabBackgroundTint="@color/holo_purple"
-            app:fabDrawableTint="@color/colorAccent"
-            app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
-            app:miniFabDrawableTint="@android:color/white"
-            app:miniFabTitleTextColorList="@array/fab_menu_item_colors" />
 
     </RelativeLayout>
 
