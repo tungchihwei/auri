@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button auri_mode;
     private SharedPreferences sp;
     String accountName;
+    String email;
 
     protected GeoDataClient mGeoDataClient;
     String photo_toString;
@@ -110,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FragmentTransaction transaction;
     private boolean cardHidden = true;
 
-//    List<String> lstResName = new ArrayList<>();
     List<List<String>> lstResInfo = new ArrayList<>();
 
     FirebaseDatabase fav_database;
@@ -230,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // get the account name
         accountName = sp.getString("account", "NA");
+        email = sp.getString("email", "NA");
+        Log.i("!!!email", email);
 
 //        // Reference to Auri Mode Button
 //        Button auri_mode = (Button) findViewById(R.id.AuriMode);
@@ -300,7 +302,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (title.equals("Auri Mode")){
                     goToAuriMode();
                 } else if (title.equals("Settings")){
-                    Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();;
+                    Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();
+                    Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    settings_intent.putExtra("email", email);
+                    startActivity(settings_intent);
                 } else if (title.equals("Nearby Restaurant")){
                     // Reference to the button to find nearby restaurants
                     String Restaurant = "restaurant";
@@ -528,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return super.onOptionsItemSelected(item);
     }
 
-    private void logout(){
+     private void logout(){
         // sign out of this user and go to the log in page
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

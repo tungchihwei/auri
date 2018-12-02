@@ -35,6 +35,7 @@ public class RegActivity extends AppCompatActivity{
     private TextView backTosign;
     private static final String TAG = "EmailPassword";
     private SharedPreferences sp;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +114,10 @@ public class RegActivity extends AppCompatActivity{
                                 Toast.makeText(RegActivity.this, "Registration Successful",
                                         Toast.LENGTH_SHORT).show();
 //                                finish();
+                                currentUser = mAuth.getCurrentUser();
+                                sp.edit().putString("account", currentUser.getUid()).apply();
+                                sp.edit().putString("emial", Email).apply();
+
                                 Intent intent2 = new Intent(RegActivity.this, MainActivity.class);
                                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent2);

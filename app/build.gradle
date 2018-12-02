@@ -52,4 +52,7 @@ dependencies {
 
     // Provides cardview resources.
     implementation 'com.github.devlight:infinitecycleviewpager:1.0.2'
+    // Provides listview resources.
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 }
