@@ -117,7 +117,7 @@ public class RegActivity extends AppCompatActivity{
                                 currentUser = mAuth.getCurrentUser();
                                 sp.edit().putString("account", currentUser.getUid()).apply();
                                 sp.edit().putString("emial", Email).apply();
-
+                                sp.edit().putString("profile", "").apply();
                                 Intent intent2 = new Intent(RegActivity.this, MainActivity.class);
                                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent2);

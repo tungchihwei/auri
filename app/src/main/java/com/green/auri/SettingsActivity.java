@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -27,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageView profile_image;
     private TextView changeProfile;
     private static final int PICK_IMAGE = 1;
+    private String photo_toString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         // show image gallery and upload on firebase
         profile_image = (ImageView) findViewById(R.id.profile_image);
+        String photo = sp.getString("profile","");
+        if (!photo.equals("")){
+            byte[] encodeByte = Base64.decode(photo, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            profile_image.setImageBitmap(bitmap);
+        }
         changeProfile = (TextView) findViewById(R.id.changeProfile);
         changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +94,12 @@ public class SettingsActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         profile_image.setImageBitmap(bitmap);
+                        // change photo bitmap to string
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 10, baos);
+                        byte[] b = baos.toByteArray();
+                        photo_toString = Base64.encodeToString(b, Base64.DEFAULT);
+                        sp.edit().putString("profile", photo_toString).apply();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
