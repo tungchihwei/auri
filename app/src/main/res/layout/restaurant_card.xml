@@ -3,7 +3,7 @@
 <!-- A base 2D Linear Layout to contain components for displaying restaurant information. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_base"
+    android:id="@+id/ll_card_base"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_bg"
@@ -23,7 +23,7 @@
 
         <!-- The restaurant logo displayed through a 2D ImageView -->
         <ImageView
-            android:id="@+id/restaurant_logo"
+            android:id="@+id/img_restaurant_logo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -31,7 +31,7 @@
 
         <!-- The restaurant name displayed through a 2D TextView -->
         <TextView
-            android:id="@+id/restaurant_name"
+            android:id="@+id/tv_restaurant_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -42,9 +42,32 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_restaurant_distance"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="TextView"
+            android:textColor="@android:color/holo_red_light" />
+
+        <TextView
+            android:id="@+id/tv_restaurant_address"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="TextView" />
+    </LinearLayout>
+
     <!-- The rating bar displaying the rating of the restaurant. -->
     <RatingBar
-        android:id="@+id/restaurant_rating"
+        android:id="@+id/rb_restaurant_rating"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:numStars="5"

@@ -19,34 +19,38 @@ import com.green.auri.R;
 /**
  * TODO: document your custom view class.
  */
-public class RestaurantCard extends Node implements Node.OnTapListener {
+public class RestaurantCardNode extends Node implements Node.OnTapListener {
     public static int MAX_RATING = 5;
     public static int MIN_RATING = 0;
 
     public String restaurantName;
+    public String restaurantAddress;
     public String restaurantLogoUrl;
     public int restaurantRating;
 
     private Context context;
     private View restaurantCard;
-    private TextView restaurantNameView;
-    private RatingBar restaurantRatingBar;
-    private ImageView restaurantLogoView;
+    private TextView tv_restaurantName;
+    private TextView tv_restaurantAddress;
+    private RatingBar rb_restaurantRating;
+    private ImageView img_restaurantLogo;
 
-    public RestaurantCard(Context context, String name) {
-        this(context, name, "", -1);
+    public RestaurantCardNode(Context context, String name) {
+        this(context, name, "", "", -1);
     }
 
-    public RestaurantCard(Context context, String name, String logoUrl, int rating) {
+    public RestaurantCardNode(Context context, String name, String address, String logoUrl, int rating) {
         // Load attributes
         this.context = context;
         restaurantCard = LayoutInflater.from(context).inflate(R.layout.restaurant_card,null);
-        restaurantNameView = restaurantCard.findViewById(R.id.restaurant_name);
-        restaurantRatingBar = restaurantCard.findViewById(R.id.restaurant_rating);
-        restaurantLogoView = restaurantCard.findViewById(R.id.restaurant_logo);
+        tv_restaurantName = restaurantCard.findViewById(R.id.tv_restaurant_name);
+        tv_restaurantAddress = restaurantCard.findViewById(R.id.tv_restaurant_address);
+        rb_restaurantRating = restaurantCard.findViewById(R.id.rb_restaurant_rating);
+        img_restaurantLogo = restaurantCard.findViewById(R.id.img_restaurant_logo);
 
         // Initialize the values correctly
         setRestaurantName(name);
+        setRestaurantAddress(address);
         setRestaurantRating(rating);
         setRestaurantLogo(logoUrl);
 
@@ -65,7 +69,17 @@ public class RestaurantCard extends Node implements Node.OnTapListener {
      */
     public void setRestaurantName(String name) {
         restaurantName = name;
-        restaurantNameView.setText(name);
+        tv_restaurantName.setText(name);
+    }
+
+    /**
+     * Sets the restaurantCard's address to the corresponding TextView
+     *
+     * @param address The name of the restaurant to appear.
+     */
+    public void setRestaurantAddress(String address) {
+        this.restaurantAddress = address;
+        tv_restaurantAddress.setText(address);
     }
 
     /**
@@ -77,7 +91,7 @@ public class RestaurantCard extends Node implements Node.OnTapListener {
     public void setRestaurantRating(int rating) {
         restaurantRating = rating;
         if (rating >= MIN_RATING && rating <= MAX_RATING) {
-            restaurantRatingBar.setRating(rating);
+            rb_restaurantRating.setRating(rating);
         }
     }
 

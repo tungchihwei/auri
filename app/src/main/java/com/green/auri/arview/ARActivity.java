@@ -25,7 +25,7 @@ import com.green.auri.R;
 import java.util.ArrayList;
 
 /* The main activity that is loaded by the launcher to display the camera screen */
-public class IndexActivity extends AppCompatActivity {
+public class ARActivity extends AppCompatActivity {
     /* Requested to install the ARCore package. */
     private boolean installRequested;
     private DisplayRotationHelper displayRotationHelper;
@@ -33,7 +33,7 @@ public class IndexActivity extends AppCompatActivity {
     /* List of Anchors for the current session */
     private final ArrayList<Node> nodes = new ArrayList<>();
 
-    /* A renderable Restaurant Card = A Customized 2D Layout: res/layout/restaurant_card.xml */
+    /* A renderable Restaurant RestaurantCardDisplay = A Customized 2D Layout: res/layout/restaurant_card.xml */
     private ViewRenderable restaurantCard;
 
     /*
@@ -62,6 +62,8 @@ public class IndexActivity extends AppCompatActivity {
 
         /* Finds the ArFragment added to the activity through the fragment manager. */
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment.getPlaneDiscoveryController().hide();
+        arFragment.getPlaneDiscoveryController().setInstructionView(null);
         arSceneView = arFragment.getArSceneView();
 
         installRequested = false;
@@ -132,11 +134,6 @@ public class IndexActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     // TESTING
     public void createDirectionalCards() {
         Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
@@ -155,13 +152,9 @@ public class IndexActivity extends AppCompatActivity {
     }
 
     public void addAndCreateCard(AnchorNode anchorNode, String name, String logoUrl, int rating, Vector3 direction) {
-        Node card = new RestaurantCard(this, name, logoUrl, rating);
+        Node card = new RestaurantCardNode(this, name, "some address",  logoUrl, rating);
         addCard(anchorNode, card, direction);
     }
-
-//    public void createCard(float angle) {
-//
-//    }
 
     /*
     *  Makes sure that the app has permissions to access the camera.

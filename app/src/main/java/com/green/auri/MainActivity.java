@@ -34,7 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.green.auri.arview.IndexActivity;
+import com.green.auri.arview.ARActivity;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -58,13 +58,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String api_key = "AIzaSyCSSgGt6d67TiIUl0SiwEvkVkvGU1PL1-U";
     private Button auri_mode;
     private SharedPreferences sp;
-
-//    String rname;
-//    String raddress;
-//    float rating;
-//    private TextView txt_rname;
-//    private TextView txt_raddress;
-//    private RatingBar rb;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -184,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 Log.d("Aurimode", "Button is Clicked");
-                Intent auri_intent = new Intent(MainActivity.this, IndexActivity.class);
+                Intent auri_intent = new Intent(MainActivity.this, ARActivity.class);
                 startActivity(auri_intent);
             }
         });
@@ -334,18 +327,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String[] info = title.split(":");
 
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putString(RestaurantCardDisplay.RESTAURANT_NAME_KEY, info[0]);
+        bundle.putString(RestaurantCardDisplay.RESTAURANT_ADDRESS_KEY, info[1]);
+        bundle.putFloat(RestaurantCardDisplay.RESTAURANT_RATING_KEY, Float.valueOf(info[2]));
 
-        Card curCard = new Card();
-        curCard.setInfo(info);
+        RestaurantCardDisplay restaurantCardDisplay = new RestaurantCardDisplay();
+        restaurantCardDisplay.setArguments(bundle);
 
-        transaction.replace(R.id.fragment, curCard);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.card_fragment, restaurantCardDisplay);
         transaction.commit();
-//        rname = info[0];
-//        raddress = info[1];
-//        rating = Float.parseFloat(info[2]);
-
         return false;
     }
 }

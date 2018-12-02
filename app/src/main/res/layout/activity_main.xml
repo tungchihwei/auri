@@ -55,8 +55,8 @@
         android:gravity="center">
 
         <fragment
-            android:id="@+id/fragment"
-            android:name="com.green.auri.Card"
+            android:id="@+id/card_fragment"
+            android:name="com.green.auri.RestaurantCardDisplay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -70,8 +70,7 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_gravity="center"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
         <Button
             android:layout_width="wrap_content"
