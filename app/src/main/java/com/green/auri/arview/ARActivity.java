@@ -41,7 +41,7 @@ import java.util.List;
 
 
 /* The main activity that is loaded by the launcher to display the camera screen */
-public class IndexActivity extends AppCompatActivity implements LocationListener, PlaceSearchListener {
+public class ARActivity extends AppCompatActivity {
     /* Requested to install the ARCore package. */
     private boolean installRequested;
     private DisplayRotationHelper displayRotationHelper;
@@ -50,7 +50,7 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
     private final ArrayList<Node> nodes = new ArrayList<>();
     private final int MAX_LOCK_SIZE = 2;
 
-    /* A renderable Restaurant Card = A Customized 2D Layout: res/layout/restaurant_card.xml */
+    /* A renderable Restaurant RestaurantCardDisplay = A Customized 2D Layout: res/layout/restaurant_card.xml */
     private ViewRenderable restaurantCard;
 
     /*
@@ -70,6 +70,7 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
     private int lock = MAX_LOCK_SIZE;
     private boolean gotLocation = false;
     private boolean gotPlaces = false;
+    private boolean executed = false;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -88,6 +89,8 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
 
         /* Finds the ArFragment added to the activity through the fragment manager. */
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment.getPlaneDiscoveryController().hide();
+        arFragment.getPlaneDiscoveryController().setInstructionView(null);
         arSceneView = arFragment.getArSceneView();
 
         installRequested = false;
@@ -184,6 +187,7 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
     private void updateNearbyPlaces() {
         gotLocation = false;
         gotPlaces = false;
+        executed = false;
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
@@ -228,13 +232,9 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
     }
 
     public void addAndCreateCard(AnchorNode anchorNode, String name, String logoUrl, int rating, Vector3 direction) {
-        Node card = new RestaurantCard(this, name, logoUrl, rating);
+        Node card = new RestaurantCardNode(this, name, "some address",  logoUrl, rating);
         addCard(anchorNode, card, direction);
     }
-
-//    public void createCard(float angle) {
-//
-//    }
 
     /*
     *  Makes sure that the app has permissions to access the camera.
@@ -281,7 +281,8 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
         this.latitude = latitude;
         this.longitude = longitude;
         gotLocation = true;
-        if(gotPlaces){
+        if(gotPlaces && !executed){
+            executed = true;
             getPositionedPlaces();
         }
     }
@@ -291,7 +292,8 @@ public class IndexActivity extends AppCompatActivity implements LocationListener
         Log.i("POSITIONED", "Nearby Places updated" + String.valueOf(nearbyPlacesList));
         this.nearbyPlaceList = nearbyPlacesList;
         gotPlaces = true;
-        if(gotLocation){
+        if(gotLocation && !executed){
+            executed = true;
             getPositionedPlaces();
         }
 

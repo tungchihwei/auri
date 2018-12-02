@@ -38,7 +38,7 @@
         </activity>
         <activity android:name=".RegActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".arview.IndexActivity" />
+        <activity android:name=".arview.ARActivity" />
         <activity android:name=".Camdir" />
         <!-- <activity android:name=".Intro" /> -->
         <activity android:name=".FavoriteCheck" />
