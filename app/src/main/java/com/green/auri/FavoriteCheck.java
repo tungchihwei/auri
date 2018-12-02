@@ -78,7 +78,7 @@ public class FavoriteCheck extends AppCompatActivity {
                     favorite_list[k] = key;
                     Log.i("checkdata", key);
                     fav_val add = new fav_val();
-                    Log.i("order", childSnapshot.child("Name").getValue().toString());
+//                    Log.i("order", childSnapshot.child("Name").getValue().toString());
                     add.fav_resName = childSnapshot.child("Name").getValue().toString();
 
                     try {

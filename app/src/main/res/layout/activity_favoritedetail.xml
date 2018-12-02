@@ -23,7 +23,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:orientation="vertical">
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=" "
-            android:textSize="36sp"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -40,101 +40,88 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/TextView15"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Rating: "
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/txt_resRating"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="2.8"
+                android:gravity="center_vertical"
                 android:text=" "
-                android:textSize="18sp" />
+                android:textSize="20sp" />
 
-        </LinearLayout>
+            <Space
+                android:layout_width="13dp"
+                android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/TextView18"
-                android:layout_width="0dp"
+            <RatingBar
+                android:id="@+id/resRating"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Price Level: "
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressTint="@color/colorPrimaryDark"
+                android:stepSize="0.1"
+                android:theme="@style/RatingBar" />
+
+            <Space
+                android:layout_width="13dp"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/txt_resPrice"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2.8"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text=" "
-                android:textSize="18sp" />
+                android:textSize="20sp"
+                android:textStyle="normal" />
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/TextView16"
+            <ImageButton
+                android:id="@+id/btn_call"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Number: "
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:layout_height="50dp"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/detail_call" />
 
-            <TextView
-                android:id="@+id/txt_resPhone"
+            <ImageButton
+                android:id="@+id/btn_web"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="3"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/detail_web" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ToggleButton
+                android:id="@+id/btn_detailAddFav"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2.8"
-                android:text=" "
-                android:textSize="18sp" />
+                android:layout_weight="1"
+                android:background="@drawable/fav_off"
+                android:text="ToggleButton"
+                android:textOff=""
+                android:textOn="" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/TextView17"
+            <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Website: "
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txt_resWeb"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2.8"
-                android:text=" "
-                android:textSize="18sp" />
-
+                android:layout_weight="1" />
         </LinearLayout>
-
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2" />
 
         <TextView
             android:layout_width="match_parent"
