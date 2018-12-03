@@ -46,6 +46,7 @@ import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -78,6 +79,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, PlaceSearchListener, LocationListener {
@@ -126,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String placeSearch_id;
     int mode; // 1: nearby restaurant 2: search
     LatLng latLng;
+
+    Map<LatLng, Marker> mMarkers;
 //    int wait;
 
 
@@ -463,6 +467,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        Log.i("sssss", Integer.toString(pager.getRealItem()));
 //        pager.getCenterPageScaleOffset();
 
+        mMarkers = new HashMap<>();
+
     }
 
 //    private void initData() {
@@ -471,6 +477,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        lstResName.add("Name3");
 //        lstResName.add("Name4");
 //    }
+
+
 
     public void setCardCycle(){
 
@@ -497,9 +505,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MarkerOptions markerOptions = new MarkerOptions();
                 TextView txtView = (TextView) page.findViewById(R.id.txtResName);
 
-
-
-
                 if (position == 0){
 
                     Log.i("lllll", txtView.getText().toString().split(". ")[0]);
@@ -511,36 +516,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
                             if (task.isSuccessful()) {
-                                if (latLng != null){
-                                    markerOptions.position(latLng);
-                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-//                                    markerOptions.zIndex(1.0f);
-//                                    mMap.addMarker(markerOptions).setZIndex(1.0f);
-                                    mMap.addMarker(markerOptions);
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                                    CameraPosition cp = new CameraPosition.Builder()
-                                            .target(latLng)
-                                            .zoom(17).build();
-                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
-                                }
-
-                                // Get the response of the place
                                 PlaceBufferResponse places = task.getResult();
                                 // Get Place information
                                 Place myPlace = places.get(0);
-                                markerOptions.position(myPlace.getLatLng());
-                                latLng = myPlace.getLatLng();
 
+                                if (latLng != null){
+                                    if(mMarkers.containsKey(latLng)){
+//                                    Log.i("markers", "get");
+                                        Marker old = mMarkers.get(latLng);
+//                                    Log.i("markers", old.getTitle());
+                                        old.remove();
+                                    }
+                                    markerOptions.title(myPlace.getName().toString() + " : " + myPlace.getAddress().toString() + " : " + Double.toString(myPlace.getRating()) + " :" + myPlace.getId());
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                    markerOptions.position(latLng);
+                                    mMap.addMarker(markerOptions);
+                                }
+
+                                if(mMarkers.containsKey(myPlace.getLatLng())){
+//                                    Log.i("markers", "get");
+                                    Marker old = mMarkers.get(myPlace.getLatLng());
+//                                    Log.i("markers", old.getTitle());
+                                    old.remove();
+                                }
+                                // Get the response of the place
                                 markerOptions.title(myPlace.getName().toString() + " : " + myPlace.getAddress().toString() + " : " + Double.toString(myPlace.getRating()) + " :" + myPlace.getId());
                                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-//                                markerOptions.zIndex(5);
-//                                mMap.addMarker(markerOptions).setZIndex(1.0f);
-                                mMap.addMarker(markerOptions);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace.getLatLng(), 15));
-                                CameraPosition cp = new CameraPosition.Builder()
-                                        .target(latLng)
-                                        .zoom(20).build();
-                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+                                markerOptions.position(myPlace.getLatLng());
+                                mMap.addMarker(markerOptions).showInfoWindow();
+
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(myPlace.getLatLng()));
+                                latLng = myPlace.getLatLng();
+
                                 places.release();
                             } else {
 
@@ -859,8 +866,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
                 // Add the marker and move the camera to make it visible.
-                mMap.addMarker(markerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_Lng));
+//                mMap.addMarker(markerOptions);
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_Lng));
+
+                Marker marker = mMap.addMarker(markerOptions);
+//                marker.showInfoWindow();
+//                marker.showInfoWindow();
+                mMarkers.put(lat_Lng, marker);
+//                mMarkers.put(thisNewColor, marker);
             } catch (NullPointerException e) {
                 continue;
             }
