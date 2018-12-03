@@ -43,6 +43,7 @@ public class CardAdapter extends PagerAdapter {
         layoutInflater = LayoutInflater.from(context);
     }
 
+
     @Override
     public int getCount() {
         return lstResInfo.size();
@@ -62,6 +63,7 @@ public class CardAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
+
 
     @NonNull
     @Override
@@ -83,6 +85,9 @@ public class CardAdapter extends PagerAdapter {
         String res_photo = lstResInfo.get(position).get(5);
 
         ToggleButton btn_fav = (ToggleButton) ll.findViewById(R.id.btn_favorite);
+
+//        int pos = getPos(position);
+//        Log.i("!!!pos", String.valueOf(pos));
 
         if (accountName != null) {
             fav_database = FirebaseDatabase.getInstance();

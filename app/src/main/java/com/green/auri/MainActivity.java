@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     String placeSearch_id;
     int mode; // 1: nearby restaurant 2: search
 
+    int curCardPos;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -468,6 +470,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         CardAdapter adapter = new CardAdapter(lstResInfo,getBaseContext());
         pager.setAdapter(adapter);
         pager.setCurrentItem(currCard);
+
+//        Log.i("!!!pos", String.valueOf(curCardPos));
+
     }
 
     private void goToAuriMode(){
