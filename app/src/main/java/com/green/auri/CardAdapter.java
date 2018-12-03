@@ -2,8 +2,11 @@ package com.green.auri;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +18,28 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CardAdapter extends PagerAdapter {
@@ -35,6 +54,9 @@ public class CardAdapter extends PagerAdapter {
     DatabaseReference NameRef;
     DatabaseReference PhotoRef;
     Integer isFav;
+    MainActivity main;
+
+    protected GeoDataClient mGeoDataClient;
 
     public CardAdapter(List<List<String>> lstResInfo, Context context) {
 //        this.lstResName = lstResName;
@@ -86,8 +108,7 @@ public class CardAdapter extends PagerAdapter {
 
         ToggleButton btn_fav = (ToggleButton) ll.findViewById(R.id.btn_favorite);
 
-//        int pos = getPos(position);
-//        Log.i("!!!pos", String.valueOf(pos));
+
 
         if (accountName != null) {
             fav_database = FirebaseDatabase.getInstance();
@@ -97,17 +118,20 @@ public class CardAdapter extends PagerAdapter {
             favRef.child(accountName).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                     for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                         String key=childSnapshot.getKey();
                         if (key.equals(Place_id)){
                             isFav = 1;
                             btn_fav.setChecked(true);
+//                            main.wait = 1;
 //                            btn_fav.setBackgroundResource(R.drawable.fav_on);
                             break;
                         }
                     }
                     if (isFav == 0){
                         btn_fav.setChecked(false);
+//                        main.wait = 1;
 //                        btn_fav.setBackgroundResource(R.drawable.fav_off);
                     }
                 }
@@ -132,12 +156,14 @@ public class CardAdapter extends PagerAdapter {
                     favRef = favRef.child(Place_id);
                     favRef = fav_database.getReference(accountName + "/" + Place_id);
                     NameRef = favRef.child("Name");
+                    Log.i("swipebtn", lstResInfo.get(position).get(0));
                     NameRef.setValue(lstResInfo.get(position).get(0));
 
                     favRef = FirebaseDatabase.getInstance().getReference(accountName + "/" + Place_id);
                     PhotoRef = favRef.child("Photo");
                     PhotoRef.setValue(res_photo);
                     btn_fav.setBackgroundResource(R.drawable.cardfav_on);
+//                    main.wait = 1;
                 } else{
                     Log.i("isFav", "onCheckedChange to off");
                     // Delete restaurant from database
@@ -145,6 +171,7 @@ public class CardAdapter extends PagerAdapter {
                     fav_database = FirebaseDatabase.getInstance();
                     fav_database.getReference(accountName).child(Place_id).removeValue();
                     btn_fav.setBackgroundResource(R.drawable.cardfav_off);
+//                    main.wait = 1;
                 }
             }
         });
