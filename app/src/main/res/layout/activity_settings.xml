@@ -7,15 +7,29 @@
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="Settings"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="match_parent"
+            android:id="@+id/profile_image"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/default_profile" />
 
@@ -33,6 +47,13 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/changeProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:text="Change profile photo" />
 
         <TextView
             android:id="@+id/logout"

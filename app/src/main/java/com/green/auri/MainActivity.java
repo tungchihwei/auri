@@ -319,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();
                     Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
                     settings_intent.putExtra("email", email);
+                    settings_intent.putExtra("accountName", accountName);
                     startActivity(settings_intent);
                 } else if (title.equals("Nearby Restaurant")){
                     // Reference to the button to find nearby restaurants

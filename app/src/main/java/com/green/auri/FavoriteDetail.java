@@ -91,6 +91,9 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // hide status bar
+        getSupportActionBar().hide();
+        
         setContentView(R.layout.activity_favoritedetail);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
