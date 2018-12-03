@@ -41,7 +41,7 @@ import java.util.List;
 
 
 /* The main activity that is loaded by the launcher to display the camera screen */
-public class ARActivity extends AppCompatActivity {
+public class ARActivity extends AppCompatActivity implements PlaceSearchListener, LocationListener {
     /* Requested to install the ARCore package. */
     private boolean installRequested;
     private DisplayRotationHelper displayRotationHelper;
@@ -191,8 +191,8 @@ public class ARActivity extends AppCompatActivity {
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
-        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) IndexActivity.this);
-        LocationUtils.getCurrentLocation(IndexActivity.this, this);
+        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) ARActivity.this);
+        LocationUtils.getCurrentLocation(ARActivity.this, this);
     }
 
     private void getPositionedPlaces(){
