@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
+import com.gigamole.infinitecycleviewpager.OnInfiniteCyclePageTransformListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -50,6 +51,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected GeoDataClient mGeoDataClient;
     String photo_toString;
-    int isFav;
+
 
 
     private FragmentManager fm;
@@ -123,6 +125,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     PlaceAutocompleteFragment autocompleteFragment;
     String placeSearch_id;
     int mode; // 1: nearby restaurant 2: search
+    LatLng latLng;
+//    int wait;
+
+
+//    HorizontalInfiniteCycleViewPager pager;
+//    CardAdapter adapter;
+
+
 
 
     @Override
@@ -217,10 +227,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // hide status bar
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_main);
+
+//        latLng = new LatLng(0, 0);
+//        wait = 0;
 
         mGeoDataClient = Places.getGeoDataClient(this);
 
@@ -356,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             PlaceBufferResponse places = task.getResult();
                             // Get Place information
                             Place myPlace = places.get(0);
+//                            myPlace.getLatLng()
 
                             List<String> cur = new ArrayList<>();
                             cur.add(myPlace.getName().toString());
@@ -441,6 +456,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+//        pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
+//        adapter = new CardAdapter(lstResInfo,getBaseContext());
+
+//        Log.i("sssss", Integer.toString(pager.getRealItem()));
+//        pager.getCenterPageScaleOffset();
+
     }
 
 //    private void initData() {
@@ -467,6 +488,82 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         CardAdapter adapter = new CardAdapter(lstResInfo,getBaseContext());
         pager.setAdapter(adapter);
         pager.setCurrentItem(currCard);
+
+        pager.setOnInfiniteCyclePageTransformListener(new OnInfiniteCyclePageTransformListener() {
+
+            @Override
+            public void onPreTransform(View page, float position) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                TextView txtView = (TextView) page.findViewById(R.id.txtResName);
+
+
+
+
+                if (position == 0){
+
+                    Log.i("lllll", txtView.getText().toString().split(". ")[0]);
+                    int index = Integer.valueOf(txtView.getText().toString().split(". ")[0])-1;
+                    Log.i("listen", lstResInfo.get(index).get(0));
+                    Log.i("listen", lstResInfo.get(index).get(3));
+
+                    mGeoDataClient.getPlaceById(lstResInfo.get(index).get(3)).addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
+                            if (task.isSuccessful()) {
+                                if (latLng != null){
+                                    markerOptions.position(latLng);
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+//                                    markerOptions.zIndex(1.0f);
+//                                    mMap.addMarker(markerOptions).setZIndex(1.0f);
+                                    mMap.addMarker(markerOptions);
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                                    CameraPosition cp = new CameraPosition.Builder()
+                                            .target(latLng)
+                                            .zoom(17).build();
+                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+                                }
+
+                                // Get the response of the place
+                                PlaceBufferResponse places = task.getResult();
+                                // Get Place information
+                                Place myPlace = places.get(0);
+                                markerOptions.position(myPlace.getLatLng());
+                                latLng = myPlace.getLatLng();
+
+                                markerOptions.title(myPlace.getName().toString() + " : " + myPlace.getAddress().toString() + " : " + Double.toString(myPlace.getRating()) + " :" + myPlace.getId());
+                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+//                                markerOptions.zIndex(5);
+//                                mMap.addMarker(markerOptions).setZIndex(1.0f);
+                                mMap.addMarker(markerOptions);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace.getLatLng(), 15));
+                                CameraPosition cp = new CameraPosition.Builder()
+                                        .target(latLng)
+                                        .zoom(20).build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+                                places.release();
+                            } else {
+
+                            }
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onPostTransform(View page, float position) {
+                Log.i("sssss", Float.toString(position));
+//                Log.i("listen", "2");
+
+            }
+        });
+
+//        pager.get
+
+//        Log.i("page", pager.onWindowFocusChanged(true));
+//        pager.
+
+//        Log.i("!!!!!!", pager.getOnInfiniteCyclePageTransformListener().toString());
+
+//        pager.
     }
 
     private void goToAuriMode(){
@@ -755,14 +852,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
 
                 // Set up the marker:
-                LatLng latLng = new LatLng(lat, lng);
-                markerOptions.position(latLng);
+                LatLng lat_Lng = new LatLng(lat, lng);
+                markerOptions.position(lat_Lng);
                 markerOptions.title(placeName + " : " + vicinity + " : " + rating + " :" + Place_id);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
                 // Add the marker and move the camera to make it visible.
                 mMap.addMarker(markerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_Lng));
             } catch (NullPointerException e) {
                 continue;
             }

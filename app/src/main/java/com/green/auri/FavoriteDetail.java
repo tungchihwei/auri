@@ -137,6 +137,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                 if (web == null){
                     Toast.makeText(FavoriteDetail.this, "No website available", Toast.LENGTH_SHORT).show();
                 } else {
+                    Toast.makeText(FavoriteDetail.this, "Website available", Toast.LENGTH_SHORT).show();
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, web);
                     startActivity(browserIntent);
                 }
