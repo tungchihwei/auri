@@ -138,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+    int curCardPos;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -343,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    setCardCycle();
                 } else if (title.equals("Favorites")) {
                     Log.d("Favorite", "Button is Clicked");
-                    Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+                    Intent fav_intent = new Intent(MainActivity.this, FavoriteView.class);
                     startActivity(fav_intent);
                 }
                 return true;
@@ -564,14 +566,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-//        pager.get
-
-//        Log.i("page", pager.onWindowFocusChanged(true));
-//        pager.
-
-//        Log.i("!!!!!!", pager.getOnInfiniteCyclePageTransformListener().toString());
-
-//        pager.
     }
 
     private void goToAuriMode(){

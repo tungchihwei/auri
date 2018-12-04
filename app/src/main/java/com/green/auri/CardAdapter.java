@@ -86,6 +86,7 @@ public class CardAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
+
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -107,9 +108,6 @@ public class CardAdapter extends PagerAdapter {
 
         ToggleButton btn_fav = (ToggleButton) ll.findViewById(R.id.btn_favorite);
 
-//        if (position == lstResInfo.size()-1){
-//            main.wait = 0;
-//        }
 
 
         if (accountName != null) {
