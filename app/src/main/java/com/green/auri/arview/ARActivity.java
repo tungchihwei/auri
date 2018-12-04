@@ -73,6 +73,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private boolean gotPlaces = false;
     private boolean executed = false;
     private boolean checking = false;
+    private int tryCounter = MAX_LOCK_SIZE;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -201,6 +202,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         gotLocation = false;
         gotPlaces = false;
         executed = false;
+        tryCounter = MAX_LOCK_SIZE;
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
@@ -227,17 +229,21 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             String currentX = currentGooglePlace.get("X");
             String currentY = currentGooglePlace.get("Y");
             String currentDistance = currentGooglePlace.get("Distance");
-            String currentURL = currentGooglePlace.get("URL");
+            String currentPhotoRef = currentGooglePlace.get("photoRef");
 
-            Log.i("POSITIONED",currentName);
-            Log.i("POSITIONED",currentRating);
-            Log.i("POSITIONED",currentX);
-            Log.i("POSITIONED",currentY);
-            Log.i("POSITIONED",currentDistance);
-            Log.i("POSITIONED",currentURL);
+            try {
+                Log.i("POSITIONED", currentName);
+                Log.i("POSITIONED", currentRating);
+                Log.i("POSITIONED", currentX);
+                Log.i("POSITIONED", currentY);
+                Log.i("POSITIONED", currentDistance);
+                Log.i("POSITIONED", currentPhotoRef);
+            }catch (Exception e){
+//                e.printStackTrace();
+            }
 
 
-            addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), new Vector3(Float.parseFloat(currentX), 0, Float.parseFloat(currentY)));
+            addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), new Vector3(-5*Float.parseFloat(currentX), 0, 5*Float.parseFloat(currentY)));
         }
     }
 
@@ -318,7 +324,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
         Log.i("POSITIONED", "Nearby Places updated: " + String.valueOf(nearbyPlacesList));
         this.nearbyPlaceList = nearbyPlacesList;
-        if(gotLocation && !executed){
+        tryCounter--;
+        if(gotLocation && !executed && tryCounter==0){
             executed = true;
             getPositionedPlaces();
         }

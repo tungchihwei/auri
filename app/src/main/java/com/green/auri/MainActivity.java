@@ -507,11 +507,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MarkerOptions markerOptions = new MarkerOptions();
                 TextView txtView = (TextView) page.findViewById(R.id.txtResName);
 
-
-
-
-
-
                 if (position == 0){
 
                     Log.i("lllll", txtView.getText().toString().split(". ")[0]);
@@ -866,7 +861,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // Add the marker and move the camera to make it visible.
 //                mMap.addMarker(markerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_Lng));
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_Lng));
 
                 Marker marker = mMap.addMarker(markerOptions);
 //                marker.showInfoWindow();
