@@ -34,4 +34,5 @@
     <color name="holo_purple">#ffaa66cc</color>
     <color name="whitesmoke">#efefef</color>
     <color name="pink">#f48fb1</color>
+    <color name="bgRowBackground">#f1315b</color>
 </resources>
