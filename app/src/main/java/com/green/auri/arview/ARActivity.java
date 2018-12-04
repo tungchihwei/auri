@@ -31,6 +31,7 @@ import com.green.auri.dsensor.DSensor;
 import com.green.auri.dsensor.DSensorEvent;
 import com.green.auri.dsensor.DSensorManager;
 import com.green.auri.dsensor.interfaces.DProcessedEventListener;
+import com.green.auri.utils.ARUtils;
 import com.green.auri.utils.LocationListener;
 import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PlaceSearchListener;
@@ -221,30 +222,37 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
-        List<HashMap<String,String>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
-        for (int i = 0; i < result.size(); i++) {
-            HashMap<String, String> currentGooglePlace = result.get(i);
-            String currentName = currentGooglePlace.get("Name");
-            String currentRating = currentGooglePlace.get("Rating");
-            String currentX = currentGooglePlace.get("X");
-            String currentY = currentGooglePlace.get("Y");
-            String currentDistance = currentGooglePlace.get("Distance");
-            String currentPhotoRef = currentGooglePlace.get("photoRef");
+        HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
-            try {
-                Log.i("POSITIONED", currentName);
-                Log.i("POSITIONED", currentRating);
-                Log.i("POSITIONED", currentX);
-                Log.i("POSITIONED", currentY);
-                Log.i("POSITIONED", currentDistance);
-                Log.i("POSITIONED", currentPhotoRef);
-            }catch (Exception e){
+        for(String bucket: result.keySet()){
+            List<HashMap<String,String>> placesInBucket = result.get(bucket);
+            Log.i("BUCKETS", "Current Bucket: "+bucket);
+            for (int i = 0; i < 1; i++) {
+                HashMap<String, String> currentGooglePlace = placesInBucket.get(i);
+                String currentName = currentGooglePlace.get("Name");
+                String currentRating = currentGooglePlace.get("Rating");
+                String currentX = currentGooglePlace.get("X");
+                String currentY = currentGooglePlace.get("Y");
+                String currentDistance = currentGooglePlace.get("Distance");
+                String currentPhotoRef = currentGooglePlace.get("photoRef");
+                String currentAngle = currentGooglePlace.get("Bucket");
+
+                try {
+                    Log.i("POSITIONED", currentName);
+                    Log.i("POSITIONED", currentRating);
+                    Log.i("POSITIONED", currentX);
+                    Log.i("POSITIONED", currentY);
+                    Log.i("POSITIONED", currentDistance);
+                    Log.i("POSITIONED", currentPhotoRef);
+                }catch (Exception e){
 //                e.printStackTrace();
+                }
+
+                Vector3 cardVector = ARUtils.buildVectorFromAngle(Double.parseDouble(currentAngle), Double.parseDouble(currentDistance));
+                addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), cardVector);
             }
-
-
-            addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), new Vector3(-5*Float.parseFloat(currentX), 0, 5*Float.parseFloat(currentY)));
         }
+
     }
 
     // TESTING
