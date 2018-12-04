@@ -48,6 +48,9 @@ public class FavoriteCheck extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // hide status bar
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_favoritecheck);
 
         mGeoDataClient = Places.getGeoDataClient(this);
@@ -78,7 +81,7 @@ public class FavoriteCheck extends AppCompatActivity {
                     favorite_list[k] = key;
                     Log.i("checkdata", key);
                     fav_val add = new fav_val();
-                    Log.i("order", childSnapshot.child("Name").getValue().toString());
+//                    Log.i("order", childSnapshot.child("Name").getValue().toString());
                     add.fav_resName = childSnapshot.child("Name").getValue().toString();
 
                     try {

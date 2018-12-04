@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class defaultcard extends Fragment {
+public class DefaultCard extends Fragment {
 
 
-    public defaultcard() {
+    public DefaultCard() {
         // Required empty public constructor
     }
 

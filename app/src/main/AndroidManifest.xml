@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!--
          Indicates that app requires ARCore ("AR Required"). Ensures app is only
@@ -40,9 +41,9 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".arview.ARActivity" />
         <activity android:name=".Camdir" />
-        <!--<activity android:name=".Intro" />-->
+        <!-- <activity android:name=".Intro" /> -->
         <activity android:name=".FavoriteCheck" />
-        <activity android:name=".onboarding.Intro"></activity>
+        <activity android:name=".onboarding.Intro" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -64,7 +65,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".FavoriteDetail"></activity>
+        <activity android:name=".FavoriteDetail" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

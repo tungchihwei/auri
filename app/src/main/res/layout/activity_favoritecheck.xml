@@ -4,10 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".FavoriteCheck">
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="My Favorites"
+        android:textColor="@color/white"
+        android:textSize="23dp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/list_fav"
+        android:paddingLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>

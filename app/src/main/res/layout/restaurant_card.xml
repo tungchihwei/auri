@@ -14,65 +14,58 @@
     android:padding="4dp">
 
     <!-- Horizontal linear layout containing the restaurant logo and the restaurant name. -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/img_restaurant_preview"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_weight="2"
+        app:srcCompat="@drawable/googleg_standard_color_18" />
 
-        <!-- The restaurant logo displayed through a 2D ImageView -->
-        <ImageView
-            android:id="@+id/img_restaurant_logo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/popeye_logo" />
+    <TextView
+        android:id="@+id/tv_restaurant_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:fontFamily="sans-serif"
+        android:text="restaurant name"
+        android:textAlignment="center"
+        android:textSize="30sp" />
 
-        <!-- The restaurant name displayed through a 2D TextView -->
-        <TextView
-            android:id="@+id/tv_restaurant_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:fontFamily="sans-serif"
-            android:text="restaurant name"
-            android:textAlignment="center"
-            android:textSize="30sp" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_restaurant_address"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="18dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
         android:orientation="horizontal">
+
+        <RatingBar
+            android:id="@+id/rb_restaurant_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:numStars="5"
+            android:rating="3"
+            android:stepSize="1"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_restaurant_distance"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="TextView"
             android:textColor="@android:color/holo_red_light" />
-
-        <TextView
-            android:id="@+id/tv_restaurant_address"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="TextView" />
     </LinearLayout>
 
     <!-- The rating bar displaying the rating of the restaurant. -->
-    <RatingBar
-        android:id="@+id/rb_restaurant_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:numStars="5"
-        android:rating="3"
-        android:stepSize="1"
-        android:visibility="visible" />
 
 </LinearLayout>

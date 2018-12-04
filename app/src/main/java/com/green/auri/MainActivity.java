@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
+import com.gigamole.infinitecycleviewpager.OnInfiniteCyclePageTransformListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -45,11 +46,13 @@ import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -76,6 +79,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, PlaceSearchListener, LocationListener {
@@ -100,17 +104,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button auri_mode;
     private SharedPreferences sp;
     String accountName;
+    String email;
 
     protected GeoDataClient mGeoDataClient;
     String photo_toString;
-    int isFav;
+
 
 
     private FragmentManager fm;
     private FragmentTransaction transaction;
     private boolean cardHidden = true;
 
-//    List<String> lstResName = new ArrayList<>();
     List<List<String>> lstResInfo = new ArrayList<>();
 
     FirebaseDatabase fav_database;
@@ -123,6 +127,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     PlaceAutocompleteFragment autocompleteFragment;
     String placeSearch_id;
     int mode; // 1: nearby restaurant 2: search
+    LatLng latLng;
+
+    Map<LatLng, Marker> mMarkers;
+//    int wait;
+
+
+//    HorizontalInfiniteCycleViewPager pager;
+//    CardAdapter adapter;
+
+
 
 
     @Override
@@ -217,10 +231,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // hide status bar
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_main);
+
+//        latLng = new LatLng(0, 0);
+//        wait = 0;
 
         mGeoDataClient = Places.getGeoDataClient(this);
 
@@ -230,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // get the account name
         accountName = sp.getString("account", "NA");
+        email = sp.getString("email", "NA");
+        Log.i("!!!email", email);
 
 //        // Reference to Auri Mode Button
 //        Button auri_mode = (Button) findViewById(R.id.AuriMode);
@@ -300,7 +320,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (title.equals("Auri Mode")){
                     goToAuriMode();
                 } else if (title.equals("Settings")){
-                    Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();;
+                    Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();
+                    Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    settings_intent.putExtra("email", email);
+                    settings_intent.putExtra("accountName", accountName);
+                    startActivity(settings_intent);
                 } else if (title.equals("Nearby Restaurant")){
                     // Reference to the button to find nearby restaurants
                     String Restaurant = "restaurant";
@@ -351,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             PlaceBufferResponse places = task.getResult();
                             // Get Place information
                             Place myPlace = places.get(0);
+//                            myPlace.getLatLng()
 
                             List<String> cur = new ArrayList<>();
                             cur.add(myPlace.getName().toString());
@@ -436,6 +461,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+//        pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
+//        adapter = new CardAdapter(lstResInfo,getBaseContext());
+
+//        Log.i("sssss", Integer.toString(pager.getRealItem()));
+//        pager.getCenterPageScaleOffset();
+
+        mMarkers = new HashMap<>();
+
     }
 
 //    private void initData() {
@@ -444,6 +477,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        lstResName.add("Name3");
 //        lstResName.add("Name4");
 //    }
+
+
 
     public void setCardCycle(){
 
@@ -459,9 +494,84 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         HorizontalInfiniteCycleViewPager pager = (HorizontalInfiniteCycleViewPager) findViewById(R.id.horizontal_cycle);
 //        CardAdapter adapter = new CardAdapter(lstResName,getBaseContext());
-        CardAdapter adapter = new CardAdapter(lstResInfo,getBaseContext());
+        CardAdapter adapter = new CardAdapter(lstResInfo, getBaseContext());
         pager.setAdapter(adapter);
         pager.setCurrentItem(currCard);
+
+        pager.setOnInfiniteCyclePageTransformListener(new OnInfiniteCyclePageTransformListener() {
+
+            @Override
+            public void onPreTransform(View page, float position) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                TextView txtView = (TextView) page.findViewById(R.id.txtResName);
+
+                if (position == 0){
+
+                    Log.i("lllll", txtView.getText().toString().split(". ")[0]);
+                    int index = Integer.valueOf(txtView.getText().toString().split(". ")[0])-1;
+                    Log.i("listen", lstResInfo.get(index).get(0));
+                    Log.i("listen", lstResInfo.get(index).get(3));
+
+                    mGeoDataClient.getPlaceById(lstResInfo.get(index).get(3)).addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
+                            if (task.isSuccessful()) {
+                                PlaceBufferResponse places = task.getResult();
+                                // Get Place information
+                                Place myPlace = places.get(0);
+
+                                if (latLng != null){
+                                    if(mMarkers.containsKey(latLng)){
+//                                    Log.i("markers", "get");
+                                        Marker old = mMarkers.get(latLng);
+//                                    Log.i("markers", old.getTitle());
+                                        old.remove();
+                                    }
+                                    markerOptions.title(myPlace.getName().toString() + " : " + myPlace.getAddress().toString() + " : " + Double.toString(myPlace.getRating()) + " :" + myPlace.getId());
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                    markerOptions.position(latLng);
+                                    mMap.addMarker(markerOptions);
+                                }
+
+                                if(mMarkers.containsKey(myPlace.getLatLng())){
+//                                    Log.i("markers", "get");
+                                    Marker old = mMarkers.get(myPlace.getLatLng());
+//                                    Log.i("markers", old.getTitle());
+                                    old.remove();
+                                }
+                                // Get the response of the place
+                                markerOptions.title(myPlace.getName().toString() + " : " + myPlace.getAddress().toString() + " : " + Double.toString(myPlace.getRating()) + " :" + myPlace.getId());
+                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                                markerOptions.position(myPlace.getLatLng());
+                                mMap.addMarker(markerOptions).showInfoWindow();
+
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(myPlace.getLatLng()));
+                                latLng = myPlace.getLatLng();
+
+                                places.release();
+                            } else {
+
+                            }
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onPostTransform(View page, float position) {
+                Log.i("sssss", Float.toString(position));
+//                Log.i("listen", "2");
+
+            }
+        });
+
+//        pager.get
+
+//        Log.i("page", pager.onWindowFocusChanged(true));
+//        pager.
+
+//        Log.i("!!!!!!", pager.getOnInfiniteCyclePageTransformListener().toString());
+
+//        pager.
     }
 
     private void goToAuriMode(){
@@ -528,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return super.onOptionsItemSelected(item);
     }
 
-    private void logout(){
+     private void logout(){
         // sign out of this user and go to the log in page
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -582,6 +692,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng ll = marker.getPosition();
         String lat = String.valueOf(ll.latitude);
         String lng = String.valueOf(ll.longitude);
+        marker.getId();
 
 
 //        // Set default photo
@@ -749,14 +860,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
 
                 // Set up the marker:
-                LatLng latLng = new LatLng(lat, lng);
-                markerOptions.position(latLng);
+                LatLng lat_Lng = new LatLng(lat, lng);
+                markerOptions.position(lat_Lng);
                 markerOptions.title(placeName + " : " + vicinity + " : " + rating + " :" + Place_id);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
                 // Add the marker and move the camera to make it visible.
-                mMap.addMarker(markerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//                mMap.addMarker(markerOptions);
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_Lng));
+
+                Marker marker = mMap.addMarker(markerOptions);
+//                marker.showInfoWindow();
+//                marker.showInfoWindow();
+                mMarkers.put(lat_Lng, marker);
+//                mMarkers.put(thisNewColor, marker);
             } catch (NullPointerException e) {
                 continue;
             }
