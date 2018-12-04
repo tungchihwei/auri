@@ -92,7 +92,8 @@ public class SearchAndPosition {
         double unitLat = latChange/r;
         double unitLng = lngChange/r;
 
-        double quickTheta = theta + Math.toDegrees(Math.atan(lngChange/latChange));
+        double angleOfInflextionFromNorth = 180 + Math.toDegrees(Math.atan(latChange/lngChange));
+        double quickTheta =  angleOfInflextionFromNorth - theta;
 
         double radians = Math.toRadians(theta);
 
@@ -106,17 +107,13 @@ public class SearchAndPosition {
             quickTheta+=360;
         }
 
+        Log.i("ANGLE", "Angle of Inflection: "+angleOfInflextionFromNorth);
         Log.i("ANGLE", "quickTheta: "+ quickTheta);
         Log.i("ANGLE","newTheta: "+newTheta);
 
         //Rotate everything by half a bucket so that we can center better
         quickTheta = (quickTheta + BUCKET_SIZE/2)%360;
         double bucket =  Math.floor(quickTheta/BUCKET_SIZE)*BUCKET_SIZE;
-
-
-
-
-
 
         Log.i("ANGLE","Bucket: "+bucket);
 

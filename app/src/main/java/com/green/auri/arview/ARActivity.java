@@ -207,11 +207,12 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
-        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) ARActivity.this);
+        new GetNearbyPlacesTask().execute(url, ARActivity.this);
         LocationUtils.getCurrentLocation(ARActivity.this, this);
     }
 
     private void getPositionedPlaces(){
+        Log.i("TIMER", "STARTED POSITIONING");
 
         Log.i("POSITIONED", String.valueOf(nearbyPlaceList));
         Log.i("POSITIONED", String.valueOf(latitude));
@@ -223,6 +224,9 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
         HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
+
+
+        Log.i("TIMER", "DONE POSITIONING");
 
         for(String bucket: result.keySet()){
             List<HashMap<String,String>> placesInBucket = result.get(bucket);
@@ -247,11 +251,13 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 }catch (Exception e){
 //                e.printStackTrace();
                 }
+                Log.i("APOS", "Name: "+currentName);
 
                 Vector3 cardVector = ARUtils.buildVectorFromAngle(Double.parseDouble(currentAngle), Double.parseDouble(currentDistance));
                 addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), cardVector);
             }
         }
+
 
     }
 
