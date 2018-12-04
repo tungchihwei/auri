@@ -51,7 +51,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private final ArrayList<Node> nodes = new ArrayList<>();
     private final int MAX_LOCK_SIZE = 2;
 
-    /* A renderable Restaurant RestaurantCardDisplay = A Customized 2D Layout: res/layout/restaurant_card.xml */
+    /* A renderable Restaurant RestaurantCardDisplay = A Customized 2D Layout: res/layout/unused_restaurant_card.xmlard.xml */
     private ViewRenderable restaurantCard;
 
     /*
@@ -206,7 +206,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         String Restaurant = "restaurant";
         String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
         Log.d("onClick", url);
-        new GetNearbyPlacesTask().execute(url, (PlaceSearchListener) ARActivity.this);
+        new GetNearbyPlacesTask().execute(url, ARActivity.this);
         LocationUtils.getCurrentLocation(ARActivity.this, this);
     }
 

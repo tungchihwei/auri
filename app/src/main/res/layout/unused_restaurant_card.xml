@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- A base 2D Linear Layout to contain components for displaying restaurant information. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_card_base"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_bg"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <!-- Horizontal linear layout containing the restaurant logo and the restaurant name. -->
+    <ImageView
+        android:id="@+id/img_restaurant_preview"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_weight="2"
+        app:srcCompat="@drawable/googleg_standard_color_18" />
+
+    <TextView
+        android:id="@+id/tv_restaurant_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:fontFamily="sans-serif"
+        android:text="restaurant name"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tv_restaurant_address"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <RatingBar
+            android:id="@+id/rb_restaurant_rating"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:numStars="5"
+            android:rating="3"
+            android:stepSize="1"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_restaurant_distance"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="TextView"
+            android:textColor="@android:color/holo_red_light" />
+    </LinearLayout>
+
+    <!-- The rating bar displaying the rating of the restaurant. -->
+
+</LinearLayout>

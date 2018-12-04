@@ -57,19 +57,18 @@ public class FavoriteCheck extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        myRef.getDatabase();
 
 //        final fav_val favorite = new fav_val();
-        list_fav = (ListView) findViewById(R.id.list_fav);
+        list_fav = findViewById(R.id.list_fav);
         review_Adapter = new FavoriteAdapter(this.getBaseContext(), this);
         list_fav.setAdapter(review_Adapter);
 
-        sp = getSharedPreferences("login",MODE_PRIVATE);
-        accountName = sp.getString("account", "NA");
+//        sp = getSharedPreferences("login", MODE_PRIVATE);
+//        accountName = sp.getString("account", "NA");
 
 
 
-        myRef.child(accountName).addValueEventListener(new ValueEventListener() {
+        myRef.child(MainActivity.accountName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 //                    Log.i("checkdata", dataSnapshot.getValue().toString());
@@ -81,24 +80,31 @@ public class FavoriteCheck extends AppCompatActivity {
                     favorite_list[k] = key;
                     Log.i("checkdata", key);
                     fav_val add = new fav_val();
-//                    Log.i("order", childSnapshot.child("Name").getValue().toString());
-                    add.fav_resName = childSnapshot.child("Name").getValue().toString();
-
                     try {
-                        String photo = childSnapshot.child("Photo").getValue().toString();
-                        byte[] encodeByte = Base64.decode(photo, Base64.DEFAULT);
-                        add.fav_bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-                    } catch (Exception e) {
-                        add.fav_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.na);
-                    }
+                        Log.i("order", childSnapshot.child("Name").getValue().toString());
+                        add.fav_resName = childSnapshot.child("Name").getValue().toString();
 
-                    fav_datail.add(add);
+                        try {
+                            String photo = childSnapshot.child("Photo").getValue().toString();
+                            byte[] encodeByte = Base64.decode(photo, Base64.DEFAULT);
+                            add.fav_bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                        } catch (Exception e) {
+                            add.fav_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+                        }
+
+                        fav_datail.add(add);
 //                   Log.i("order", favorite_list[i]);
-                    k ++;
+                        k++;
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
+                        k++;
+                        continue;
+                    }
                 }
                 list_fav.invalidateViews();
 //               fav_datail.clear();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.i("Favorite Database Errore", databaseError.toString());
@@ -164,8 +170,8 @@ class FavoriteAdapter extends BaseAdapter {
             row = convertView;
         }
 
-        txt_resName = (TextView) row.findViewById(R.id.txt_resName);
-        img_res = (ImageView) row.findViewById(R.id.img_res);
+        txt_resName = row.findViewById(R.id.txt_resName);
+        img_res = row.findViewById(R.id.img_res);
 
         try {
             txt_resName.setText(this.main.fav_datail.get(position).fav_resName);

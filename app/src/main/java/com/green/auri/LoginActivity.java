@@ -45,11 +45,11 @@ public class LoginActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
         // Initialize the views
-        nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
-        email = (EditText) findViewById(R.id.textInputEditTextEmail);
-        password = (EditText) findViewById(R.id.textInputEditTextPassword);
-        button_login = (Button) findViewById(R.id.appCompatButtonLogin);
-        button_register = (TextView) findViewById(R.id.textViewLinkRegister);
+        nestedScrollView = findViewById(R.id.nestedScrollView);
+        email = findViewById(R.id.textInputEditTextEmail);
+        password = findViewById(R.id.textInputEditTextPassword);
+        button_login = findViewById(R.id.appCompatButtonLogin);
+        button_register = findViewById(R.id.textViewLinkRegister);
         mAuth = FirebaseAuth.getInstance();
 
         // Share preference to save the login mode info

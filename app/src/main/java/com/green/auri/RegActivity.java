@@ -45,10 +45,10 @@ public class RegActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_reg);
 
-        email = (EditText) findViewById(R.id.textInputEditTextEmail);
-        password = (EditText) findViewById(R.id.textInputEditTextPassword);
-        button_register = (Button) findViewById(R.id.appCompatButtonRegister);
-        backTosign = (TextView) findViewById(R.id.appCompatTextViewLoginLink);
+        email = findViewById(R.id.textInputEditTextEmail);
+        password = findViewById(R.id.textInputEditTextPassword);
+        button_register = findViewById(R.id.appCompatButtonRegister);
+        backTosign = findViewById(R.id.appCompatTextViewLoginLink);
         mAuth = FirebaseAuth.getInstance();
 
         // Share preference to save the login mode info

@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         sp = getSharedPreferences("login",MODE_PRIVATE);
 
-        logout = (TextView) findViewById(R.id.logout);
+        logout = findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,18 +51,18 @@ public class SettingsActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         email = i.getStringExtra("email");
-        TextView account = (TextView) findViewById(R.id.account);
+        TextView account = findViewById(R.id.account);
         account.setText(email);
 
         // show image gallery and upload on firebase
-        profile_image = (ImageView) findViewById(R.id.profile_image);
+        profile_image = findViewById(R.id.profile_image);
         String photo = sp.getString("profile","");
         if (!photo.equals("")){
             byte[] encodeByte = Base64.decode(photo, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             profile_image.setImageBitmap(bitmap);
         }
-        changeProfile = (TextView) findViewById(R.id.changeProfile);
+        changeProfile = findViewById(R.id.changeProfile);
         changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

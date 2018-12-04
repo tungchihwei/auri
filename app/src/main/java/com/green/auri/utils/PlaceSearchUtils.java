@@ -19,7 +19,7 @@ import java.util.List;
 public class PlaceSearchUtils {
 
     private static String api_key = "AIzaSyCSSgGt6d67TiIUl0SiwEvkVkvGU1PL1-U";
-    private static int PROXIMITY_RADIUS = 500; // 500 meters or 0.3 miles away
+    private static int PROXIMITY_RADIUS = 250; // 250 meters or 0.15 miles away
 
     public static String getSearchResults(String strUrl) throws IOException {
         String data = "";
@@ -65,7 +65,7 @@ public class PlaceSearchUtils {
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&type=" + nearbyPlace);
-        googlePlacesUrl.append("&opennow=true");
+//        googlePlacesUrl.append("&opennow=true");
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key=" + api_key);
         Log.d("getUrl", googlePlacesUrl.toString());
@@ -78,7 +78,7 @@ public class PlaceSearchUtils {
 
         try {
             Log.d("Places", "parse");
-            jsonObject = new JSONObject((String) jsonData);
+            jsonObject = new JSONObject(jsonData);
             jsonArray = jsonObject.getJSONArray("results");
         } catch (JSONException e) {
             Log.d("Places", "parse error");

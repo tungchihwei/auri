@@ -30,7 +30,7 @@ public class instruction3 extends Fragment {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_intro_page_3, container, false);
         View rootView = inflater.inflate(R.layout.fragment_intro_page_3, container, false);
-        btn = (Button) rootView.findViewById(R.id.btn);
+        btn = rootView.findViewById(R.id.btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -104,16 +104,16 @@ public class Card extends Fragment {
                 }
             });
         }
-        Log.i("isFav", "onCreateView");
+        Log.i("isFavorite", "onCreateView");
 
-//        if (isFav == 1){
+//        if (isFavorite == 1){
 ////            checked = 1;
-//            Log.i("isFav", Integer.toString(isFav));
+//            Log.i("isFavorite", Integer.toString(isFavorite));
 //            btn_fav.setChecked(true);
 //            btn_fav.setBackgroundResource(R.drawable.fav_on);
 //        } else{
 ////            checked = 1;
-//            Log.i("isFav", Integer.toString(isFav));
+//            Log.i("isFavorite", Integer.toString(isFavorite));
 //            btn_fav.setChecked(false);
 //            btn_fav.setBackgroundResource(R.drawable.fav_off);
 //        }
@@ -122,7 +122,7 @@ public class Card extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
-                    Log.i("isFav", "onCheckedChange to on");
+                    Log.i("isFavorite", "onCheckedChange to on");
                     checked = 1;
                     // Save restaurant to database
                     fav_database = FirebaseDatabase.getInstance();
@@ -137,7 +137,7 @@ public class Card extends Fragment {
                     PhotoRef.setValue(res_photo);
                     btn_fav.setBackgroundResource(R.drawable.fav_on);
                 } else{
-                    Log.i("isFav", "onCheckedChange to off");
+                    Log.i("isFavorite", "onCheckedChange to off");
                     // Delete restaurant from database
                     checked = 1;
                     fav_database = FirebaseDatabase.getInstance();

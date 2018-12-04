@@ -39,7 +39,7 @@ public class RestaurantCardDisplay extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.restaurant_card, container, false);
+        View view = inflater.inflate(R.layout.unused_restaurant_card, container, false);
 
         tv_restaurantName = view.findViewById(R.id.tv_restaurant_name);
         tv_restaurantAddress = view.findViewById(R.id.tv_restaurant_address);

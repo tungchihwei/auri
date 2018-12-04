@@ -104,20 +104,20 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         Lng = 0.;
         Place_id = getIntent().getStringExtra("place_id");
 
-        txt_resName = (TextView) findViewById(R.id.txt_resName);
-        resRating = (RatingBar) findViewById(R.id.resRating);
-        txt_resRating = (TextView) findViewById(R.id.txt_resRating);
-        txt_resPrice = (TextView) findViewById(R.id.txt_resPrice);
+        txt_resName = findViewById(R.id.txt_resName);
+        resRating = findViewById(R.id.resRating);
+        txt_resRating = findViewById(R.id.txt_resRating);
+        txt_resPrice = findViewById(R.id.txt_resPrice);
 //        txt_resPhone = (TextView) findViewById(R.id.txt_resPhone);
 //        txt_resWeb = (TextView) findViewById(R.id.txt_resWeb);
 
-        list_review = (ListView) findViewById(R.id.list_resReview);
+        list_review = findViewById(R.id.list_resReview);
         review_Adapter = new ResReviewAdapter(this.getBaseContext(), this);
         list_review.setAdapter(review_Adapter);
 
-        btn_call = (ImageButton) findViewById(R.id.btn_call);
-        btn_web = (ImageButton) findViewById(R.id.btn_web);
-        btn_detailFav = (ToggleButton) findViewById(R.id.btn_detailAddFav);
+        btn_call = findViewById(R.id.btn_call);
+        btn_web = findViewById(R.id.btn_web);
+        btn_detailFav = findViewById(R.id.btn_detailAddFav);
 
         btn_call.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +155,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
-                    Log.i("isFav", "onCheckedChange to on");
+                    Log.i("isFavorite", "onCheckedChange to on");
 //                    checked = 1;
                     // Save restaurant to database
                     fav_database = FirebaseDatabase.getInstance();
@@ -170,7 +170,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                     PhotoRef.setValue(resPhoto);
                     btn_detailFav.setBackgroundResource(R.drawable.fav_on);
                 } else{
-                    Log.i("isFav", "onCheckedChange to off");
+                    Log.i("isFavorite", "onCheckedChange to off");
                     // Delete restaurant from database
 //                    checked = 1;
                     fav_database = FirebaseDatabase.getInstance();
@@ -429,9 +429,9 @@ class ResReviewAdapter extends BaseAdapter {
             row = convertView;
         }
 
-        txt_author = (TextView) row.findViewById(R.id.txt_author);
-        txt_date = (TextView) row.findViewById(R.id.txt_date);
-        txt_reviews = (TextView) row.findViewById(R.id.txt_reviews);
+        txt_author = row.findViewById(R.id.txt_author);
+        txt_date = row.findViewById(R.id.txt_date);
+        txt_reviews = row.findViewById(R.id.txt_reviews);
 
         // Set reviews
         Log.i("reviews adapt", "Author: " + this.main.place_reviews.get(position).rev_author);
