@@ -343,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    setCardCycle();
                 } else if (title.equals("Favorites")) {
                     Log.d("Favorite", "Button is Clicked");
-                    Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+                    Intent fav_intent = new Intent(MainActivity.this, FavoriteView.class);
                     startActivity(fav_intent);
                 }
                 return true;

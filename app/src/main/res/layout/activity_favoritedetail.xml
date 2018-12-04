@@ -126,7 +126,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="10dp" />
+            android:layout_height="5dp" />
 
         <TextView
             android:layout_width="match_parent"
