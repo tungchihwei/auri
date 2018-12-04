@@ -138,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+    int curCardPos;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -564,14 +566,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-//        pager.get
-
-//        Log.i("page", pager.onWindowFocusChanged(true));
-//        pager.
-
-//        Log.i("!!!!!!", pager.getOnInfiniteCyclePageTransformListener().toString());
-
-//        pager.
     }
 
     private void goToAuriMode(){

@@ -11,32 +11,12 @@ import java.util.List;
 public class SearchAndPosition {
 
     private static final String TAG = "SearchAndPosition";
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-
-
-    public static void executeSearchAndPosition(double myLatitude, double myLongitude, double angle, List<HashMap<String, String>> myNearbyPlacesList){
-
-        double angleFromNorth = angle;
-
-        //Name of restaurant
-        //X coordinate as string
-        //Y coordinate as string
-        //Rating
-        //Image URL
-//        HashMap<String, String> PositionNearbyPlaces
-
-
-    }
-
-
-    public void PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList,  double myLatitude, double myLongitude){
-        PositionNearbyPlaces(nearbyPlacesList, myLatitude, myLongitude, 0);
-    }
 
     // Position nearby places relative to current location
     // Iterate over nearbyPlaceList and get each position unit vector based on a reference angle
     public static List<HashMap<String, String>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
         Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
+        Log.i("Angle", "My angle from North is: "+theta);
         Log.i("POSITIONED", "Positioning nearby places");
         List<HashMap<String, String>> positionedPlaces = new ArrayList<>();
 
@@ -91,9 +71,11 @@ public class SearchAndPosition {
         double unitLat = latChange/r;
         double unitLng = lngChange/r;
 
+        double radians = Math.PI * theta / 180;
+
         //Rotate vectors using rotation matrix formula
-        double lat2 = Math.cos(theta)*unitLat - Math.sin(theta)*unitLng;
-        double lng2 = Math.cos(theta)*unitLng + Math.sin(theta)*unitLat;
+        double lat2 = Math.cos(radians)*unitLng - Math.sin(radians)*unitLat;
+        double lng2 = Math.cos(radians)*unitLat + Math.sin(radians)*unitLng;
 
 
         Log.i("Position","unitLat: "+unitLat);
