@@ -79,6 +79,11 @@ public class RestaurantCardAdapter extends PagerAdapter {
 
         LinearLayout layout_cardInfo = view.findViewById(R.id.ll_card_display);
         layout_cardInfo.setOnClickListener(v -> {
+
+            if (restaurantInfo.getRestaurantId() == null || restaurantInfo.getRestaurantId() == "") {
+                return;
+            }
+
             Intent fav_detail = new Intent(context, FavoriteDetail.class);
             fav_detail.putExtra("place_id", placeId);
             fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -89,6 +94,8 @@ public class RestaurantCardAdapter extends PagerAdapter {
             container.addView(view);
             return view;
         }
+
+        Log.i("CARDS", "created " + restaurantInfo.getRestaurantName());
 
         ToggleButton btn_favorite = view.findViewById(R.id.btn_favorite);
 

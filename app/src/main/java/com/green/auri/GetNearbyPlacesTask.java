@@ -28,14 +28,13 @@ public class GetNearbyPlacesTask extends AsyncTask<Object, List<HashMap<String, 
             url = (String) params[0];
             psl = (PlaceSearchListener) params[1];
             googlePlacesData = PlaceSearchUtils.getSearchResults(url); // Used to retrieve data from URL from googlePlacesData
-            Log.d("GooglePlacesReadTask", "doInBackground Exit");
         } catch (Exception e) {
-            Log.d("GooglePlacesReadTask", e.toString());
+            e.printStackTrace();
+            return null;
         }
 
         List<HashMap<String, String>> nearbyPlacesList;
         nearbyPlacesList = PlaceSearchUtils.parse(googlePlacesData); // parse json file and store in a HashMap
-        Log.i("POSITIONED", String.valueOf(nearbyPlacesList));
 
         return nearbyPlacesList;
     }
@@ -43,8 +42,7 @@ public class GetNearbyPlacesTask extends AsyncTask<Object, List<HashMap<String, 
     @Override
     public void onPostExecute(List<HashMap<String, String>> result) { // after retrieving the data it is in json
         // so we use the DataParser class to parse the json file on the stuff we want
-        Log.d("GooglePlacesReadTask", "onPostExecute Entered");
         psl.onPlaceSearchComplete(result);
-        Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
+
 }

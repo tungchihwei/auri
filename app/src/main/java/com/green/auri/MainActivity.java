@@ -280,6 +280,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             SELECTED_MARKER = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
             RED_MARKER = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
             mMap.setOnMarkerClickListener(this);
+
+            initCards();
         }
     }
 
@@ -312,8 +314,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mMarkers.clear();
                         restaurantList.clear();
 
-                        HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
-                        pager.setAdapter(null);
                         fullyUpdated = false;
 
                         // Get the response of the place
@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         addMarker(myPlace.getLatLng(), myPlace.getName().toString(), myPlace.getId());
                         selectMarker(mMarkers.get(myPlace.getId()));
 
-                        updateCards();
+                        notifyPager();
 
                         places.release();
                     }
@@ -402,6 +402,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        }catch (Exception e) {
 //            e.printStackTrace();
 //        }
+
+        notifyPager();
         fullyUpdated = false;
 
         // Iterate through the nearby places that were returned and place a marker for each.
@@ -430,13 +432,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
             }
         }
-
-        new Thread(() -> {
-            while (nearbyPlacesList.size() != restaurantList.size()) {}
-            mainHandler.post(() -> {
-                updateCards();
-            });
-        }).start();
     }
 
     private void addRestaurantResult(Place place) {
@@ -483,12 +478,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Bitmap restaurantPhoto = photo.getBitmap();
                     restaurantInfo.setRestaurantPhoto(PhotoLoadingUtil.convertBitmapToString(restaurantPhoto));
                     restaurantList.add(restaurantInfo);
+                    notifyPager();
                 });
             } catch (Exception e) {
                 // Set default photo and change photo bitmap to string
                 Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
                 restaurantInfo.setRestaurantPhoto(PhotoLoadingUtil.convertBitmapToString(icon));
                 restaurantList.add(restaurantInfo);
+                notifyPager();
             } finally {
                 photoMetadataBuffer.release();
             }
@@ -496,7 +493,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void updateCards() {
+    private void notifyPager() {
+        HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
+        pager.notifyDataSetChanged();
+        setCurrentCard();
+    }
+
+    private void initCards() {
         HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
         RestaurantCardAdapter adapter = new RestaurantCardAdapter(restaurantList, getBaseContext());
         pager.setAdapter(adapter);

@@ -5,6 +5,7 @@ public class RestaurantResult {
     private String restaurantAddress = "Restaurant Address";
     private double restaurantRating = 3.0;
     private String restaurantId;
+    private double restaurantDistance;
     private String restaurantPhoto = "Bitmap Photo";
 
     public RestaurantResult(String name, String address, double rating, String placeId) {
@@ -16,6 +17,10 @@ public class RestaurantResult {
 
     public void setRestaurantPhoto(String photoString) {
         restaurantPhoto = photoString;
+    }
+
+    public void setRestaurantDistance(double distance) {
+        restaurantDistance = distance;
     }
 
     public String getRestaurantName() {
@@ -36,5 +41,14 @@ public class RestaurantResult {
 
     public String getRestaurantId() {
         return restaurantId;
+    }
+
+    public double getRestaurantDistance() {
+        return restaurantDistance;
+    }
+
+    @Override
+    public String toString() {
+        return restaurantName;
     }
 }

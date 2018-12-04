@@ -2,7 +2,6 @@ package com.green.auri.arview;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,8 +22,8 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.green.auri.GetNearbyPlacesTask;
-import com.green.auri.MainActivity;
 import com.green.auri.R;
+import com.green.auri.RestaurantResult;
 import com.green.auri.SearchAndPosition;
 import com.green.auri.dsensor.DProcessedSensor;
 import com.green.auri.dsensor.DSensor;
@@ -76,6 +75,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private boolean checking = false;
     private int tryCounter = MAX_LOCK_SIZE;
 
+    private boolean done;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -101,7 +101,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
         // TESTING
         arSceneView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean done = false;
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -121,11 +120,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 //                    }
 //                }, delay);
 
-                if (!done) {
-//                    createDirectionalCards();
-
-                    done = true;
-                }
                 return false;
             }
         });
@@ -200,6 +194,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     private void updateNearbyPlaces() {
+        if (done) return;
         gotLocation = false;
         gotPlaces = false;
         executed = false;
@@ -230,35 +225,36 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
         for(String bucket: result.keySet()){
             List<HashMap<String,String>> placesInBucket = result.get(bucket);
-            Log.i("BUCKETS", "Current Bucket: "+bucket);
-            for (int i = 0; i < 1; i++) {
+            List<RestaurantResult> bucketPlaces = new ArrayList<>();
+
+            for (int i = 0; i < placesInBucket.size(); i++) {
                 HashMap<String, String> currentGooglePlace = placesInBucket.get(i);
                 String currentName = currentGooglePlace.get("Name");
                 String currentRating = currentGooglePlace.get("Rating");
-                String currentX = currentGooglePlace.get("X");
-                String currentY = currentGooglePlace.get("Y");
                 String currentDistance = currentGooglePlace.get("Distance");
                 String currentPhotoRef = currentGooglePlace.get("photoRef");
-                String currentAngle = currentGooglePlace.get("Bucket");
 
-                try {
-                    Log.i("POSITIONED", currentName);
-                    Log.i("POSITIONED", currentRating);
-                    Log.i("POSITIONED", currentX);
-                    Log.i("POSITIONED", currentY);
-                    Log.i("POSITIONED", currentDistance);
-                    Log.i("POSITIONED", currentPhotoRef);
-                }catch (Exception e){
-//                e.printStackTrace();
-                }
-                Log.i("APOS", "Name: "+currentName);
+                RestaurantResult restaurantResult = new RestaurantResult(
+                        currentName,
+                        "", // address
+                        Double.valueOf(currentRating),
+                        ""
+                );
 
-                Vector3 cardVector = ARUtils.buildVectorFromAngle(Double.parseDouble(currentAngle), Double.parseDouble(currentDistance));
-                addAndCreateCard(anchorNode, currentName, "", Float.parseFloat(currentRating), cardVector);
+                // Get pictures before hand
+                restaurantResult.setRestaurantDistance(Double.valueOf(currentDistance));
+                bucketPlaces.add(restaurantResult);
             }
+
+            double currentAngle = Double.parseDouble(result.get(bucket).get(0).get("Bucket"));
+            double currentDistance = Double.parseDouble(result.get(bucket).get(0).get("Distance"));
+
+            Log.i("APOS", String.valueOf(bucketPlaces));
+            Vector3 cardVector = ARUtils.buildVectorFromAngle(currentAngle, currentDistance);
+            addAndCreateCard(anchorNode, bucketPlaces, cardVector);
         }
 
-
+        done = true;
     }
 
     // TESTING
@@ -267,10 +263,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
-        addAndCreateCard(anchorNode,"North","", -1, new Vector3(0, 0, -2)); // north
-        addAndCreateCard(anchorNode,"East","", -1, new Vector3(2, 0, 0)); // east
-        addAndCreateCard(anchorNode,"South","", -1, new Vector3(0, 0, 2)); // south
-        addAndCreateCard(anchorNode,"West","", -1, new Vector3(-2, 0, 0)); // left
     }
 
     public void addCard(AnchorNode anchorNode, Node card, Vector3 direction) {
@@ -278,8 +270,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         anchorNode.addChild(card);
     }
 
-    public void addAndCreateCard(AnchorNode anchorNode, String name, String logoUrl, float rating, Vector3 direction) {
-        Node card = new RestaurantCardNode(this, name, "some address",  logoUrl, rating);
+    public void addAndCreateCard(AnchorNode anchorNode, List<RestaurantResult> bucket, Vector3 direction) {
+        Node card = new RestaurantBucketNode(this, bucket);
         addCard(anchorNode, card, direction);
     }
 
@@ -338,12 +330,14 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
         Log.i("POSITIONED", "Nearby Places updated: " + String.valueOf(nearbyPlacesList));
         this.nearbyPlaceList = nearbyPlacesList;
-        tryCounter--;
-        if(gotLocation && !executed && tryCounter==0){
-            executed = true;
-            getPositionedPlaces();
+        if(!nearbyPlacesList.isEmpty()){
+            if(gotLocation && !executed){
+                executed = true;
+                getPositionedPlaces();
+            }
+            gotPlaces = true;
         }
-        gotPlaces = true;
+
 
     }
 }
