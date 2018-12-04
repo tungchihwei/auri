@@ -4,5 +4,5 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface PlaceSearchListener {
-    public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList);
+    void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList);
 }
