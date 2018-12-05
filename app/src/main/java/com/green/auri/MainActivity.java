@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         break;
                     case "Favorites":
                         Log.d("Favorite", "Favorites Menu Button is Clicked");
-                        Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+                        Intent fav_intent = new Intent(MainActivity.this, FavoriteView.class);
                         startActivity(fav_intent);
                         break;
                 }
