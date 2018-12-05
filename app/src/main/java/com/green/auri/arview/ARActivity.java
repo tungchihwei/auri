@@ -231,6 +231,10 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 HashMap<String, String> currentGooglePlace = placesInBucket.get(i);
                 String currentName = currentGooglePlace.get("Name");
                 String currentRating = currentGooglePlace.get("Rating");
+                if(currentRating==""){
+                    // We will show 3 for rating if there isn't one
+                    currentRating="3.0";
+                }
                 String currentDistance = currentGooglePlace.get("Distance");
                 String currentPhotoRef = currentGooglePlace.get("photoRef");
 

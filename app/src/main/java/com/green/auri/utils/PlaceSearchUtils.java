@@ -137,10 +137,10 @@ public class PlaceSearchUtils {
             }
             latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-            reference = googlePlaceJson.getString("reference");
-            rating = googlePlaceJson.getString("rating");
-            icon = googlePlaceJson.getString("icon");
-            Place_Id = googlePlaceJson.getString("place_id");
+            reference = parseOutField("reference", googlePlaceJson);
+            rating = parseOutField("rating",googlePlaceJson);
+            icon = parseOutField("icon",googlePlaceJson);
+            Place_Id = parseOutField("place_id",googlePlaceJson);
             googlePlaceMap.put("place_name", placeName);
             googlePlaceMap.put("vicinity", vicinity);
             googlePlaceMap.put("lat", latitude);
@@ -158,5 +158,12 @@ public class PlaceSearchUtils {
             e.printStackTrace();
         }
         return googlePlaceMap;
+    }
+
+    private static String parseOutField(String field, JSONObject json) throws JSONException {
+        if(json.has(field)){
+            return json.getString(field);
+        }
+        return "";
     }
 }
