@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean fullyUpdated;
     Handler mainHandler;
 
+    private FabSpeedDial fab2;
+
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +131,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCards();
 
         // Initialize Action Listeners
+        fab2 = findViewById(R.id.fab2);
         initializeMenuActions();
         initializeOnPlaceSelectedAction();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!fab2.isMenuOpen()){
+            fab2.openMenu();
+        }
     }
 
     /******************* Permission Checks *******************/
@@ -201,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initializeMenuActions() {
-        FabSpeedDial fab2 = findViewById(R.id.fab2);
+        fab2 = findViewById(R.id.fab2);
         fab2.setMenuListener(new FabSpeedDial.MenuListener() {
             @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
@@ -291,6 +302,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.longitude = longitude;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latitude, longitude), DEFAULT_ZOOM));
+        /* Here, ViewCompat.isAttachedToWindow == true, then we can openMenu */
+        fab2.openMenu();
     }
 
     /******************* Search functionality *******************/
