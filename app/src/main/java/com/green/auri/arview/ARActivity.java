@@ -78,6 +78,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
     private boolean done;
 
+    private AnchorNode anchorNode;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +112,12 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 }
 
 //                startPollUpdating();
-                updateNearbyPlaces();
+//                updateNearbyPlaces();
 
                 return false;
             }
         });
+        startPollUpdating();
     }
 
     @Override
@@ -140,6 +143,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
         try {
             arSceneView.resume();
+            startPollUpdating();
         } catch (CameraNotAvailableException e) {
             // In some cases (such as another camera app launching) the camera may be given to
             // a different app instead. Handle this properly by showing a message and recreate the
@@ -186,6 +190,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     private void startPollUpdating(){
+        if(done)return;
         // Create the Handler object (on the main thread by default)
         Handler handler = new Handler();
         // Define the code block to be executed
@@ -214,10 +219,10 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
     //Execute updates
     private void updateNearbyPlaces() {
-        if (done){
-            finishedExecuting = true;
-            return;
-        }
+//        if (done){
+//            finishedExecuting = true;
+//            return;
+//        }
         gotLocation = false;
         gotPlaces = false;
         executed = false;
@@ -233,7 +238,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
         Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
         Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
-        AnchorNode anchorNode = new AnchorNode(anchor);
+        deleteAllCards();
+        anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
         HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
@@ -270,9 +276,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
             Log.i("APOS", String.valueOf(bucketPlaces));
             Vector3 cardVector = ARUtils.buildVectorFromAngle(currentAngle, currentDistance);
-            addAndCreateCard(anchorNode, bucketPlaces, cardVector);
+            addAndCreateCard(bucketPlaces, cardVector);
         }
-
         done = true;
         finishedExecuting = true;
     }
@@ -285,14 +290,26 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         anchorNode.setParent(arSceneView.getScene());
     }
 
-    public void addCard(AnchorNode anchorNode, Node card, Vector3 direction) {
+    public void addCard(Node card, Vector3 direction) {
         card.setLocalPosition(direction);
         anchorNode.addChild(card);
     }
 
-    public void addAndCreateCard(AnchorNode anchorNode, List<RestaurantResult> bucket, Vector3 direction) {
+    public void addAndCreateCard(List<RestaurantResult> bucket, Vector3 direction) {
         Node card = new RestaurantBucketNode(this, bucket);
-        addCard(anchorNode, card, direction);
+        addCard(card, direction);
+    }
+
+    public void deleteAllCards(){
+        Log.i("POLL", "Removing all cards");
+        if(anchorNode!=null){
+            List<Node> children = anchorNode.getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                anchorNode.removeChild(child);
+                i--;
+            }
+        }
     }
 
     /*
