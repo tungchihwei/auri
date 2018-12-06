@@ -24,26 +24,16 @@ import java.util.List;
 /**
  * TODO: document your custom view class.
  */
-public class RestaurantBucketNode extends Node {
-    public static int MAX_RATING = 5;
-    public static int MIN_RATING = 0;
-
-//    public String restaurantName;
-//    public String restaurantAddress;
-//    public String restaurantLogoUrl;
-//    public float restaurantRating;
-
+public class RestaurantBucketNode extends Node implements Node.OnTouchListener {
     private Context context;
     private View restaurantBucket;
-//    private TextView tv_restaurantName;
-//    private TextView tv_restaurantAddress;
-//    private RatingBar rb_restaurantRating;
-//    private ImageView img_restaurantPreview;
 
     public RestaurantBucketNode(Context context, List<RestaurantResult> bucket) {
+
         // Load attributes
         this.context = context;
         restaurantBucket = LayoutInflater.from(context).inflate(R.layout.layout_restaurant_bucket,null);
+
         HorizontalInfiniteCycleViewPager pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
         RestaurantCardAdapter adapter = new RestaurantCardAdapter(bucket, context);
         pager.setAdapter(adapter);
@@ -99,5 +89,10 @@ public class RestaurantBucketNode extends Node {
         Vector3 direction = Vector3.subtract(cameraPosition, cardPosition);
         Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
         setWorldRotation(lookRotation);
+    }
+
+    @Override
+    public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+        return true;
     }
 }
