@@ -2,6 +2,7 @@ package com.green.auri.arview;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -68,12 +69,11 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private double longitude;
     private double angle;
     private List<HashMap<String, String>> nearbyPlaceList;
-    private int lock = MAX_LOCK_SIZE;
+
     private boolean gotLocation = false;
     private boolean gotPlaces = false;
     private boolean executed = false;
-    private boolean checking = false;
-    private int tryCounter = MAX_LOCK_SIZE;
+    private boolean finishedExecuting = true;
 
     private boolean done;
 
@@ -108,6 +108,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                     return false;
                 }
 
+//                startPollUpdating();
                 updateNearbyPlaces();
 
 //                Handler handler = new Handler();
@@ -193,35 +194,58 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         super.onDestroy();
     }
 
+    private void startPollUpdating(){
+        // Create the Handler object (on the main thread by default)
+        Handler handler = new Handler();
+        // Define the code block to be executed
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                Log.i("POLL", "Polling");
+                if(finishedExecuting){
+                    handler.removeCallbacks(this);
+                    Log.i("POLL", "Executing update");
+
+                    updateNearbyPlaces();
+                    handler.postDelayed(this, 10000);
+                }
+                else{
+                    Log.i("POLL", "NOT FINISHED");
+                }
+            }
+        };
+        // Run the above code block on the main thread after 2 seconds
+        handler.postDelayed(runnableCode, 1000);
+
+
+
+    }
+
+    //Execute updates
     private void updateNearbyPlaces() {
-        if (done) return;
+        if (done){
+            finishedExecuting = true;
+            return;
+        }
         gotLocation = false;
         gotPlaces = false;
         executed = false;
-        tryCounter = MAX_LOCK_SIZE;
-        String Restaurant = "restaurant";
-        String url = PlaceSearchUtils.getUrl(latitude, longitude, Restaurant); // get the url of nearby restaurant
+        finishedExecuting = false;
+        String url = PlaceSearchUtils.getUrl(latitude, longitude, "restaurant"); // get the url of nearby restaurant
         Log.d("onClick", url);
         new GetNearbyPlacesTask().execute(url, ARActivity.this);
         LocationUtils.getCurrentLocation(ARActivity.this, this);
     }
 
+    // Get positioned places
     private void getPositionedPlaces(){
-        Log.i("TIMER", "STARTED POSITIONING");
 
-        Log.i("POSITIONED", String.valueOf(nearbyPlaceList));
-        Log.i("POSITIONED", String.valueOf(latitude));
-        Log.i("POSITIONED", String.valueOf(longitude));
-        Log.i("POSITIONED", String.valueOf(angle));
-        Log.i("POSITIONED", String.valueOf(lock));
         Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
         Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
         HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
-
-        Log.i("TIMER", "DONE POSITIONING");
 
         for(String bucket: result.keySet()){
             List<HashMap<String,String>> placesInBucket = result.get(bucket);
@@ -259,6 +283,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         }
 
         done = true;
+        finishedExecuting = true;
     }
 
     // TESTING
@@ -340,6 +365,10 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 getPositionedPlaces();
             }
             gotPlaces = true;
+        }
+        if(nearbyPlacesList.isEmpty()){
+            String url = PlaceSearchUtils.getUrl(latitude, longitude, "restaurant"); // get the url of nearby restaurant
+            new GetNearbyPlacesTask().execute(url, ARActivity.this);
         }
 
 

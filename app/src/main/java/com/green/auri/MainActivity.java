@@ -374,6 +374,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void selectMarker(Marker marker) {
 
+        Log.i("MARK",String.valueOf(marker));
+
         if (selectedPlaceId != null && mMarkers.containsKey(selectedPlaceId)) {
             mMarkers.get(selectedPlaceId).setIcon(RED_MARKER);
         }
@@ -417,12 +419,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 double lng = Double.parseDouble(googlePlace.get("lng"));
                 String placeName = googlePlace.get("place_name");
                 String placeId = googlePlace.get("place_id");
+                String currentRating = googlePlace.get("rating");
+                if(currentRating==""){
+                    // We will show 3 for rating if there isn't one
+                    currentRating="3.0";
+                }
 
                 // TODO: Catch double exception
                 addRestaurantResult(
                         placeName,
                         googlePlace.get("vicinity"),
-                        Double.valueOf(googlePlace.get("rating")),
+                        Double.valueOf(currentRating),
                         placeId
                 );
 
@@ -540,7 +547,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (selectedPlaceId != null) {
             for (int i = 0; i < restaurantList.size(); i++) {
                 if (selectedPlaceId.equals(restaurantList.get(i).getRestaurantId())) {
-                    pager.setCurrentItem(i);
+                    if (pager.getAdapter() != null) {
+                        pager.setCurrentItem(i);
+                    }
                     return;
                 }
             }
