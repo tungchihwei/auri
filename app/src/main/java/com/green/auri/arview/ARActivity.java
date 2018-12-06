@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
+import com.google.ar.core.Config;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
@@ -96,10 +97,10 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         arFragment.getPlaneDiscoveryController().hide();
         arFragment.getPlaneDiscoveryController().setInstructionView(null);
         arSceneView = arFragment.getArSceneView();
+        arSceneView.getPlaneRenderer().setEnabled(false);
 
         installRequested = false;
 
-        // TESTING
         arSceneView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -110,16 +111,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
 //                startPollUpdating();
                 updateNearbyPlaces();
-
-//                Handler handler = new Handler();
-//                int delay = 10000; //milliseconds
-//
-//                handler.postDelayed(new Runnable(){
-//                    public void run(){
-//                        updateNearbyPlaces();
-//                        handler.postDelayed(this, delay);
-//                    }
-//                }, delay);
 
                 return false;
             }

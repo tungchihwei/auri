@@ -38,6 +38,7 @@ public class RestaurantCardAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
+        Log.i("CARDS", String.valueOf(restaurantList == null));
         return restaurantList.size();
     }
 

@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         restaurantList = new ArrayList<>();
         mMarkers = new HashMap<>();
 
+        initCards();
+
         // Initialize Action Listeners
         initializeMenuActions();
         initializeOnPlaceSelectedAction();
@@ -233,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         break;
                     case "Favorites":
                         Log.d("Favorite", "Favorites Menu Button is Clicked");
-                        Intent fav_intent = new Intent(MainActivity.this, FavoriteCheck.class);
+                        Intent fav_intent = new Intent(MainActivity.this, FavoriteView.class);
                         startActivity(fav_intent);
                         break;
                 }
@@ -280,8 +282,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             SELECTED_MARKER = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
             RED_MARKER = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
             mMap.setOnMarkerClickListener(this);
-
-            initCards();
         }
     }
 
@@ -348,7 +348,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         selectMarker(marker);
 
-        setCurrentCard();
+        HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
+
+        if (selectedPlaceId != null) {
+            for (int i = 0; i < restaurantList.size(); i++) {
+                if (selectedPlaceId.equals(restaurantList.get(i).getRestaurantId())) {
+                    Log.i("CARDS", "NULL? - " + String.valueOf(pager.getAdapter() == null));
+                    pager.setCurrentItem(i, true);
+                    return false;
+                }
+            }
+        }
 
         return false;
     }
@@ -395,15 +405,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
         mMap.clear();
         mMarkers.clear();
-        restaurantList.clear();
+        restaurantList = new ArrayList<>();
         selectedPlaceId = null;
-
-//        HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
-//        try {
-//            pager.setAdapter(null);
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
         notifyPager();
         fullyUpdated = false;
@@ -468,8 +471,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void waitForPhotoResponse(RestaurantResult restaurantInfo) {
         Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(restaurantInfo.getRestaurantId());
         photoMetadataResponse.addOnCompleteListener(task1 -> {
-
-//            new Thread(() -> {
             // Get the list of photos.
             PlacePhotoMetadataResponse photos = task1.getResult();
             PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
@@ -496,13 +497,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             } finally {
                 photoMetadataBuffer.release();
             }
-//            }).start();
         });
     }
 
     private void notifyPager() {
         HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
-        pager.notifyDataSetChanged();
+        Log.i("CARDS", "BEFORE " + String.valueOf(pager.getAdapter().getCount()));
+
+        pager.setAdapter(new RestaurantCardAdapter(restaurantList, getBaseContext()));
+        Log.i("CARDS", "AFTER " + String.valueOf(pager.getAdapter().getCount()));
         setCurrentCard();
     }
 
@@ -519,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onPreTransform(View page, float position) {
 
-                if (position == 0 && fullyUpdated) {
+                if (position == 0) {
                     TextView txtView = page.findViewById(R.id.txt_restaurant_name);
                     int index = Integer.valueOf(txtView.getText().toString().split(". ")[0]) - 1;
                     String restaurantId = restaurantList.get(index).getRestaurantId();
@@ -540,6 +543,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void setCurrentCard() {
         HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
+
         if (pager.getAdapter() == null) {
             return;
         }
@@ -547,9 +551,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (selectedPlaceId != null) {
             for (int i = 0; i < restaurantList.size(); i++) {
                 if (selectedPlaceId.equals(restaurantList.get(i).getRestaurantId())) {
-                    if (pager.getAdapter() != null) {
-                        pager.setCurrentItem(i);
-                    }
+                    Log.i("CARDS", "NULL? - " + String.valueOf(pager.getAdapter() == null));
+                    pager.setCurrentItem(i, true);
                     return;
                 }
             }

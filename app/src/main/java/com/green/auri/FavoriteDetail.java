@@ -147,8 +147,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        sp = getSharedPreferences("login",MODE_PRIVATE);
-        accountName = sp.getString("account", "NA");
+        accountName = MainActivity.accountName;
 
 
         btn_detailFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
