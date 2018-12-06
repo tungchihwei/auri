@@ -29,8 +29,6 @@
             android:id="@+id/fab2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
             app:fabBackgroundTint="@color/holo_purple"
             app:fabDrawableTint="@color/colorAccent"
             app:fabGravity="top_start"
