@@ -12,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
-import com.google.ar.core.Config;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
@@ -51,10 +50,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
     /* List of Anchors for the current session */
     private final ArrayList<Node> nodes = new ArrayList<>();
-    private final int MAX_LOCK_SIZE = 2;
-
-    /* A renderable Restaurant RestaurantCardDisplay = A Customized 2D Layout: res/layout/unused_restaurant_card.xmlard.xml */
-    private ViewRenderable restaurantCard;
 
     /*
     *  A provided fragment from the Sceneform/AR library.
@@ -71,12 +66,12 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private double angle;
     private List<HashMap<String, String>> nearbyPlaceList;
 
-    private boolean gotLocation = false;
-    private boolean gotPlaces = false;
-    private boolean executed = false;
-    private boolean finishedExecuting = true;
+    // Locks to coordinate async execution
+    private boolean gotLocation = false;    // Will wait until we receive a location
+    private boolean gotPlaces = false;      // Will wait until we receive place list
+    private boolean executed = false;       // Will only allow one execution to trigger
+    private boolean finishedExecuting = true; // Will prevent polling while execution in progress
 
-    private boolean done;
 
     private AnchorNode anchorNode;
 
@@ -190,7 +185,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     private void startPollUpdating(){
-        if(done)return;
         // Create the Handler object (on the main thread by default)
         Handler handler = new Handler();
         // Define the code block to be executed
@@ -210,11 +204,9 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 }
             }
         };
-        // Run the above code block on the main thread after 2 seconds
+
+        // Run after 1 second
         handler.postDelayed(runnableCode, 1000);
-
-
-
     }
 
     //Execute updates
@@ -278,11 +270,10 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             Vector3 cardVector = ARUtils.buildVectorFromAngle(currentAngle, currentDistance);
             addAndCreateCard(bucketPlaces, cardVector);
         }
-        done = true;
         finishedExecuting = true;
     }
 
-    // TESTING
+    // TESTING FUNCTION
     public void createDirectionalCards() {
         Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
         Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
