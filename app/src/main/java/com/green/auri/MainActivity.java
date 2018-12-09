@@ -482,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addRestaurantResult(
                 place.getName().toString(),
                 place.getAddress().toString(),
-                place.getRating(),
+                Double.parseDouble(Float.toString(place.getRating())),
                 place.getId()
         );
 
