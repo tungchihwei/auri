@@ -152,7 +152,6 @@ public class LoginActivity extends AppCompatActivity {
                 //  Apply changes
                 e.apply();
             }
-            //}
         });
 
         if(isFirstStart){

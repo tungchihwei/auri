@@ -1,19 +1,15 @@
 package com.green.auri;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -80,7 +76,6 @@ public class RegActivity extends AppCompatActivity{
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent1);
             finish();
-//            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
     }
 
@@ -99,13 +94,12 @@ public class RegActivity extends AppCompatActivity{
             return;
         }
 
-        // Create User with Firebase
+        // Create User with Firebase Auth
         mAuth.createUserWithEmailAndPassword(Email, Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         try {
-//                            Log.e("hi", "here");
                             //check if successful
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "createUserWithEmail:success");
@@ -113,7 +107,6 @@ public class RegActivity extends AppCompatActivity{
                                 //Go to Main Activity Page here
                                 Toast.makeText(RegActivity.this, "Registration Successful",
                                         Toast.LENGTH_SHORT).show();
-//                                finish();
                                 currentUser = mAuth.getCurrentUser();
                                 sp.edit().putString("account", currentUser.getUid()).apply();
                                 sp.edit().putString("email", Email).apply();
@@ -123,7 +116,6 @@ public class RegActivity extends AppCompatActivity{
                                 startActivity(intent2);
                                 sp.edit().putBoolean("logged",true).apply();
                                 finish();
-//                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             }else{
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -136,7 +128,4 @@ public class RegActivity extends AppCompatActivity{
                     }
                 });
     }
-
-
-
 }

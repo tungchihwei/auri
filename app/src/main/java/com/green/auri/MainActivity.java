@@ -18,8 +18,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -48,8 +46,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.green.auri.arview.ARActivity;
+import com.green.auri.favorites.FavoriteView;
 import com.green.auri.utils.LocationListener;
 import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PhotoLoadingUtil;
@@ -319,7 +317,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latitude, longitude), DEFAULT_ZOOM));
         /* Here, ViewCompat.isAttachedToWindow == true, then we can openMenu */
-        fab2.openMenu();
+        if(!fab2.isMenuOpen()){
+            fab2.openMenu();
+        }
     }
 
     /******************* Search functionality *******************/

@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".onboarding.instruction2">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="   &lt;&lt;"
+            android:fontFamily="casual"
             android:textSize="30sp" />
 
         <TextView
@@ -52,7 +51,24 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text=">>   "
+            android:fontFamily="casual"
             android:textSize="30sp" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:background="@android:color/transparent"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="@string/skip"
+        android:fontFamily="casual"
+        android:textColor="@color/holo_dark"
+        android:textSize="15sp" />
+
 </FrameLayout>

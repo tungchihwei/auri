@@ -1,4 +1,4 @@
-package com.green.auri;
+package com.green.auri.utils;
 
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
@@ -7,8 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
-import com.google.firebase.database.ValueEventListener;
+import com.green.auri.favorites.FavAdapter;
 
+/* This class is used for RecyclerView in FavoriteView.java
+*  swipe the item and delete it
+* */
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private RecyclerItemTouchHelperListener listener;
