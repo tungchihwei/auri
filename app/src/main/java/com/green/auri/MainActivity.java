@@ -2,11 +2,14 @@ package com.green.auri;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -100,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean fullyUpdated;
     Handler mainHandler;
 
+    private FabSpeedDial fab2;
+
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +134,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         initCards();
 
         // Initialize Action Listeners
+        fab2 = findViewById(R.id.fab2);
         initializeMenuActions();
         initializeOnPlaceSelectedAction();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!fab2.isMenuOpen()){
+            fab2.openMenu();
+        }
     }
 
     /******************* Permission Checks *******************/
@@ -200,8 +214,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     private void initializeMenuActions() {
-        FabSpeedDial fab2 = findViewById(R.id.fab2);
+        fab2 = findViewById(R.id.fab2);
         fab2.setMenuListener(new FabSpeedDial.MenuListener() {
             @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
@@ -210,34 +231,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
+                boolean isNetworkConnected = isNetworkAvailable();
+
                 String title = menuItem.getTitle().toString();
-                switch (title) {
-                    case "Auri Mode":
-                        goToAuriMode();
-                        break;
-                    case "Settings":
-                        Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();
-                        Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
-                        settings_intent.putExtra("email", email);
-                        settings_intent.putExtra("accountName", accountName);
-                        startActivity(settings_intent);
-                        break;
-                    case "Nearby Restaurant":
-                        // Reference to the button to find nearby restaurants
+                if (isNetworkConnected){
+                    switch (title) {
+                        case "Auri Mode":
+                            goToAuriMode();
+                            break;
+                        case "Settings":
+                            Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_LONG).show();
+                            Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
+                            settings_intent.putExtra("email", email);
+                            settings_intent.putExtra("accountName", accountName);
+                            startActivity(settings_intent);
+                            break;
+                        case "Nearby Restaurant":
+                            // Reference to the button to find nearby restaurants
 
-                        Log.d(TAG, "Nearby Restaurant is Clicked");
+                            Log.d(TAG, "Nearby Restaurant is Clicked");
 
-                        // Get the URL to send a get request for the nearby restaurants.
-                        String url = PlaceSearchUtils.getUrl(latitude, longitude, RESTAURANT_SEARCH);
+                            // Get the URL to send a get request for the nearby restaurants.
+                            String url = PlaceSearchUtils.getUrl(latitude, longitude, RESTAURANT_SEARCH);
 
-                        new GetNearbyPlacesTask().execute(url, MainActivity.this);
-                        Toast.makeText(MainActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
-                        break;
-                    case "Favorites":
-                        Log.d("Favorite", "Favorites Menu Button is Clicked");
-                        Intent fav_intent = new Intent(MainActivity.this, FavoriteView.class);
-                        startActivity(fav_intent);
-                        break;
+                            new GetNearbyPlacesTask().execute(url, MainActivity.this);
+                            Toast.makeText(MainActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
+                            break;
+                        case "Favorites":
+                            Log.d("Favorite", "Favorites Menu Button is Clicked");
+                            Intent fav_intent = new Intent(MainActivity.this, FavoriteView.class);
+                            startActivity(fav_intent);
+                            break;
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this, "Please connect the Internet and WIFI", Toast.LENGTH_LONG).show();
                 }
                 return true;
             }
@@ -291,6 +318,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.longitude = longitude;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latitude, longitude), DEFAULT_ZOOM));
+        /* Here, ViewCompat.isAttachedToWindow == true, then we can openMenu */
+        fab2.openMenu();
     }
 
     /******************* Search functionality *******************/
@@ -559,47 +588,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /******************* Default Menu Functionality *******************/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the Log Out menu
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) { // selecting Log Out from the menu
-        // If click logout, go to logout class
-
-//        int id = item.getItemId();
-//        if (id == R.id.action_nearbyRest) {
-//            logout(); // if clicked, signs the user out
-//            return true;
-//        }else if (id == R.id.action_auri){
-//            goToAuriMode();
-//            return true;
-//        }else if (id == R.id.action_settings){
-//            Log.d("Settings", "Button is Clicked");
-//            // to do
-//            return true;
-//        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    private void logout() {
-        // sign out of this user and go to the log in page
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        sharedPreferences.edit().putString("account", "").apply();
-        sharedPreferences.edit().putBoolean("logged", false).apply();
-        finish();
-    }
+    /******************* Activity lifecycle *******************/
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

@@ -12,16 +12,20 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.green.auri.arview.ARActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class SettingsActivity extends AppCompatActivity {
+//    private FirebaseUser user;
     private TextView logout;
     private TextView account;
     private SharedPreferences sp;
@@ -30,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView changeProfile;
     private static final int PICK_IMAGE = 1;
     private String photo_toString;
+    private TextView txt_change_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             profile_image.setImageBitmap(bitmap);
         }
+
         changeProfile = findViewById(R.id.changeProfile);
         changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +76,15 @@ public class SettingsActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+            }
+        });
+
+        txt_change_password = findViewById(R.id.txt_change_password);
+        txt_change_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(SettingsActivity.this, PasswordChange.class);
+                startActivity(i);
             }
         });
     }

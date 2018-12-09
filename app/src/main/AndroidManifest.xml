@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--
          Indicates that app requires ARCore ("AR Required"). Ensures app is only
@@ -42,12 +43,11 @@
         <activity android:name=".arview.ARActivity" />
         <activity android:name=".Camdir" />
         <!-- <activity android:name=".Intro" /> -->
-        <activity android:name=".FavoriteCheck" />
         <activity android:name=".onboarding.Intro" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBRUsvkYevFwwKze5MBIM6kBBF168ZOyEw" />
+            android:value="@string/google_maps_key" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -67,7 +67,8 @@
 
         <activity android:name=".FavoriteDetail" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".FavoriteView"></activity>
+        <activity android:name=".FavoriteView" />
+        <activity android:name=".PasswordChange"></activity>
     </application>
 
 </manifest>

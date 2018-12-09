@@ -46,13 +46,12 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String result) { // after retrieving the data it is in json
-        // so we use the DataParser class to parse the json file on the stuff we want
+        // Use the DataParser class to parse the json file on the stuff we want
         Log.d("GooglePlacesReadTask", "onPostExecute Entered");
         List<HashMap<String, String>> nearbyPlacesList;
         DataParser dataParser = new DataParser();
-        nearbyPlacesList =  dataParser.parse(result); // parse json file and store in a HashMap
-        ShowNearbyPlaces(nearbyPlacesList); // show these restuarants on the map
-//        PositionNearbyPlaces(nearbyPlacesList);
+        nearbyPlacesList =  dataParser.parse(result); // parse json file and store in a HashMap list
+        ShowNearbyPlaces(nearbyPlacesList); // Pass thru this function to show nearby restuarants on the map
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
 
@@ -82,40 +81,12 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
         double theta = Math.toDegrees(Math.atan((lngChange)/(latChange)));
 
-//        Log.i("Position","theta: "+theta);
-//        Log.i("Position","distance: "+r);
-
         Log.i("Position","unitLat: "+unitLat);
         Log.i("Position","unitLng: "+unitLng);
 
 
         return new double[]{unitLat, unitLng};
 
-//        if (latChange>SIGNIFICANCE_THRESHOLD && lngChange>SIGNIFICANCE_THRESHOLD){
-//            return "North East";
-//        }
-//        if (latChange>SIGNIFICANCE_THRESHOLD && lngChange<-SIGNIFICANCE_THRESHOLD){
-//            return "South East";
-//        }
-//        if (latChange<-SIGNIFICANCE_THRESHOLD && lngChange<-SIGNIFICANCE_THRESHOLD) {
-//            return "South West";
-//        }
-//        if (latChange<-SIGNIFICANCE_THRESHOLD && lngChange>SIGNIFICANCE_THRESHOLD){
-//            return "North West";
-//        }
-//        if (latChange>SIGNIFICANCE_THRESHOLD){
-//            return "East";
-//        }
-//        if (latChange<-SIGNIFICANCE_THRESHOLD){
-//            return "West";
-//        }
-//        if (lngChange>SIGNIFICANCE_THRESHOLD){
-//            return "North";
-//        }
-//        if (lngChange<-SIGNIFICANCE_THRESHOLD){
-//            return "South";
-//        }
-//        return "SAME";
     }
 
     private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {

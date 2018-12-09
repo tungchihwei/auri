@@ -1,5 +1,6 @@
 package com.green.auri;
 
+import android.content.res.Resources;
 import android.os.StrictMode;
 import android.util.Log;
 
