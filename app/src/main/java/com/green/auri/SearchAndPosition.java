@@ -67,9 +67,6 @@ public class SearchAndPosition {
 
         Log.i("ANGLE", String.valueOf(bucketedPlaces.toString()));
 
-
-
-
         return bucketedPlaces;
     }
 
