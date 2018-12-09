@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: document your custom view class.
+ * Stores a bucket of restaurants that represents all restaurants in a portion of the view.
+ * Uses a HorizontalInfiniteCycleViewPager to show the restaurant
  */
 public class RestaurantBucketNode extends Node implements Node.OnTouchListener {
     private Context context;
@@ -34,6 +35,7 @@ public class RestaurantBucketNode extends Node implements Node.OnTouchListener {
         this.context = context;
         restaurantBucket = LayoutInflater.from(context).inflate(R.layout.layout_restaurant_bucket,null);
 
+        // Build infinite scroller from list of restaurants
         HorizontalInfiniteCycleViewPager pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
         RestaurantCardAdapter adapter = new RestaurantCardAdapter(bucket, context);
         pager.setAdapter(adapter);
