@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -29,10 +28,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
-import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -45,7 +40,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.Task;
 import com.green.auri.arview.ARActivity;
 import com.green.auri.favorites.FavoriteView;
 import com.green.auri.utils.LocationListener;
@@ -53,9 +47,8 @@ import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PhotoLoadingUtil;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
-import com.green.auri.utils.placeData;
+import com.green.auri.utils.PlaceSearchResult;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab2 = findViewById(R.id.fab2);
         initializeMenuActions();
         initializeOnPlaceSelectedAction();
+        PhotoLoadingUtil.initPhotoLoadingUtil(mGeoDataClient, BitmapFactory.decodeResource(getResources(), R.drawable.na));
     }
 
     @Override
@@ -447,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             try {
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-                placeData newGooglePlace = new placeData(googlePlace);
+                PlaceSearchResult newGooglePlace = new PlaceSearchResult(googlePlace);
 
 //                double lat = Double.parseDouble(googlePlace.get("lat"));
 //                double lng = Double.parseDouble(googlePlace.get("lng"));
@@ -501,43 +495,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void waitForPhotoResponse(RestaurantResult restaurantInfo) {
-        Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(restaurantInfo.getRestaurantId());
-        photoMetadataResponse.addOnCompleteListener(task1 -> {
-            // Get the list of photos.
-            PlacePhotoMetadataResponse photos = task1.getResult();
-            PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-
-            try {
-                // Get the first photo in the list.
-                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-
-                // Get a full-size bitmap for the photo.
-                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
-                photoResponse.addOnCompleteListener(task11 -> {
-                    PlacePhotoResponse photo = task11.getResult();
-                    Bitmap restaurantPhoto = photo.getBitmap();
-                    restaurantInfo.setRestaurantPhoto(PhotoLoadingUtil.convertBitmapToString(restaurantPhoto));
-                    restaurantList.add(restaurantInfo);
-                    notifyPager();
-                });
-            } catch (Exception e) {
-                // Set default photo and change photo bitmap to string
-                Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.na);
-                restaurantInfo.setRestaurantPhoto(PhotoLoadingUtil.convertBitmapToString(icon));
-                restaurantList.add(restaurantInfo);
-                notifyPager();
-            } finally {
-                photoMetadataBuffer.release();
-            }
+        PhotoLoadingUtil.getPhotoFromPlaceId(restaurantInfo.getRestaurantId(), (bitmapString) -> {
+            restaurantInfo.setRestaurantPhoto(bitmapString);
+            restaurantList.add(restaurantInfo);
+            notifyPager();
         });
     }
 
     private void notifyPager() {
         HorizontalInfiniteCycleViewPager pager = findViewById(R.id.horizontal_cycle);
-        Log.i("CARDS", "BEFORE " + String.valueOf(pager.getAdapter().getCount()));
-
         pager.setAdapter(new RestaurantCardAdapter(restaurantList, getBaseContext()));
-        Log.i("CARDS", "AFTER " + String.valueOf(pager.getAdapter().getCount()));
         setCurrentCard();
     }
 

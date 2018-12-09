@@ -31,6 +31,7 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
 
     private Context context;
     private View restaurantBucket;
+    private HorizontalInfiniteCycleViewPager pager;
     private GestureDetectorCompat gestureDetectorCompat;
 
     public RestaurantBucketNode(Context context, List<RestaurantResult> bucket) {
@@ -39,29 +40,21 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
         restaurantBucket = LayoutInflater.from(context).inflate(R.layout.ar_restaurant_bucket,null);
 
         // Build infinite scroller from list of restaurants
-        HorizontalInfiniteCycleViewPager pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
-        RestaurantCardAdapter adapter = new RestaurantCardAdapter(bucket, context, true);
+        pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
         gestureDetectorCompat = new GestureDetectorCompat(context, this);
-
-        pager.setAdapter(adapter);
-        pager.setOnInfiniteCyclePageTransformListener(new OnInfiniteCyclePageTransformListener() {
-
-            @Override
-            public void onPreTransform(View page, float position) {
-                Log.i("SWIPE", "SWIPE DETECTED");
-            }
-
-            @Override
-            public void onPostTransform(View page, float position) {
-                Log.i("SWIPE", "SWIPED");
-            }
-        });
-
         pager.setOnTouchListener(this);
+        updateAdapter(bucket);
     }
 
     public View getView() {
         return restaurantBucket;
+    }
+
+    public void updateAdapter(List<RestaurantResult> bucket) {
+        if (pager == null) {
+            return;
+        }
+        pager.setAdapter(new RestaurantCardAdapter(bucket, context, true));
     }
 
     @Override

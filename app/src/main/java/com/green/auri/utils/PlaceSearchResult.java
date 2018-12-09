@@ -4,29 +4,32 @@ import com.green.auri.RestaurantResult;
 
 import java.util.HashMap;
 
-public class placeData {
-    String placeName;
-    String placeId;
-    double lat;
-    double lng;
-    double x;
-    double y;
-    double distance;
-    double rating;
-    String photoRef;
-    double bucket;
-    String vicinity;
+public class PlaceSearchResult {
+    private String placeName;
+    private String placeId;
+    private double lat;
+    private double lng;
+    private double x;
+    private double y;
+    private double distance;
+    private double rating;
+    private String photoRef;
+    private double bucket;
+    private String vicinity;
 
-    public placeData(HashMap<String, String> googlePlace){
+    public PlaceSearchResult(HashMap<String, String> googlePlace){
         this.lat = Double.parseDouble(googlePlace.get("lat"));
         this.lng = Double.parseDouble(googlePlace.get("lng"));
         this.placeName = googlePlace.get("place_name");
         this.placeId = googlePlace.get("place_id");
+
         String currentRating = googlePlace.get("rating");
-        if(currentRating==""){
+        if(currentRating == ""){
+
             // We will show 3 for rating if there isn't one
             currentRating="3.0";
         }
+
         this.rating = Double.parseDouble(currentRating);
         this.photoRef = googlePlace.get("photoURL");
         this.vicinity = googlePlace.get("vicinity");

@@ -49,7 +49,7 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("My Favorite");
+        getSupportActionBar().setTitle("My Favorites");
         setContentView(R.layout.activity_favoriteview);
 
         mGeoDataClient = Places.getGeoDataClient(this);

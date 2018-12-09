@@ -2,13 +2,17 @@ package com.green.auri;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -103,6 +107,14 @@ public class RestaurantCardAdapter extends PagerAdapter {
             fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(fav_detail);
         });
+
+        if (restaurantCardId == AR_CARD) {
+            ImageView restaurantImgView = view.findViewById(R.id.restaurant_image);
+            byte[] encodeByte = Base64.decode(restaurantPhoto, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            restaurantImgView.setImageBitmap(bitmap);
+        }
+
 
         if (accountName == null) {
             container.addView(view);
