@@ -42,7 +42,7 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
         // Build infinite scroller from list of restaurants
         pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
         gestureDetectorCompat = new GestureDetectorCompat(context, this);
-        pager.setOnTouchListener(this);
+        restaurantBucket.setOnTouchListener(this);
         updateAdapter(bucket);
     }
 
@@ -93,19 +93,21 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
         setWorldRotation(lookRotation);
     }
 
-    float scrollstartX1;
+    float startX1;
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (scrollstartX1 != e1.getX()) {
-            scrollstartX1 = e1.getX();
-            //***************************************
-            //code run only once for a scroll action...
-            //****************************************
-            HorizontalInfiniteCycleViewPager pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
-            pager.setCurrentItem(pager.getCurrentItem()+1);
+        if (startX1 != e1.getX()) {
+            startX1 = e1.getX();
 
-            Log.i("SWIPE", "PARENT: " + "SCROLL");
+            float diffX = e2.getX() - e1.getX();
+            if (diffX > 0) {
+                pager.setCurrentItem((pager.getCurrentItem() - 1) % pager.getAdapter().getCount());
+                Log.i("SWIPE", "PARENT: " + "SCROLL RIGHT" + " x");
+            } else {
+                pager.setCurrentItem((pager.getCurrentItem() + 1) % pager.getAdapter().getCount());
+                Log.i("SWIPE", "PARENT: " + "SCROLL RIGHT" + " x");
+            }
         }
 
         return true;
@@ -113,17 +115,19 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        HorizontalInfiniteCycleViewPager pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
-        float diffX = e2.getX() - e1.getX();
-        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-            if (diffX > 0) {
-                pager.setCurrentItem((pager.getCurrentItem() - 1) % pager.getAdapter().getCount());
-            } else {
-                pager.setCurrentItem((pager.getCurrentItem() + 1) % pager.getAdapter().getCount());
+        if (startX1 != e1.getX()) {
+            float diffX = e2.getX() - e1.getX();
+            if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffX > 0) {
+                    pager.setCurrentItem((pager.getCurrentItem() - 1) % pager.getAdapter().getCount());
+                    Log.i("SWIPE", "PARENT: " + "FLING RIGHT" + " v: " + velocityX + " x");
+                } else {
+                    pager.setCurrentItem((pager.getCurrentItem() + 1) % pager.getAdapter().getCount());
+                    Log.i("SWIPE", "PARENT: " + "FLING LEFT");
+                }
             }
         }
 
-        Log.i("SWIPE", "PARENT: " + "FLING");
         return true;
     }
 

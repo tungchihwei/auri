@@ -238,6 +238,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private void getPositionedPlaces() {
 
         try {
+
             //Get camera pose to update where we are facing
             Pose newPose = arSceneView.getArFrame().getCamera().getPose();
             Anchor anchor = arSceneView.getSession().createAnchor(newPose);
@@ -249,7 +250,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arSceneView.getScene());
 
-        } catch (NotTrackingException e) {
+        } catch (Exception e) {
             /* Camera is not tracking yet, return and wait for next poll */
             Log.i("POLL", "NOT tracking");
             finishedExecuting = true;
