@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
+import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
@@ -44,7 +45,7 @@ import java.util.List;
 
 
 /* The main activity that is loaded by the launcher to display the camera screen */
-public class ARActivity extends AppCompatActivity implements LocationListener, PlaceSearchListener, SensorEventListener {
+public class ARActivity extends AppCompatActivity implements LocationListener, PlaceSearchListener {
     /* Requested to install the ARCore package. */
     private boolean installRequested;
     private DisplayRotationHelper displayRotationHelper;
@@ -118,14 +119,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             }
         });
 
-        // Get an instance of the SensorManager
-        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-        if(sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size()!=0){
-            Sensor s = sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-            Sensor s2 = sm.getSensorList(Sensor.TYPE_MAGNETIC_FIELD).get(0);
-            sm.registerListener(this,s, SensorManager.SENSOR_DELAY_NORMAL);
-            sm.registerListener(this,s2, SensorManager.SENSOR_DELAY_NORMAL);
-        }
         startPollUpdating();
     }
 
@@ -164,57 +157,17 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
         displayRotationHelper.onResume();
 
-        // Get an instance of the SensorManager
-        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-        if(sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size()!=0){
-            Sensor s = sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-            Sensor s2 = sm.getSensorList(Sensor.TYPE_MAGNETIC_FIELD).get(0);
-            sm.registerListener(this,s, SensorManager.SENSOR_DELAY_NORMAL);
-            sm.registerListener(this,s2, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-
-//        DSensorManager.startDProcessedSensor(this, DProcessedSensor.TYPE_COMPASS_FLAT_ONLY_AND_DEPRECIATED_ORIENTATION,
-//                new DProcessedEventListener() {
-//                    @Override
-//                    public void onProcessedValueChanged(DSensorEvent dSensorEvent) {
-//                        // update UI
-//                        // dSensorEvent.values[0] is the azimuth.
-//                        if (dSensorEvent.sensorType == DSensor.TYPE_DEPRECIATED_ORIENTATION) {
-//                            angle = Math.round(dSensorEvent.values[0]);
-//                        }
-//                    }
-//                });
-    }
-
-    public void onSensorChanged(SensorEvent event) {
-
-        Log.i("ANGLE", "SENSOR CHANGE EVENT");
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values;
-
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values;
-
-        if (mGravity != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-
-            if (sm.getRotationMatrix(R, I, mGravity, mGeomagnetic)) {
-
-                // orientation contains azimut, pitch and roll
-                float orientation[] = new float[3];
-                sm.getOrientation(R, orientation);
-
-                double azimut = orientation[0];
-                angle = -azimut * 360 / (2 * Math.PI);
-                Log.i("ANGLE2", "THE CALCULATED ANGLE FROM NORTH "+angle);
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        DSensorManager.startDProcessedSensor(this, DProcessedSensor.TYPE_COMPASS_FLAT_ONLY_AND_DEPRECIATED_ORIENTATION,
+                new DProcessedEventListener() {
+                    @Override
+                    public void onProcessedValueChanged(DSensorEvent dSensorEvent) {
+                        // update UI
+                        // dSensorEvent.values[0] is the azimuth.
+                        if (dSensorEvent.sensorType == DSensor.TYPE_DEPRECIATED_ORIENTATION) {
+                            angle = Math.round(dSensorEvent.values[0]);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -281,11 +234,17 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private void getPositionedPlaces() {
 
         try {
-            Pose cameraRelativePose = Pose.makeTranslation(0, 0, 0);
-            Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
+            //Get camera pose to update where we are facing
+            Pose newPose = arSceneView.getArFrame().getCamera().getPose();
+            Anchor anchor = arSceneView.getSession().createAnchor(newPose);
+
+            // Remove all existing elements
             deleteAllCards();
+
+            //Update global anchor
             anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arSceneView.getScene());
+            
         } catch (NotTrackingException e) {
             /* Camera is not tracking yet, return and wait for next poll */
             Log.i("POLL", "NOT tracking");
@@ -339,6 +298,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 Node child = children.get(0);
                 anchorNode.removeChild(child);
             }
+            arSceneView.getScene().removeChild(anchorNode);
+
         }
     }
 
