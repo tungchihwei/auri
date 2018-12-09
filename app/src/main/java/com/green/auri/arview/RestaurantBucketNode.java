@@ -1,9 +1,7 @@
 package com.green.auri.arview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.GestureDetectorCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -13,24 +11,14 @@ import android.view.View;
 import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
 import com.gigamole.infinitecycleviewpager.OnInfiniteCyclePageTransformListener;
 import com.google.ar.sceneform.FrameTime;
-import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ViewRenderable;
-import com.google.ar.sceneform.ux.BaseGesture;
-import com.google.ar.sceneform.ux.BaseGestureRecognizer;
-import com.google.ar.sceneform.ux.DragGesture;
-import com.google.ar.sceneform.ux.DragGestureRecognizer;
-import com.google.ar.sceneform.ux.GesturePointersUtility;
-import com.google.ar.sceneform.ux.SelectionVisualizer;
-import com.google.ar.sceneform.ux.TransformableNode;
-import com.google.ar.sceneform.ux.TransformationSystem;
 import com.green.auri.R;
 import com.green.auri.RestaurantCardAdapter;
 import com.green.auri.RestaurantResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,11 +36,11 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
     public RestaurantBucketNode(Context context, List<RestaurantResult> bucket) {
         // Load attributes
         this.context = context;
-        restaurantBucket = LayoutInflater.from(context).inflate(R.layout.layout_restaurant_bucket,null);
+        restaurantBucket = LayoutInflater.from(context).inflate(R.layout.ar_restaurant_bucket,null);
 
         // Build infinite scroller from list of restaurants
         HorizontalInfiniteCycleViewPager pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
-        RestaurantCardAdapter adapter = new RestaurantCardAdapter(bucket, context);
+        RestaurantCardAdapter adapter = new RestaurantCardAdapter(bucket, context, true);
         gestureDetectorCompat = new GestureDetectorCompat(context, this);
 
         pager.setAdapter(adapter);
@@ -112,21 +100,6 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
         setWorldRotation(lookRotation);
     }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
     float scrollstartX1;
 
     @Override
@@ -142,12 +115,7 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
             Log.i("SWIPE", "PARENT: " + "SCROLL");
         }
 
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        return;
+        return true;
     }
 
     @Override
@@ -170,4 +138,28 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetectorCompat.onTouchEvent(event);
     }
+
+
+    /* Unused gesture methods required by the GestureDetector interface. */
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
 }

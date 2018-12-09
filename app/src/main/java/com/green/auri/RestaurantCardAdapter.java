@@ -19,21 +19,32 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.green.auri.arview.ARActivity;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class RestaurantCardAdapter extends PagerAdapter {
+    private static int NORMAL_CARD = R.layout.restaurant_card;
+    private static int AR_CARD = R.layout.ar_restaurant_card;
 
     private Context context;
     private LayoutInflater layoutInflater;
-
     private List<RestaurantResult> restaurantList;
+    private int restaurantCardId = NORMAL_CARD;
+
 
     public RestaurantCardAdapter(List<RestaurantResult> restaurantList, Context context) {
         this.restaurantList = restaurantList;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
+    }
+
+    public RestaurantCardAdapter(List<RestaurantResult> restaurantList, Context context, boolean arEnabled) {
+        this(restaurantList, context);
+        if (arEnabled) {
+            restaurantCardId = AR_CARD;
+        }
     }
 
     @Override
@@ -59,7 +70,7 @@ public class RestaurantCardAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View view = layoutInflater.inflate(R.layout.restaurant_card, container, false);
+        View view = layoutInflater.inflate(restaurantCardId, container, false);
 
         RestaurantResult restaurantInfo = restaurantList.get(position);
         TextView txt_restaurantName = view.findViewById(R.id.txt_restaurant_name);
@@ -79,17 +90,17 @@ public class RestaurantCardAdapter extends PagerAdapter {
         String restaurantPhoto = restaurantInfo.getRestaurantPhoto();
 
         LinearLayout layout_cardInfo = view.findViewById(R.id.ll_card_display);
-//        layout_cardInfo.setOnClickListener(v -> {
-//
-//            if (restaurantInfo.getRestaurantId() == null || restaurantInfo.getRestaurantId() == "") {
-//                return;
-//            }
-//
-//            Intent fav_detail = new Intent(context, FavoriteDetail.class);
-//            fav_detail.putExtra("place_id", placeId);
-//            fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(fav_detail);
-//        });
+        layout_cardInfo.setOnClickListener(v -> {
+
+            if (restaurantInfo.getRestaurantId() == null || restaurantInfo.getRestaurantId() == "") {
+                return;
+            }
+
+            Intent fav_detail = new Intent(context, FavoriteDetail.class);
+            fav_detail.putExtra("place_id", placeId);
+            fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(fav_detail);
+        });
 
         if (accountName == null) {
             container.addView(view);

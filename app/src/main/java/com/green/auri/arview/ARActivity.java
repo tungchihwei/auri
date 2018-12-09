@@ -15,12 +15,12 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
+import com.google.ar.core.exceptions.NotTrackingException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Vector3;
-import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.green.auri.GetNearbyPlacesTask;
 import com.green.auri.R;
@@ -31,7 +31,6 @@ import com.green.auri.dsensor.DSensor;
 import com.green.auri.dsensor.DSensorEvent;
 import com.green.auri.dsensor.DSensorManager;
 import com.green.auri.dsensor.interfaces.DProcessedEventListener;
-import com.green.auri.utils.ARUtils;
 import com.green.auri.utils.LocationListener;
 import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PlaceSearchListener;
@@ -52,12 +51,12 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private final ArrayList<Node> nodes = new ArrayList<>();
 
     /*
-    *  A provided fragment from the Sceneform/AR library.
-    *  1. Checks for camera and ARCore requirements on load and during application use.
-    *  2. Provides the functionality to render and add the rendered component to the activity.
-    *  3. Provides listeners for actions on top of the camera/AR display.
-    *  No visible component, just a helper fragment
-    */
+     *  A provided fragment from the Sceneform/AR library.
+     *  1. Checks for camera and ARCore requirements on load and during application use.
+     *  2. Provides the functionality to render and add the rendered component to the activity.
+     *  3. Provides listeners for actions on top of the camera/AR display.
+     *  No visible component, just a helper fragment
+     */
     private ArFragment arFragment;
     private ArSceneView arSceneView;
 
@@ -184,7 +183,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         super.onDestroy();
     }
 
-    private void startPollUpdating(){
+    private void startPollUpdating() {
         // Create the Handler object (on the main thread by default)
         Handler handler = new Handler();
         // Define the code block to be executed
@@ -192,14 +191,13 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             @Override
             public void run() {
                 Log.i("POLL", "Polling");
-                if(finishedExecuting){
+                if (finishedExecuting) {
                     handler.removeCallbacks(this);
                     Log.i("POLL", "Executing update");
 
                     updateNearbyPlaces();
-                    handler.postDelayed(this, 10000);
-                }
-                else{
+                    handler.postDelayed(this, 20000);
+                } else {
                     Log.i("POLL", "NOT FINISHED");
                 }
             }
@@ -226,27 +224,36 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     // Get positioned places
-    private void getPositionedPlaces(){
+    private void getPositionedPlaces() {
 
-        Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
-        Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
-        deleteAllCards();
-        anchorNode = new AnchorNode(anchor);
-        anchorNode.setParent(arSceneView.getScene());
-        HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
+        try {
+            Pose cameraRelativePose = Pose.makeTranslation(0, 0, 0);
+            Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
+            deleteAllCards();
+            anchorNode = new AnchorNode(anchor);
+            anchorNode.setParent(arSceneView.getScene());
+        } catch (NotTrackingException e) {
+
+            /* Camera is not tracking yet, return and wait for next poll */
+
+            finishedExecuting = true;
+            return;
+        }
+
+        HashMap<String, List<HashMap<String, String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
 
-        for(String bucket: result.keySet()){
-            List<HashMap<String,String>> placesInBucket = result.get(bucket);
+        for (String bucket : result.keySet()) {
+            List<HashMap<String, String>> placesInBucket = result.get(bucket);
             List<RestaurantResult> bucketPlaces = new ArrayList<>();
 
             for (int i = 0; i < placesInBucket.size(); i++) {
                 HashMap<String, String> currentGooglePlace = placesInBucket.get(i);
                 String currentName = currentGooglePlace.get("Name");
                 String currentRating = currentGooglePlace.get("Rating");
-                if(currentRating==""){
+                if (currentRating == "") {
                     // We will show 3 for rating if there isn't one
-                    currentRating="3.0";
+                    currentRating = "3.0";
                 }
                 String currentDistance = currentGooglePlace.get("Distance");
                 String currentPhotoRef = currentGooglePlace.get("photoRef");
@@ -275,7 +282,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
     // TESTING FUNCTION
     public void createDirectionalCards() {
-        Pose cameraRelativePose = Pose.makeTranslation(0,0,0);
+        Pose cameraRelativePose = Pose.makeTranslation(0, 0, 0);
         Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
@@ -291,9 +298,9 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         addCard(card, direction);
     }
 
-    public void deleteAllCards(){
+    public void deleteAllCards() {
         Log.i("POLL", "Removing all cards");
-        if(anchorNode!=null){
+        if (anchorNode != null) {
             List<Node> children = anchorNode.getChildren();
             for (int i = 0; i < children.size(); i++) {
                 Node child = children.get(i);
@@ -304,9 +311,9 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     /*
-    *  Makes sure that the app has permissions to access the camera.
-    *  Does not ask if it was denied with the option of do not ask again.
-    */
+     *  Makes sure that the app has permissions to access the camera.
+     *  Does not ask if it was denied with the option of do not ask again.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
         /* If the Camera permission has not been given. */
@@ -347,7 +354,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         Log.i("POSITIONED", "Location updated");
         this.latitude = latitude;
         this.longitude = longitude;
-        if(gotPlaces && !executed){
+        if (gotPlaces && !executed) {
             executed = true;
             getPositionedPlaces();
         }
@@ -356,20 +363,27 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
     @Override
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
-        Log.i("POSITIONED", "Nearby Places updated: " + String.valueOf(nearbyPlacesList));
         this.nearbyPlaceList = nearbyPlacesList;
-        if(!nearbyPlacesList.isEmpty()){
-            if(gotLocation && !executed){
+        if (!nearbyPlacesList.isEmpty()) {
+            if (gotLocation && !executed) {
                 executed = true;
                 getPositionedPlaces();
             }
             gotPlaces = true;
         }
-        if(nearbyPlacesList.isEmpty()){
+        if (nearbyPlacesList.isEmpty()) {
             String url = PlaceSearchUtils.getUrl(latitude, longitude, "restaurant"); // get the url of nearby restaurant
             new GetNearbyPlacesTask().execute(url, ARActivity.this);
         }
-
-
     }
+
+    private void restartARSession() {
+        try {
+            arSceneView.getSession().pause();
+            arSceneView.getSession().resume();
+        } catch (CameraNotAvailableException e) {
+            Log.i("ARTAG", "Camera not available?");
+        }
+    }
+
 }
