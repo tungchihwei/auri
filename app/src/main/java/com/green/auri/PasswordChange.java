@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class PasswordChange extends AppCompatActivity {
+    // Change password task
     private FirebaseUser user;
 
     private EditText edt_new_password;
@@ -27,10 +28,13 @@ public class PasswordChange extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String new_password = edt_new_password.getText().toString();
+                // Error check the passwords
                 if (new_password.length() < 6){
                     Toast.makeText(PasswordChange.this, "Please make sure it is an Email & Password must be at least 6 characters!",
                             Toast.LENGTH_LONG).show();
-                }else {
+                }
+                // Password change through Firebase Auth
+                else {
                     user = FirebaseAuth.getInstance().getCurrentUser();
                     user.updatePassword(new_password);
                     Toast.makeText(PasswordChange.this, "Password has been changed!",

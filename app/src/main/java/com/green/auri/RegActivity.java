@@ -94,7 +94,7 @@ public class RegActivity extends AppCompatActivity{
             return;
         }
 
-        // Create User with Firebase
+        // Create User with Firebase Auth
         mAuth.createUserWithEmailAndPassword(Email, Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -128,7 +128,4 @@ public class RegActivity extends AppCompatActivity{
                     }
                 });
     }
-
-
-
 }
