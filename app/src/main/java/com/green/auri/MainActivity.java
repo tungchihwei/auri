@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     /* Last Updated Location */
     private double latitude;
     private double longitude;
-//    private LatLng currentLocation;
     private Map<String, Marker> mMarkers;
     private List<RestaurantResult> restaurantList;
 
@@ -93,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static String accountName;
     private SharedPreferences sharedPreferences;
     private String email;
-    //    private int mode = 0; // 1: nearby restaurant 2: search
 
     private static BitmapDescriptor RED_MARKER;
     private static BitmapDescriptor SELECTED_MARKER;
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         // Hide the status bar if it is shown.
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();

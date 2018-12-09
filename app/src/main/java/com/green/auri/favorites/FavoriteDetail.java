@@ -320,7 +320,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
     private void ReviewRequest(String myPlaceId){
         try{
             MyHttp myHttp = new MyHttp();
-            String rev = myHttp.httpGet(myPlaceId);
+            String rev = myHttp.httpGet(myPlaceId, FavoriteDetail.this);
 
             // Format json file for getting the data that we need for the reviews
             JSONObject obj = new JSONObject(rev);
