@@ -101,25 +101,28 @@ II	Add 180° to the calculator value
 III	Add 180° to the calculator value
 IV	Add 360° to the calculator value
          */
-        double angleOfInflectionFromNorth = Math.toDegrees(Math.atan(latChange/lngChange));
-        if(unitLat>=0 && unitLng>=0){
-            Log.i("POSITION", "Location is North East");
-        }
-        else if (unitLat>0 && unitLng<0){
-            Log.i("POSITION", "Location is North West");
-            angleOfInflectionFromNorth += 180;
-        }
-        else if(unitLat<0 && unitLng<0){
-            Log.i("POSITION", "Location is South West");
-            angleOfInflectionFromNorth += 180;
-        }
-        else {
-            Log.i("POSITION", "Location is South East");
-            angleOfInflectionFromNorth += 360;
-        }
+        double angleOfInflectionFromNorth = -(Math.toDegrees(Math.atan(latChange/lngChange))-90);
+        Log.i("ANGLE", "Naive angle measurement: "+angleOfInflectionFromNorth);
+//        if(unitLat>=0 && unitLng>=0){
+//            Log.i("POSITION", "Location is North East");
+//        }
+//        else if (unitLat>0 && unitLng<0){
+//            Log.i("POSITION", "Location is North West");
+//            angleOfInflectionFromNorth += 180;
+//        }
+//        else if(unitLat<0 && unitLng<0){
+//            Log.i("POSITION", "Location is South West");
+//            angleOfInflectionFromNorth += 180;
+//        }
+//        else {
+//            Log.i("POSITION", "Location is South East");
+//            angleOfInflectionFromNorth += 180;
+//        }
+//        Log.i("ANGLE", "Final Angle of Inflection: "+angleOfInflectionFromNorth);
 
 //        double angleOfInflectionFromNorth = 180 +
-        double quickTheta =  angleOfInflectionFromNorth-theta;
+        double quickTheta =  angleOfInflectionFromNorth - theta ;
+        Log.i("ANGLE", "Change in angle: "+ quickTheta);
 
         double radians = Math.toRadians(theta);
 
@@ -128,14 +131,11 @@ IV	Add 360° to the calculator value
         double lng2 = Math.cos(radians)*unitLat + Math.sin(radians)*unitLng;
 
         //Convert to polar coordinates and degrees for bucketing
-        double newTheta = Math.toDegrees(Math.atan(lng2/lat2));
         if(quickTheta<0){
             quickTheta+=360;
         }
 
-        Log.i("ANGLE", "Angle of Inflection: "+angleOfInflectionFromNorth);
-        Log.i("ANGLE", "quickTheta: "+ quickTheta);
-        Log.i("ANGLE","newTheta: "+newTheta);
+        Log.i("ANGLE", "normalized quickTheta: "+ quickTheta);
 
         //Rotate everything by half a bucket so that we can center better
         quickTheta = (quickTheta + BUCKET_SIZE/2)%360;
