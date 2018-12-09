@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent1);
             finish();
-//            startActivity(new Intent(getApplicationContext(), RegActivity.class));
         }
     }
 
@@ -108,16 +107,13 @@ public class LoginActivity extends AppCompatActivity {
 
                             // saved account name, so that after login can get the account name
                             sp.edit().putString("account", currentUser.getUid()).apply();
-//                            Log.i("!!!email_login", Email);
                             sp.edit().putString("email", Email).apply();
-//                            finish();
                             // if login successful, then enter the main activity page
                             Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
                             intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent2);
                             sp.edit().putBoolean("logged",true).apply();
                             finish();
-//                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }else {
                             // else toast that there's an error
                             Toast.makeText(LoginActivity.this, "Couldn't Log In, Please check your info!",
@@ -151,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                 //  Apply changes
                 e.apply();
             }
-            //}
         });
 
         if(isFirstStart){
