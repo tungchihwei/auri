@@ -1,4 +1,4 @@
-package com.green.auri;
+package com.green.auri.utils;
 
 import android.support.v7.widget.RecyclerView;
 
