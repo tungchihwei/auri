@@ -82,11 +82,10 @@ public class LoginActivity extends AppCompatActivity {
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent1);
             finish();
-//            startActivity(new Intent(getApplicationContext(), RegActivity.class));
         }
     }
 
-    public void LoginUser(){
+    public void LoginUser(){ // Perform the Login task
         String Email = email.getText().toString();
         String Password = password.getText().toString();
 
@@ -98,7 +97,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "A Field is Empty", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        // Use Firebase Auth to do the login task
+        // Check if the username and password match with the ones in the Firebase
         mAuth.signInWithEmailAndPassword(Email, Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -108,16 +108,15 @@ public class LoginActivity extends AppCompatActivity {
 
                             // saved account name, so that after login can get the account name
                             sp.edit().putString("account", currentUser.getUid()).apply();
-//                            Log.i("!!!email_login", Email);
                             sp.edit().putString("email", Email).apply();
-//                            finish();
+
                             // if login successful, then enter the main activity page
                             Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
                             intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent2);
                             sp.edit().putBoolean("logged",true).apply();
                             finish();
-//                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
                         }else {
                             // else toast that there's an error
                             Toast.makeText(LoginActivity.this, "Couldn't Log In, Please check your info!",
@@ -128,6 +127,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void init_intro(){
+        // Tutorial intro part of the app
+        // Performs the first time the user downloaded the app and use it for the first time
         getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         //  Create a new boolean and preference and set it to true
