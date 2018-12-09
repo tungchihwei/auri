@@ -36,6 +36,7 @@ import com.green.auri.utils.LocationListener;
 import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
+import com.green.auri.utils.placeData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,8 +197,15 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                     handler.removeCallbacks(this);
                     Log.i("POLL", "Executing update");
 
-                    updateNearbyPlaces();
-                    handler.postDelayed(this, 10000);
+                    try{
+                        updateNearbyPlaces();
+                        handler.postDelayed(this, 10000);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        finishedExecuting = true;
+                        handler.postDelayed(this, 1000);
+                    }
+
                 }
                 else{
                     Log.i("POLL", "NOT FINISHED");
@@ -233,38 +241,23 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         deleteAllCards();
         anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
-        HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
+//        HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
+        HashMap<Double, List<placeData>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
 
-        for(String bucket: result.keySet()){
-            List<HashMap<String,String>> placesInBucket = result.get(bucket);
+        for(Double bucket: result.keySet()){
+            List<placeData> placesInBucket = result.get(bucket);
             List<RestaurantResult> bucketPlaces = new ArrayList<>();
 
             for (int i = 0; i < placesInBucket.size(); i++) {
-                HashMap<String, String> currentGooglePlace = placesInBucket.get(i);
-                String currentName = currentGooglePlace.get("name");
-                String currentRating = currentGooglePlace.get("rating");
-                if(currentRating==""){
-                    // We will show 3 for rating if there isn't one
-                    currentRating="3.0";
-                }
-                String currentDistance = currentGooglePlace.get("distance");
-                String currentPhotoRef = currentGooglePlace.get("photoRef");
+                placeData currentGooglePlace = placesInBucket.get(i);
 
-                RestaurantResult restaurantResult = new RestaurantResult(
-                        currentName,
-                        "", // address
-                        Double.valueOf(currentRating),
-                        ""
-                );
-
-                // Get pictures before hand
-                restaurantResult.setRestaurantDistance(Double.valueOf(currentDistance));
+                RestaurantResult restaurantResult = currentGooglePlace.toRestaurantResult();
                 bucketPlaces.add(restaurantResult);
             }
 
-            double currentAngle = Double.parseDouble(result.get(bucket).get(0).get("bucket"));
-            double currentDistance = Double.parseDouble(result.get(bucket).get(0).get("distance"));
+            double currentAngle = result.get(bucket).get(0).getBucket();
+            double currentDistance = result.get(bucket).get(0).getDistance();
 
             Log.i("APOS", String.valueOf(bucketPlaces));
             Vector3 cardVector = ARUtils.buildVectorFromAngle(currentAngle, currentDistance);
@@ -349,7 +342,12 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         this.longitude = longitude;
         if(gotPlaces && !executed){
             executed = true;
-            getPositionedPlaces();
+            try{
+                getPositionedPlaces();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
         gotLocation = true;
     }
@@ -361,7 +359,11 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         if(!nearbyPlacesList.isEmpty()){
             if(gotLocation && !executed){
                 executed = true;
-                getPositionedPlaces();
+                try{
+                    getPositionedPlaces();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             gotPlaces = true;
         }

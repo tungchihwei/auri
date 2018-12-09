@@ -2,7 +2,7 @@ package com.green.auri;
 
 import android.util.Log;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.green.auri.utils.placeData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,23 +14,20 @@ public class SearchAndPosition {
 
     // Position nearby places relative to current location
     // Iterate over nearbyPlaceList and get each position unit vector based on a reference angle
-    public static HashMap<String,List<HashMap<String, String>>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
-        Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
+    public static HashMap<Double, List<placeData>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
+//        Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
         Log.i("ANGLE", "My angle from North is: "+theta);
-        Log.i("POSITIONED", "Positioning nearby places");
-        List<HashMap<String, String>> positionedPlaces = new ArrayList<>();
+//        Log.i("POSITIONED", "Positioning nearby places");
+
+        List<placeData> positionedPlaces = new ArrayList<>();
 
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             HashMap<String, String> currentGooglePlace = nearbyPlacesList.get(i);
+            placeData newPositionedPlace = new placeData(currentGooglePlace);
 
-            //Get place information
-            double lat = Double.parseDouble(currentGooglePlace.get("lat"));
-            double lng = Double.parseDouble(currentGooglePlace.get("lng"));
-            String placeName = currentGooglePlace.get("place_name");
-            String placeId = currentGooglePlace.get("place_id");
-            String rating = currentGooglePlace.get("rating");
-            String photoRef = currentGooglePlace.get("photoURL");
-            String vicinity = currentGooglePlace.get("vicinity");
+            double lat = newPositionedPlace.getLat();
+            double lng = newPositionedPlace.getLng();
+            String placeName = newPositionedPlace.getPlaceName();
 
             Log.i("Position", "Place: "+placeName+" Position: "+lat+" "+lng);
 
@@ -38,32 +35,25 @@ public class SearchAndPosition {
             Log.i("ANGLE","Place: "+placeName);
             double[] relativePositionList = RelativePosition(myLatitude, myLongitude, lat,lng,theta);
 
-            //Create a new Positioned Place item with all relaevent data for AR
-            HashMap<String, String> positionedPlace = new HashMap<String, String>();
-            positionedPlace.put("place_name",placeName);
-            positionedPlace.put("place_id",placeId);
-            positionedPlace.put("X",Double.toString(relativePositionList[0]));
-            positionedPlace.put("Y",Double.toString(relativePositionList[1]));
-            positionedPlace.put("distance",Double.toString(relativePositionList[2]));
-            positionedPlace.put("rating",rating);
-            positionedPlace.put("photoRef",photoRef);
-            positionedPlace.put("bucket",Double.toString(relativePositionList[3]));
-            positionedPlace.put("vicinity",vicinity);
+            //Add new calculated information
+            newPositionedPlace.setX(relativePositionList[0]);
+            newPositionedPlace.setY(relativePositionList[1]);
+            newPositionedPlace.setDistance(relativePositionList[2]);
+            newPositionedPlace.setBucket(relativePositionList[3]);
 
-            positionedPlaces.add(positionedPlace);
+            positionedPlaces.add(newPositionedPlace);
 
             Log.i("Position", relativePositionList[0]+ " " +relativePositionList[1]);
         }
 
-        HashMap<String, List<HashMap<String, String>>> bucketedPlaces = new HashMap<>();
-
-        for (HashMap<String, String> positionedPlace : positionedPlaces) {
-            String bucket = positionedPlace.get("Bucket");
+        HashMap<Double, List<placeData>> bucketedPlaces = new HashMap<>();
+        for(placeData positionedPlace:positionedPlaces){
+            double bucket = positionedPlace.getBucket();
             if(bucketedPlaces.containsKey(bucket)){
                 bucketedPlaces.get(bucket).add(positionedPlace);
             }
             else{
-                List<HashMap<String, String>> placesInBucket = new ArrayList<>();
+                List<placeData> placesInBucket = new ArrayList<>();
                 placesInBucket.add(positionedPlace);
                 bucketedPlaces.put(bucket, placesInBucket);
             }
@@ -80,8 +70,8 @@ public class SearchAndPosition {
     // 3. Return position array
     private static double[] RelativePosition(double myLatitude, double myLongitude, double lat, double lng, double theta){
         //get deltas from your position
-        double latChange = myLatitude - lat;
-        double lngChange = myLongitude - lng;
+        double latChange = lat-myLatitude;
+        double lngChange = lng-myLongitude;
 
         Log.i("Position","latChange"+latChange);
         Log.i("Position","lngChange"+lngChange);
@@ -91,10 +81,22 @@ public class SearchAndPosition {
 
         //Generate unit vectors for new position
         double unitLat = latChange/r;
+        if(unitLat>0){
+            Log.i("POSITION", "Location is North");
+        }
+        else {
+            Log.i("POSITION", "Location is South");
+        }
         double unitLng = lngChange/r;
+        if(unitLng>0){
+            Log.i("POSITION", "Location is East");
+        }
+        else {
+            Log.i("POSITION", "Location is West");
+        }
 
-        double angleOfInflextionFromNorth = 180 + Math.toDegrees(Math.atan(latChange/lngChange));
-        double quickTheta =  angleOfInflextionFromNorth - theta;
+        double angleOfInflectionFromNorth = 180 + Math.toDegrees(Math.atan(latChange/lngChange));
+        double quickTheta =  theta - angleOfInflectionFromNorth;
 
         double radians = Math.toRadians(theta);
 
@@ -108,7 +110,7 @@ public class SearchAndPosition {
             quickTheta+=360;
         }
 
-        Log.i("ANGLE", "Angle of Inflection: "+angleOfInflextionFromNorth);
+        Log.i("ANGLE", "Angle of Inflection: "+angleOfInflectionFromNorth);
         Log.i("ANGLE", "quickTheta: "+ quickTheta);
         Log.i("ANGLE","newTheta: "+newTheta);
 

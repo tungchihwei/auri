@@ -53,6 +53,7 @@ import com.green.auri.utils.LocationUtils;
 import com.green.auri.utils.PhotoLoadingUtil;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
+import com.green.auri.utils.placeData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -446,27 +447,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             try {
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+                placeData newGooglePlace = new placeData(googlePlace);
 
-                double lat = Double.parseDouble(googlePlace.get("lat"));
-                double lng = Double.parseDouble(googlePlace.get("lng"));
-                    String placeName = googlePlace.get("place_name");
-                String placeId = googlePlace.get("place_id");
-                String currentRating = googlePlace.get("rating");
-                if(currentRating==""){
-                    // We will show 3 for rating if there isn't one
-                    currentRating="3.0";
-                }
+//                double lat = Double.parseDouble(googlePlace.get("lat"));
+//                double lng = Double.parseDouble(googlePlace.get("lng"));
+//                    String placeName = googlePlace.get("place_name");
+//                String placeId = googlePlace.get("place_id");
+//                String currentRating = googlePlace.get("rating");
+//                if(currentRating==""){
+//                    // We will show 3 for rating if there isn't one
+//                    currentRating="3.0";
+//                }
 
                 // TODO: Catch double exception
                 addRestaurantResult(
-                        placeName,
-                        googlePlace.get("vicinity"),
-                        Double.valueOf(currentRating),
-                        placeId
+                        newGooglePlace.getPlaceName(),
+                        newGooglePlace.getVicinity(),
+                        newGooglePlace.getRating(),
+                        newGooglePlace.getPlaceId()
                 );
 
                 // Add the marker on the map
-                addMarker(new LatLng(lat, lng), placeName, placeId);
+                addMarker(new LatLng(newGooglePlace.getLat(), newGooglePlace.getLng()), newGooglePlace.getPlaceName(), newGooglePlace.getPlaceId());
             } catch (NullPointerException e) {
                 continue;
             }
