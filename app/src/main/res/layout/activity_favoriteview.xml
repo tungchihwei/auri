@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/rootLayout"
-    tools:context=".FavoriteView">
+    tools:context=".favorites.FavoriteView">
 
     <!--<TextView-->
         <!--android:id="@+id/textView9"-->

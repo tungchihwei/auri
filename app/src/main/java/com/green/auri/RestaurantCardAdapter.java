@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.green.auri.favorites.FavoriteDetail;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,17 +80,17 @@ public class RestaurantCardAdapter extends PagerAdapter {
         String restaurantPhoto = restaurantInfo.getRestaurantPhoto();
 
         LinearLayout layout_cardInfo = view.findViewById(R.id.ll_card_display);
-//        layout_cardInfo.setOnClickListener(v -> {
-//
-//            if (restaurantInfo.getRestaurantId() == null || restaurantInfo.getRestaurantId() == "") {
-//                return;
-//            }
-//
-//            Intent fav_detail = new Intent(context, FavoriteDetail.class);
-//            fav_detail.putExtra("place_id", placeId);
-//            fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(fav_detail);
-//        });
+        layout_cardInfo.setOnClickListener(v -> {
+
+            if (restaurantInfo.getRestaurantId() == null || restaurantInfo.getRestaurantId() == "") {
+                return;
+            }
+
+            Intent fav_detail = new Intent(context, FavoriteDetail.class);
+            fav_detail.putExtra("place_id", placeId);
+            fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(fav_detail);
+        });
 
         if (accountName == null) {
             container.addView(view);

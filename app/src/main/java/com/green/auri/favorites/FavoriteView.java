@@ -1,10 +1,6 @@
-package com.green.auri;
+package com.green.auri.favorites;
 
-import android.content.ClipData;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,18 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
@@ -36,16 +20,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.green.auri.R;
+import com.green.auri.utils.RecyclerItemTouchHelper;
+import com.green.auri.utils.RecyclerItemTouchHelperListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class FavoriteView extends AppCompatActivity implements RecyclerItemTouchHelperListener{
+public class FavoriteView extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
     protected GeoDataClient mGeoDataClient;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    public ArrayList<fav_data> fav_datail = new ArrayList<fav_data>();
+    public ArrayList<FavoriteData> fav_datail = new ArrayList<FavoriteData>();
 
     public RecyclerView fav_recyclerView;
     FavAdapter fav_Adapter;
@@ -97,7 +83,7 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
                     String key=childSnapshot.getKey();
                     favorite_list[k] = key;
                     Log.i("checkdata", key);
-                    fav_data add = new fav_data();
+                    FavoriteData add = new FavoriteData();
                     add.Place_id = key;
 //                    Log.i("order", childSnapshot.child("Name").getValue().toString());
                     add.fav_resName = childSnapshot.child("Name").getValue().toString();
@@ -165,104 +151,3 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
     }
 }
 
-class fav_data {
-    String fav_resName;
-    Bitmap fav_bitmap;
-    String Place_id;
-}
-
-class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
-{
-//    private List<String> mDataSet;
-//    Context context;
-    FavoriteView main;
-    Context context;
-//    private OnItemClickListener mOnItemClickListener = null;
-
-//    public interface OnItemClickListener {
-//        void onItemClick(View view, int position);
-//    }
-//
-//    public void setOnItemClickListener(OnItemClickListener listener) {
-//        mOnItemClickListener = listener;
-//    }
-
-    public FavAdapter(FavoriteView main, Context aContext)
-    {
-        this.main = main;
-        context = aContext;
-//        context = aContext;
-    }
-
-    @Override
-    public FavAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favoritelist, parent, false);
-        ViewHolder viewholder = new ViewHolder(view);
-//        view.setOnClickListener(this);
-        return viewholder;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
-    {
-//        holder.txt_Name.setText(mDataSet.get(position));
-
-        holder.txt_Name.setText(this.main.fav_datail.get(position).fav_resName);
-        Bitmap bm = this.main.fav_datail.get(position).fav_bitmap;
-        holder.img_Photo.setImageBitmap(bm);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent fav_detail = new Intent(context, FavoriteDetail.class);
-                fav_detail.putExtra("place_id", FavAdapter.this.main.fav_datail.get(position).Place_id);
-                fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(fav_detail);
-//                Toast.makeText(context, "onclick " + FavAdapter.this.main.fav_datail.get(position).Place_id, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount()
-    {
-        return main.fav_datail.size();
-    }
-
-    public void removeItem(int position) {
-        // also need to remove from firebase
-        main.fav_datail.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    // restore, can be done in the future.
-
-
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
-        public TextView txt_Name;
-        public ImageView img_Photo;
-        public RelativeLayout view_background, view_foreground;
-
-        public ViewHolder(View itemView)
-        {
-            super(itemView);
-            txt_Name = (TextView) itemView.findViewById(R.id.txt_resName);
-            img_Photo = (ImageView) itemView.findViewById(R.id.img_res);
-            view_background = (RelativeLayout) itemView.findViewById(R.id.view_background);
-            view_foreground = (RelativeLayout) itemView.findViewById(R.id.view_foreground);
-
-//            if (view == null) {
-//                throw new IllegalArgumentException("itemView may not be null");
-//            }
-//            view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
-
-        }
-    }
-}
