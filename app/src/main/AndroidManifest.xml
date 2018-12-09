@@ -43,12 +43,11 @@
         <activity android:name=".arview.ARActivity" />
         <activity android:name=".Camdir" />
         <!-- <activity android:name=".Intro" /> -->
-        <activity android:name=".FavoriteCheck" />
         <activity android:name=".onboarding.Intro" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBRUsvkYevFwwKze5MBIM6kBBF168ZOyEw" />
+            android:value="@string/google_maps_key" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
