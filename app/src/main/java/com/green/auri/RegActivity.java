@@ -80,7 +80,6 @@ public class RegActivity extends AppCompatActivity{
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent1);
             finish();
-//            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
     }
 
@@ -99,13 +98,12 @@ public class RegActivity extends AppCompatActivity{
             return;
         }
 
-        // Create User with Firebase
+        // Create User with Firebase Auth
         mAuth.createUserWithEmailAndPassword(Email, Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         try {
-//                            Log.e("hi", "here");
                             //check if successful
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "createUserWithEmail:success");
@@ -113,7 +111,6 @@ public class RegActivity extends AppCompatActivity{
                                 //Go to Main Activity Page here
                                 Toast.makeText(RegActivity.this, "Registration Successful",
                                         Toast.LENGTH_SHORT).show();
-//                                finish();
                                 currentUser = mAuth.getCurrentUser();
                                 sp.edit().putString("account", currentUser.getUid()).apply();
                                 sp.edit().putString("email", Email).apply();
@@ -123,7 +120,6 @@ public class RegActivity extends AppCompatActivity{
                                 startActivity(intent2);
                                 sp.edit().putBoolean("logged",true).apply();
                                 finish();
-//                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             }else{
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -136,7 +132,4 @@ public class RegActivity extends AppCompatActivity{
                     }
                 });
     }
-
-
-
 }

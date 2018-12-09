@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DataParser {
     // Parse the json file from google nearby places
-    // it parse out all the restaurants we want that are nearby
+    // it parse out all the restaurants we want that are nearby and open
     public List<HashMap<String, String>> parse(String jsonData) {
         JSONArray jsonArray = null;
         JSONObject jsonObject;
@@ -29,6 +29,7 @@ public class DataParser {
     }
 
     private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
+        // Stores the HashMap in a list
         int placesCount = jsonArray.length();
         List<HashMap<String, String>> placesList = new ArrayList<>();
         HashMap<String, String> placeMap = null;
@@ -49,6 +50,7 @@ public class DataParser {
     }
 
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
+        // Stores each restaurants' details into a HashMap
         HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
         String placeName = "-NA-";
         String vicinity = "-NA-";
