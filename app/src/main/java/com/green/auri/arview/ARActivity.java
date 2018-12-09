@@ -73,8 +73,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private double angle;
     private List<HashMap<String, String>> nearbyPlaceList;
 
-    float[] mGravity;
-    float[] mGeomagnetic;
+    Handler handler;
 
     // Locks to coordinate async execution
     private boolean gotLocation = false;    // Will wait until we receive a location
@@ -107,6 +106,9 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         arSceneView.getPlaneRenderer().setEnabled(false);
 
         installRequested = false;
+
+        // Create the Handler object (on the main thread by default)
+        handler = new Handler();
 
         arSceneView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -179,6 +181,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
         super.onPause();
 
         DSensorManager.stopDSensor();
+        handler.removeCallbacks(null);
 
         if (arSceneView != null) {
             // GLSurfaceView is paused first so that it does not try
@@ -195,8 +198,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     private void startPollUpdating() {
-        // Create the Handler object (on the main thread by default)
-        Handler handler = new Handler();
         // Define the code block to be executed
         Runnable runnableCode = new Runnable() {
             @Override
@@ -220,10 +221,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
     //Execute updates
     private void updateNearbyPlaces() {
-//        if (done){
-//            finishedExecuting = true;
-//            return;
-//        }
         gotLocation = false;
         gotPlaces = false;
         executed = false;
@@ -254,6 +251,10 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             /* Camera is not tracking yet, return and wait for next poll */
             Log.i("POLL", "NOT tracking");
             finishedExecuting = true;
+
+            handler.removeCallbacks(null);
+            startPollUpdating();
+
             return;
         }
 
