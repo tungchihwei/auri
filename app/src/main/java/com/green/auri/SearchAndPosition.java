@@ -95,8 +95,31 @@ public class SearchAndPosition {
             Log.i("POSITION", "Location is West");
         }
 
-        double angleOfInflectionFromNorth = 180 + Math.toDegrees(Math.atan(latChange/lngChange));
-        double quickTheta =  theta - angleOfInflectionFromNorth;
+        /*
+        I	Use the calculator value
+II	Add 180° to the calculator value
+III	Add 180° to the calculator value
+IV	Add 360° to the calculator value
+         */
+        double angleOfInflectionFromNorth = Math.toDegrees(Math.atan(latChange/lngChange));
+        if(unitLat>=0 && unitLng>=0){
+            Log.i("POSITION", "Location is North East");
+        }
+        else if (unitLat>0 && unitLng<0){
+            Log.i("POSITION", "Location is North West");
+            angleOfInflectionFromNorth += 180;
+        }
+        else if(unitLat<0 && unitLng<0){
+            Log.i("POSITION", "Location is South West");
+            angleOfInflectionFromNorth += 180;
+        }
+        else {
+            Log.i("POSITION", "Location is South East");
+            angleOfInflectionFromNorth += 360;
+        }
+
+//        double angleOfInflectionFromNorth = 180 +
+        double quickTheta =  angleOfInflectionFromNorth-theta;
 
         double radians = Math.toRadians(theta);
 

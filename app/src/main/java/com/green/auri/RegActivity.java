@@ -23,15 +23,16 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegActivity extends AppCompatActivity{
 
+    private static final String TAG = "EmailPassword";
+
     private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
     private Context context;
     private EditText password;
     private EditText email;
     private Button button_register;
     private TextView backTosign;
-    private static final String TAG = "EmailPassword";
     private SharedPreferences sp;
-    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class RegActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_reg);
 
+        // components
         email = findViewById(R.id.textInputEditTextEmail);
         password = findViewById(R.id.textInputEditTextPassword);
         button_register = findViewById(R.id.appCompatButtonRegister);

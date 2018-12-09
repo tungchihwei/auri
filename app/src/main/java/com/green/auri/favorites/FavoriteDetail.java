@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+// Show restaurant detail
 public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallback {
     /* Constants */
     private String accountName;
@@ -91,6 +92,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         
         setContentView(R.layout.activity_favoritedetail);
 
+        // Set the map
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map_resDetail);
         mapFragment.getMapAsync(this);
@@ -99,6 +101,8 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
 
         Lat = 0.;
         Lng = 0.;
+
+        // Get Place id
         Place_id = getIntent().getStringExtra("place_id");
 
         txt_resName = findViewById(R.id.txt_resName);
@@ -106,6 +110,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         txt_resRating = findViewById(R.id.txt_resRating);
         txt_resPrice = findViewById(R.id.txt_resPrice);
 
+        // Set adapter for restaurant reviews
         list_review = findViewById(R.id.list_resReview);
         review_Adapter = new ResReviewAdapter(this.getBaseContext(), this);
         list_review.setAdapter(review_Adapter);
@@ -114,6 +119,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         btn_web = findViewById(R.id.btn_web);
         btn_detailFav = findViewById(R.id.btn_detailAddFav);
 
+        // Call the restaurant
         btn_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,6 +135,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
+        // Link too restaurant website
         btn_web.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,11 +149,11 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
+        // Showing/deleting/adding restaurant from/to favorites(database)
         btn_detailFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
-                    Log.i("isFavorite", "onCheckedChange to on");
                     // Save restaurant to database
                     fav_database = FirebaseDatabase.getInstance();
                     favRef = fav_database.getReference(accountName);
@@ -158,12 +165,13 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                     favRef = FirebaseDatabase.getInstance().getReference(accountName + "/" + Place_id);
                     PhotoRef = favRef.child("Photo");
                     PhotoRef.setValue(resPhoto);
+
                     btn_detailFav.setBackgroundResource(R.drawable.fav_on);
                 } else{
-                    Log.i("isFavorite", "onCheckedChange to off");
                     // Delete restaurant from database
                     fav_database = FirebaseDatabase.getInstance();
                     fav_database.getReference(accountName).child(Place_id).removeValue();
+
                     btn_detailFav.setBackgroundResource(R.drawable.fav_off);
                 }
             }
@@ -198,34 +206,8 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                             byte[] b = baos.toByteArray();
                             resPhoto = Base64.encodeToString(b, Base64.DEFAULT);
 
-                            if (accountName != null) {
-                                fav_database = FirebaseDatabase.getInstance();
-                                favRef = fav_database.getReference();
-                                favRef.getDatabase();
-                                isFav = 0;
-                                favRef.child(accountName).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                                            String key=childSnapshot.getKey();
-                                            if (key.equals(Place_id)){
-                                                isFav = 1;
-                                                btn_detailFav.setChecked(true);
-//                            btn_fav.setBackgroundResource(R.drawable.fav_on);
-                                                break;
-                                            }
-                                        }
-                                        if (isFav == 0){
-                                            btn_detailFav.setChecked(false);
-//                        btn_fav.setBackgroundResource(R.drawable.fav_off);
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
+                            // Check if restaurant is user's favorite
+                            isFavorite();
                         }
                     });
                 } catch (Exception e){
@@ -236,38 +218,41 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                     byte[] b = baos.toByteArray();
                     resPhoto = Base64.encodeToString(b, Base64.DEFAULT);
 
-                    if (accountName != null) {
-                        fav_database = FirebaseDatabase.getInstance();
-                        favRef = fav_database.getReference();
-                        favRef.getDatabase();
-                        isFav = 0;
-                        favRef.child(accountName).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                                    String key=childSnapshot.getKey();
-                                    if (key.equals(Place_id)){
-                                        isFav = 1;
-                                        btn_detailFav.setChecked(true);
-//                            btn_fav.setBackgroundResource(R.drawable.fav_on);
-                                        break;
-                                    }
-                                }
-                                if (isFav == 0){
-                                    btn_detailFav.setChecked(false);
-//                        btn_fav.setBackgroundResource(R.drawable.fav_off);
-                                }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
+                    // Check if restaurant is user's favorite
+                    isFavorite();
                 }
             }
         });
+    }
 
+    // Check if restaurant is user's favorite
+    public void isFavorite(){
+        if (accountName != null) {
+            fav_database = FirebaseDatabase.getInstance();
+            favRef = fav_database.getReference();
+            favRef.getDatabase();
+            isFav = 0;
+            favRef.child(accountName).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                        String key=childSnapshot.getKey();
+                        if (key.equals(Place_id)){
+                            isFav = 1;
+                            btn_detailFav.setChecked(true);
+                            break;
+                        }
+                    }
+                    if (isFav == 0){
+                        btn_detailFav.setChecked(false);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     @Override
@@ -280,43 +265,39 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
                 if (task.isSuccessful()) {
                     PlaceBufferResponse places = task.getResult();
+                    // .get(0) gets this restaurant's details
                     Place myPlace = places.get(0);
 
                     // set map
                     Lat = myPlace.getLatLng().latitude;
                     Lng = myPlace.getLatLng().longitude;
 
+                    // Set marker on the map by Lat/Lng
                     map.addMarker(new MarkerOptions()
                             .position(new LatLng(Lat, Lng))
                             .title(myPlace.getName().toString()));
-
                     map.setMinZoomPreference(6.0f);
                     map.setMaxZoomPreference(20.0f);
 
-
+                    // Set map camera
                     LatLng res_loc = new LatLng(Lat, Lng);
-
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(res_loc, 15));
 
-                    // set the detail text
+                    //Get restaurant detail and set the detail text
                     resName = myPlace.getName().toString();
-
                     txt_resName.setText(myPlace.getName().toString());
                     txt_resRating.setText(Float.toString(myPlace.getRating()));
                     resRating.setRating(myPlace.getRating());
-
                     String price_lev = "";
                     for(int i = 0; i<myPlace.getPriceLevel(); i++){
                         price_lev += "$";
                     }
                     txt_resPrice.setText(price_lev);
-
                     try{
                         phone_number = myPlace.getPhoneNumber().toString();
                     } catch (Exception e){
                         phone_number = "";
                     }
-
                     try{
                         web = myPlace.getWebsiteUri();
                     } catch (Exception e){
@@ -325,12 +306,11 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
 
                     // get all the reviews
                     ReviewRequest(Place_id);
-
                     list_review.invalidateViews();
-
+                    // Release the place after finish getting all detail
                     places.release();
                 } else {
-
+                    Toast.makeText(FavoriteDetail.this, "Place API error", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -353,9 +333,6 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                 add.rev_author = review.getString("author_name");
                 add.rev_date = review.getString("relative_time_description");
                 add.rev_review = review.getString("text");
-//                Log.i("reviews", add.rev_author);
-//                Log.i("reviews", add.rev_date);
-//                Log.i("reviews", add.rev_review);
                 place_reviews.add(add);
             }
         }catch (JSONException e) {
