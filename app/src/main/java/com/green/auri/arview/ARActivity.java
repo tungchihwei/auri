@@ -248,7 +248,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             //Update global anchor
             anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arSceneView.getScene());
-            
+
         } catch (NotTrackingException e) {
             /* Camera is not tracking yet, return and wait for next poll */
             Log.i("POLL", "NOT tracking");
