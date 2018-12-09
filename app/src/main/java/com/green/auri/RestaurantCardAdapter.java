@@ -90,6 +90,7 @@ public class RestaurantCardAdapter extends PagerAdapter {
         String placeId = restaurantInfo.getRestaurantId();
         String restaurantPhoto = restaurantInfo.getRestaurantPhoto();
 
+        // Set the card to be clickable
         LinearLayout layout_cardInfo = view.findViewById(R.id.ll_card_display);
         layout_cardInfo.setOnClickListener(v -> {
 

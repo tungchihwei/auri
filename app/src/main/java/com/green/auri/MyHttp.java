@@ -1,8 +1,11 @@
 package com.green.auri;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.StrictMode;
 import android.util.Log;
+
+import com.green.auri.favorites.FavoriteDetail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -17,7 +20,7 @@ public class MyHttp {
     URL url;
     HttpURLConnection urlConnection;
 
-    public String httpGet(String id)
+    public String httpGet(String id, Context myContext)
     {
         String result = "";
 
@@ -27,11 +30,11 @@ public class MyHttp {
 
         StringBuffer response = new StringBuffer();
         HttpURLConnection c = null;
-        String PlaceApiKey = "AIzaSyCYC1v9VdeXlgssng4wjyEZD2OghGRHwac\n";
+
+        String PlaceApiKey = myContext.getResources().getString(R.string.place_api_key);
 
         try{
             url = new URL("https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&fields=reviews&key=" + PlaceApiKey);
-            Log.i("jsons", "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&fields=reviews&key=" +PlaceApiKey);
         }catch (MalformedURLException e){
             throw new IllegalArgumentException("invalid url");
         }
