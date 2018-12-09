@@ -27,8 +27,10 @@ public class SearchAndPosition {
             double lat = Double.parseDouble(currentGooglePlace.get("lat"));
             double lng = Double.parseDouble(currentGooglePlace.get("lng"));
             String placeName = currentGooglePlace.get("place_name");
+            String placeId = currentGooglePlace.get("place_id");
             String rating = currentGooglePlace.get("rating");
             String photoRef = currentGooglePlace.get("photoURL");
+            String vicinity = currentGooglePlace.get("vicinity");
 
             Log.i("Position", "Place: "+placeName+" Position: "+lat+" "+lng);
 
@@ -38,13 +40,15 @@ public class SearchAndPosition {
 
             //Create a new Positioned Place item with all relaevent data for AR
             HashMap<String, String> positionedPlace = new HashMap<String, String>();
-            positionedPlace.put("Name",placeName);
+            positionedPlace.put("place_name",placeName);
+            positionedPlace.put("place_id",placeId);
             positionedPlace.put("X",Double.toString(relativePositionList[0]));
             positionedPlace.put("Y",Double.toString(relativePositionList[1]));
-            positionedPlace.put("Distance",Double.toString(relativePositionList[2]));
-            positionedPlace.put("Rating",rating);
+            positionedPlace.put("distance",Double.toString(relativePositionList[2]));
+            positionedPlace.put("rating",rating);
             positionedPlace.put("photoRef",photoRef);
-            positionedPlace.put("Bucket",Double.toString(relativePositionList[3]));
+            positionedPlace.put("bucket",Double.toString(relativePositionList[3]));
+            positionedPlace.put("vicinity",vicinity);
 
             positionedPlaces.add(positionedPlace);
 

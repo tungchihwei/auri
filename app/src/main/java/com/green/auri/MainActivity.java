@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 double lat = Double.parseDouble(googlePlace.get("lat"));
                 double lng = Double.parseDouble(googlePlace.get("lng"));
-                String placeName = googlePlace.get("place_name");
+                    String placeName = googlePlace.get("place_name");
                 String placeId = googlePlace.get("place_id");
                 String currentRating = googlePlace.get("rating");
                 if(currentRating==""){

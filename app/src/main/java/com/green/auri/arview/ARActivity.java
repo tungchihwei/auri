@@ -242,13 +242,13 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
 
             for (int i = 0; i < placesInBucket.size(); i++) {
                 HashMap<String, String> currentGooglePlace = placesInBucket.get(i);
-                String currentName = currentGooglePlace.get("Name");
-                String currentRating = currentGooglePlace.get("Rating");
+                String currentName = currentGooglePlace.get("name");
+                String currentRating = currentGooglePlace.get("rating");
                 if(currentRating==""){
                     // We will show 3 for rating if there isn't one
                     currentRating="3.0";
                 }
-                String currentDistance = currentGooglePlace.get("Distance");
+                String currentDistance = currentGooglePlace.get("distance");
                 String currentPhotoRef = currentGooglePlace.get("photoRef");
 
                 RestaurantResult restaurantResult = new RestaurantResult(
@@ -263,8 +263,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 bucketPlaces.add(restaurantResult);
             }
 
-            double currentAngle = Double.parseDouble(result.get(bucket).get(0).get("Bucket"));
-            double currentDistance = Double.parseDouble(result.get(bucket).get(0).get("Distance"));
+            double currentAngle = Double.parseDouble(result.get(bucket).get(0).get("bucket"));
+            double currentDistance = Double.parseDouble(result.get(bucket).get(0).get("distance"));
 
             Log.i("APOS", String.valueOf(bucketPlaces));
             Vector3 cardVector = ARUtils.buildVectorFromAngle(currentAngle, currentDistance);
