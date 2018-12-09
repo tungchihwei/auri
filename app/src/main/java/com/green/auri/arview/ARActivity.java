@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
+import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
@@ -236,11 +237,17 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private void getPositionedPlaces() {
 
         try {
-            Pose cameraRelativePose = Pose.makeTranslation(0, 0, 0);
-            Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
+            //Get camera pose to update where we are facing
+            Pose newPose = arSceneView.getArFrame().getCamera().getPose();
+            Anchor anchor = arSceneView.getSession().createAnchor(newPose);
+
+            // Remove all existing elements
             deleteAllCards();
+
+            //Update global anchor
             anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arSceneView.getScene());
+            
         } catch (NotTrackingException e) {
             /* Camera is not tracking yet, return and wait for next poll */
             Log.i("POLL", "NOT tracking");
@@ -300,6 +307,8 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                 anchorNode.removeChild(child);
                 i--;
             }
+            arSceneView.getScene().removeChild(anchorNode);
+
         }
     }
 
