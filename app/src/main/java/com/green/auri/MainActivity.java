@@ -54,6 +54,7 @@ import com.green.auri.utils.PhotoLoadingUtil;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -341,7 +342,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // Clear the previous results
                         mMap.clear();
                         mMarkers.clear();
-                        restaurantList.clear();
+                        //restaurantList.clear();
+                        restaurantList = new ArrayList<>();
 
                         fullyUpdated = false;
 
@@ -483,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 place.getRating(),
                 place.getId()
         );
+
     }
 
     private void addRestaurantResult(String name, String address, double rating, String placeId) {
