@@ -2,7 +2,7 @@ package com.green.auri;
 
 import android.util.Log;
 
-import com.green.auri.utils.placeData;
+import com.green.auri.utils.PlaceSearchResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,16 +14,16 @@ public class SearchAndPosition {
 
     // Position nearby places relative to current location
     // Iterate over nearbyPlaceList and get each position unit vector based on a reference angle
-    public static HashMap<Double, List<placeData>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
+    public static HashMap<Double, List<PlaceSearchResult>> PositionNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList, double myLatitude, double myLongitude, double theta){
 //        Log.i("Position", "My Position: "+myLatitude+" "+myLongitude);
         Log.i("ANGLE", "My angle from North is: "+theta);
 //        Log.i("POSITIONED", "Positioning nearby places");
 
-        List<placeData> positionedPlaces = new ArrayList<>();
+        List<PlaceSearchResult> positionedPlaces = new ArrayList<>();
 
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             HashMap<String, String> currentGooglePlace = nearbyPlacesList.get(i);
-            placeData newPositionedPlace = new placeData(currentGooglePlace);
+            PlaceSearchResult newPositionedPlace = new PlaceSearchResult(currentGooglePlace);
 
             double lat = newPositionedPlace.getLat();
             double lng = newPositionedPlace.getLng();
@@ -46,14 +46,14 @@ public class SearchAndPosition {
             Log.i("Position", relativePositionList[0]+ " " +relativePositionList[1]);
         }
 
-        HashMap<Double, List<placeData>> bucketedPlaces = new HashMap<>();
-        for(placeData positionedPlace:positionedPlaces){
+        HashMap<Double, List<PlaceSearchResult>> bucketedPlaces = new HashMap<>();
+        for(PlaceSearchResult positionedPlace:positionedPlaces){
             double bucket = positionedPlace.getBucket();
             if(bucketedPlaces.containsKey(bucket)){
                 bucketedPlaces.get(bucket).add(positionedPlace);
             }
             else{
-                List<placeData> placesInBucket = new ArrayList<>();
+                List<PlaceSearchResult> placesInBucket = new ArrayList<>();
                 placesInBucket.add(positionedPlace);
                 bucketedPlaces.put(bucket, placesInBucket);
             }

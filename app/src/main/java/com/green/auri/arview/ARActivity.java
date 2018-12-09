@@ -31,16 +31,13 @@ import com.green.auri.GetNearbyPlacesTask;
 import com.green.auri.R;
 import com.green.auri.RestaurantResult;
 import com.green.auri.SearchAndPosition;
-import com.green.auri.dsensor.DProcessedSensor;
-import com.green.auri.dsensor.DSensor;
-import com.green.auri.dsensor.DSensorEvent;
 import com.green.auri.dsensor.DSensorManager;
-import com.green.auri.dsensor.interfaces.DProcessedEventListener;
 import com.green.auri.utils.LocationListener;
 import com.green.auri.utils.LocationUtils;
+import com.green.auri.utils.PhotoLoadingUtil;
 import com.green.auri.utils.PlaceSearchListener;
 import com.green.auri.utils.PlaceSearchUtils;
-import com.green.auri.utils.placeData;
+import com.green.auri.utils.PlaceSearchResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -254,58 +251,52 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
             finishedExecuting = true;
             return;
         }
-//        HashMap<String, List<HashMap<String,String>>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
-        HashMap<Double, List<placeData>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
+        HashMap<Double, List<PlaceSearchResult>> result = SearchAndPosition.PositionNearbyPlaces(nearbyPlaceList, latitude, longitude, angle);
 
         for(Double bucket: result.keySet()){
-            List<placeData> placesInBucket = result.get(bucket);
+            List<PlaceSearchResult> placesInBucket = result.get(bucket);
             List<RestaurantResult> bucketPlaces = new ArrayList<>();
-
-            for (int i = 0; i < placesInBucket.size(); i++) {
-                placeData currentGooglePlace = placesInBucket.get(i);
-
-                RestaurantResult restaurantResult = currentGooglePlace.toRestaurantResult();
-
-                bucketPlaces.add(restaurantResult);
-            }
 
             double currentAngle = result.get(bucket).get(0).getBucket();
             double currentDistance = result.get(bucket).get(0).getDistance();
 
-            Log.i("APOS", String.valueOf(bucketPlaces));
             Vector3 cardVector = ARUtils.buildVectorFromAngle(currentAngle, currentDistance);
-            addAndCreateCard(bucketPlaces, cardVector);
+            RestaurantBucketNode node = addAndCreateRestaurantBucket(bucketPlaces, cardVector);
+
+            for (int i = 0; i < placesInBucket.size(); i++) {
+                PlaceSearchResult currentGooglePlace = placesInBucket.get(i);
+
+                RestaurantResult restaurantResult = currentGooglePlace.toRestaurantResult();
+                PhotoLoadingUtil.getPhotoFromPlaceId(restaurantResult.getRestaurantId(), (bitmapString) -> {
+                    restaurantResult.setRestaurantPhoto(bitmapString);
+                    bucketPlaces.add(restaurantResult);
+                    node.updateAdapter(bucketPlaces);
+                });
+            }
         }
         finishedExecuting = true;
     }
 
-    // TESTING FUNCTION
-    public void createDirectionalCards() {
-        Pose cameraRelativePose = Pose.makeTranslation(0, 0, 0);
-        Anchor anchor = arSceneView.getSession().createAnchor(cameraRelativePose);
-        AnchorNode anchorNode = new AnchorNode(anchor);
-        anchorNode.setParent(arSceneView.getScene());
+    public RestaurantBucketNode addAndCreateRestaurantBucket(List<RestaurantResult> bucket, Vector3 direction) {
+        RestaurantBucketNode card = new RestaurantBucketNode(this, bucket);
+        addBucket(card, direction);
+        return card;
     }
 
-    public void addCard(Node card, Vector3 direction) {
-        card.setLocalPosition(direction);
-        anchorNode.addChild(card);
-    }
-
-    public void addAndCreateCard(List<RestaurantResult> bucket, Vector3 direction) {
-        Node card = new RestaurantBucketNode(this, bucket);
-        addCard(card, direction);
+    public void addBucket(Node bucket, Vector3 direction) {
+        bucket.setLocalPosition(direction);
+        anchorNode.addChild(bucket);
     }
 
     public void deleteAllCards() {
-        Log.i("POLL", "Removing all cards");
         if (anchorNode != null) {
             List<Node> children = anchorNode.getChildren();
-            for (int i = 0; i < children.size(); i++) {
-                Node child = children.get(i);
+
+            int numChildren = children.size();
+            for (int i = 0; i < numChildren; i++) {
+                Node child = children.get(0);
                 anchorNode.removeChild(child);
-                i--;
             }
             arSceneView.getScene().removeChild(anchorNode);
 
