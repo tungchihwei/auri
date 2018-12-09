@@ -23,18 +23,23 @@ import com.google.firebase.auth.FirebaseUser;
 import com.green.auri.onboarding.Intro;
 
 public class LoginActivity extends AppCompatActivity {
+    /* Constants */
+    boolean isFirstStart;
 
-    private FirebaseAuth mAuth;
-    private NestedScrollView nestedScrollView;
-    private FirebaseUser currentUser;
+    /* Components */
     private EditText password;
     private EditText email;
     private TextView button_register;
     private Button button_login;
+    private NestedScrollView nestedScrollView;
     private SharedPreferences sp;
+    private SharedPreferences getPrefs;
 
-    SharedPreferences getPrefs;
-    boolean isFirstStart;
+    /* Firebase */
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,9 @@ public class LoginActivity extends AppCompatActivity {
 
         init_intro();
 
+        // hide status bar
         getSupportActionBar().hide();
+
         // Initialize the views
         nestedScrollView = findViewById(R.id.nestedScrollView);
         email = findViewById(R.id.textInputEditTextEmail);
@@ -53,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Share preference to save the login mode info
-        sp = getSharedPreferences("login",MODE_PRIVATE);
+        sp = getSharedPreferences("login", MODE_PRIVATE);
 
         if(sp.getBoolean("logged",false)){
             Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);

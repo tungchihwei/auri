@@ -2,50 +2,53 @@ package com.green.auri;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.green.auri.arview.ARActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class SettingsActivity extends AppCompatActivity {
-//    private FirebaseUser user;
+    /* Constants */
+    private static final int PICK_IMAGE = 1;
+    private String email;
+    private String photo_toString;
+
+    /* Components */
     private TextView logout;
     private TextView account;
-    private SharedPreferences sp;
-    private String email;
-    private ImageView profile_image;
     private TextView changeProfile;
-    private static final int PICK_IMAGE = 1;
-    private String photo_toString;
     private TextView txt_change_password;
+    private SharedPreferences sp;
+    private ImageView profile_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // hide status bar
-        getSupportActionBar().setTitle("Settings");
+        // set status bar
+        getSupportActionBar().setTitle(R.string.settings);
 
         setContentView(R.layout.activity_settings);
 
-        sp = getSharedPreferences("login",MODE_PRIVATE);
+        sp = getSharedPreferences("login", MODE_PRIVATE);
 
+        Intent i = getIntent();
+        email = i.getStringExtra("email");
+        TextView account = findViewById(R.id.account);
+        account.setText(email);
+
+        // log out
         logout = findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,12 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        Intent i = getIntent();
-        email = i.getStringExtra("email");
-        TextView account = findViewById(R.id.account);
-        account.setText(email);
-
-        // show image gallery and upload on firebase
+        // show image gallery and upload the firebase
         profile_image = findViewById(R.id.profile_image);
         String photo = sp.getString("profile","");
         if (!photo.equals("")){
@@ -79,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        // change the password
         txt_change_password = findViewById(R.id.txt_change_password);
         txt_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +123,4 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
 }

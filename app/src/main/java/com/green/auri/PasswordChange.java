@@ -10,8 +10,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+// change password in settings
 public class PasswordChange extends AppCompatActivity {
-    // Change password task
     private FirebaseUser user;
 
     private EditText edt_new_password;
@@ -33,6 +33,7 @@ public class PasswordChange extends AppCompatActivity {
                     Toast.makeText(PasswordChange.this, "Please make sure it is an Email & Password must be at least 6 characters!",
                             Toast.LENGTH_LONG).show();
                 }
+
                 // Password change through Firebase Auth
                 else {
                     user = FirebaseAuth.getInstance().getCurrentUser();
