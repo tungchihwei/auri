@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+// Show restaurant detail
 public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallback {
     /* Constants */
     private String accountName;
@@ -153,7 +154,6 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
-                    Log.i("isFavorite", "onCheckedChange to on");
                     // Save restaurant to database
                     fav_database = FirebaseDatabase.getInstance();
                     favRef = fav_database.getReference(accountName);
@@ -168,7 +168,6 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
 
                     btn_detailFav.setBackgroundResource(R.drawable.fav_on);
                 } else{
-                    Log.i("isFavorite", "onCheckedChange to off");
                     // Delete restaurant from database
                     fav_database = FirebaseDatabase.getInstance();
                     fav_database.getReference(accountName).child(Place_id).removeValue();
@@ -226,6 +225,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         });
     }
 
+    // Check if restaurant is user's favorite
     public void isFavorite(){
         if (accountName != null) {
             fav_database = FirebaseDatabase.getInstance();

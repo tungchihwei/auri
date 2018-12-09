@@ -56,7 +56,6 @@ public class ResReviewAdapter extends BaseAdapter {
         txt_reviews = row.findViewById(R.id.txt_reviews);
 
         // Set reviews
-        Log.i("reviews adapt", "Author: " + this.main.place_reviews.get(position).rev_author);
         txt_author.setText(this.main.place_reviews.get(position).rev_author);
         txt_date.setText(this.main.place_reviews.get(position).rev_date);
         txt_reviews.setText(this.main.place_reviews.get(position).rev_review);

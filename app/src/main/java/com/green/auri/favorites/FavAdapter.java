@@ -15,7 +15,6 @@ import com.green.auri.R;
 
 public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
 {
-
     FavoriteView main;
     Context context;
 
@@ -28,20 +27,20 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
+        // Inflate item layout
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favoritelist, parent, false);
         ViewHolder viewholder = new ViewHolder(view);
-//        view.setOnClickListener(this);
         return viewholder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-
         holder.txt_Name.setText(this.main.fav_detail.get(position).fav_resName);
         Bitmap bm = this.main.fav_detail.get(position).fav_bitmap;
         holder.img_Photo.setImageBitmap(bm);
 
+        // Set item to be clickable
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,7 +66,6 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
 
     // restore, can be done in the future.
 
-
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public TextView txt_Name;
@@ -81,7 +79,6 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
             img_Photo = (ImageView) itemView.findViewById(R.id.img_res);
             view_background = (RelativeLayout) itemView.findViewById(R.id.view_background);
             view_foreground = (RelativeLayout) itemView.findViewById(R.id.view_foreground);
-
         }
     }
 }

@@ -26,6 +26,7 @@ import com.green.auri.utils.RecyclerItemTouchHelperListener;
 
 import java.util.ArrayList;
 
+// Show user's favorites (by using RecyclerView)
 public class FavoriteView extends AppCompatActivity implements RecyclerItemTouchHelperListener {
     /* Constants */
     int fav_count;
@@ -65,10 +66,10 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
 
         firstRender = true;
 
+        // Read database
         myRef.child(accountName).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-//                    Log.i("checkdata", dataSnapshot.getValue().toString());
                 fav_count = (int)dataSnapshot.getChildrenCount();
                 favorite_list = new String[fav_count];
                 int k = 0;
@@ -77,37 +78,37 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
                 }
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                     String key=childSnapshot.getKey();
+
+                    // Get value from database
                     favorite_list[k] = key;
-                    Log.i("checkdata", key);
                     FavoriteData add = new FavoriteData();
                     add.Place_id = key;
-//                    Log.i("order", childSnapshot.child("Name").getValue().toString());
                     add.fav_resName = childSnapshot.child("Name").getValue().toString();
 
                     try {
+                        // Turn photo string to bitmap
                         String photo = childSnapshot.child("Photo").getValue().toString();
                         byte[] encodeByte = Base64.decode(photo, Base64.DEFAULT);
+
                         add.fav_bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
                     } catch (Exception e) {
+                        // Set default photo
                         add.fav_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.na);
                     }
-
-
                     fav_detail.add(add);
-//                   Log.i("order", favorite_list[i]);
                     k ++;
                 }
                 firstRender = false;
+
+                // Set RecyclerView
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(FavoriteView.this);
                 fav_recyclerView.setLayoutManager(layoutManager);
-
                 fav_recyclerView.addItemDecoration(new DividerItemDecoration(FavoriteView.this, DividerItemDecoration.VERTICAL));
                 fav_recyclerView.setItemAnimator(new DefaultItemAnimator());
                 fav_recyclerView.setLayoutManager(layoutManager);
                 fav_recyclerView.setAdapter(fav_Adapter);
                 enableSwipe();
             }
-
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -129,7 +130,6 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
             final int deleteIndex = viewHolder.getAdapterPosition();
             String Place_id = fav_detail.get(deleteIndex).Place_id;
             fav_Adapter.removeItem(deleteIndex);
-            Log.i("isFav", "onCheckedChange to off");
 
             // delete from firebase
             FirebaseDatabase fav_database;
