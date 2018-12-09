@@ -1,6 +1,5 @@
 package com.green.auri.favorites;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,10 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
@@ -56,37 +52,35 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallback {
+    /* Constants */
+    private String accountName;
+    private String phone_number;
+    private String resName;
+    private String resPhoto;
+    private String Place_id;
+    private Double Lat, Lng;
+    private Integer isFav;
+    private Uri web;
 
-    String Place_id;
-    Double Lat, Lng;
-    TextView txt_resName;
-    TextView txt_resRating;
-    TextView txt_resPrice;
-//    TextView txt_resPhone;
-//    TextView txt_resWeb;
-    ImageButton btn_call;
-    ImageButton btn_web;
-    ToggleButton btn_detailFav;
-    RatingBar resRating;
-
-    String phone_number;
-    Uri web;
-
-    String accountName;
-    private SharedPreferences sp;
-    FirebaseDatabase fav_database;
-    DatabaseReference favRef;
-    DatabaseReference NameRef;
-    DatabaseReference PhotoRef;
-    Integer isFav;
-    String resName;
-    String resPhoto;
-    protected GeoDataClient mGeoDataClient;
-
-
-    public ArrayList<reviews_detail> place_reviews = new ArrayList<reviews_detail>();
+    public ArrayList<ReviewData> place_reviews = new ArrayList<ReviewData>();
     public ListView list_review;
     public ListAdapter review_Adapter;
+
+    /* Components */
+    private TextView txt_resName;
+    private TextView txt_resRating;
+    private TextView txt_resPrice;
+    private ImageButton btn_call;
+    private ImageButton btn_web;
+    private ToggleButton btn_detailFav;
+    private RatingBar resRating;
+
+    /* Firebase */
+    private FirebaseDatabase fav_database;
+    private DatabaseReference favRef;
+    private DatabaseReference NameRef;
+    private DatabaseReference PhotoRef;
+    protected GeoDataClient mGeoDataClient;
 
 
     @Override
@@ -101,6 +95,8 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                 .findFragmentById(R.id.map_resDetail);
         mapFragment.getMapAsync(this);
 
+        accountName = MainActivity.accountName;
+
         Lat = 0.;
         Lng = 0.;
         Place_id = getIntent().getStringExtra("place_id");
@@ -109,8 +105,6 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         resRating = findViewById(R.id.resRating);
         txt_resRating = findViewById(R.id.txt_resRating);
         txt_resPrice = findViewById(R.id.txt_resPrice);
-//        txt_resPhone = (TextView) findViewById(R.id.txt_resPhone);
-//        txt_resWeb = (TextView) findViewById(R.id.txt_resWeb);
 
         list_review = findViewById(R.id.list_resReview);
         review_Adapter = new ResReviewAdapter(this.getBaseContext(), this);
@@ -148,15 +142,11 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        accountName = MainActivity.accountName;
-
-
         btn_detailFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked){
                     Log.i("isFavorite", "onCheckedChange to on");
-//                    checked = 1;
                     // Save restaurant to database
                     fav_database = FirebaseDatabase.getInstance();
                     favRef = fav_database.getReference(accountName);
@@ -172,7 +162,6 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                 } else{
                     Log.i("isFavorite", "onCheckedChange to off");
                     // Delete restaurant from database
-//                    checked = 1;
                     fav_database = FirebaseDatabase.getInstance();
                     fav_database.getReference(accountName).child(Place_id).removeValue();
                     btn_detailFav.setBackgroundResource(R.drawable.fav_off);
@@ -293,6 +282,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                     PlaceBufferResponse places = task.getResult();
                     Place myPlace = places.get(0);
 
+                    // set map
                     Lat = myPlace.getLatLng().latitude;
                     Lng = myPlace.getLatLng().longitude;
 
@@ -303,13 +293,12 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                     map.setMinZoomPreference(6.0f);
                     map.setMaxZoomPreference(20.0f);
 
-//                    LatLngBounds res = new LatLngBounds(
-//                            new LatLng(Lat+0.1, Lng+0.1), new LatLng(Lat, Lng));
 
                     LatLng res_loc = new LatLng(Lat, Lng);
 
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(res_loc, 15));
 
+                    // set the detail text
                     resName = myPlace.getName().toString();
 
                     txt_resName.setText(myPlace.getName().toString());
@@ -321,26 +310,20 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
                         price_lev += "$";
                     }
                     txt_resPrice.setText(price_lev);
+
                     try{
                         phone_number = myPlace.getPhoneNumber().toString();
-//                        phone_number = phone_number.split(" ")[1].replace("-", "");
-//                        Log.i("call_number", phone_number.split(" ")[1].replace("-", ""));
-//                        txt_resPhone.setText(myPlace.getPhoneNumber().toString());
                     } catch (Exception e){
                         phone_number = "";
-//                        txt_resPhone.setText("No phone number available!");
                     }
 
                     try{
                         web = myPlace.getWebsiteUri();
-//                        txt_resWeb.setText(myPlace.getWebsiteUri().toString());
                     } catch (Exception e){
                         web = null;
-//                        txt_resWeb.setText("No website available!");
                     }
 
-
-
+                    // get all the reviews
                     ReviewRequest(Place_id);
 
                     list_review.invalidateViews();
@@ -366,7 +349,7 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
             for(int i = 0; i < 5; i ++){
                 JSONObject review = new JSONObject(auth.getJSONArray("reviews").getString(i));
                 // Update the reviews
-                reviews_detail add = new reviews_detail();
+                ReviewData add = new ReviewData();
                 add.rev_author = review.getString("author_name");
                 add.rev_date = review.getString("relative_time_description");
                 add.rev_review = review.getString("text");
@@ -380,67 +363,6 @@ public class FavoriteDetail extends AppCompatActivity implements OnMapReadyCallb
         }
     }
 
-}
-
-class reviews_detail {
-    String rev_author;
-    String rev_date;
-    String rev_review;
-}
-
-// List view for reviews
-class ResReviewAdapter extends BaseAdapter {
-
-    TextView txt_author;
-    TextView txt_date;
-    TextView txt_reviews;
-    Context context;
-    FavoriteDetail main;
-
-    public ResReviewAdapter(Context aContext, FavoriteDetail main){
-        this.main = main;
-        context = aContext;
-
-    }
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    @Override
-    public int getCount() {
-        return main.place_reviews.size();
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View row;
-
-        // Indicates the first time creating this row.
-        if (convertView == null){
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.reviewlist, parent, false);
-        } else {
-            row = convertView;
-        }
-
-        txt_author = row.findViewById(R.id.txt_author);
-        txt_date = row.findViewById(R.id.txt_date);
-        txt_reviews = row.findViewById(R.id.txt_reviews);
-
-        // Set reviews
-        Log.i("reviews adapt", "Author: " + this.main.place_reviews.get(position).rev_author);
-        txt_author.setText(this.main.place_reviews.get(position).rev_author);
-        txt_date.setText(this.main.place_reviews.get(position).rev_date);
-        txt_reviews.setText(this.main.place_reviews.get(position).rev_review);
-
-        return row;
-    }
 }
 
 

@@ -15,25 +15,14 @@ import com.green.auri.R;
 
 public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
 {
-//    private List<String> mDataSet;
-//    Context context;
+
     FavoriteView main;
     Context context;
-//    private OnItemClickListener mOnItemClickListener = null;
-
-//    public interface OnItemClickListener {
-//        void onItemClick(View view, int position);
-//    }
-//
-//    public void setOnItemClickListener(OnItemClickListener listener) {
-//        mOnItemClickListener = listener;
-//    }
 
     public FavAdapter(FavoriteView main, Context aContext)
     {
         this.main = main;
         context = aContext;
-//        context = aContext;
     }
 
     @Override
@@ -48,20 +37,18 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-//        holder.txt_Name.setText(mDataSet.get(position));
 
-        holder.txt_Name.setText(this.main.fav_datail.get(position).fav_resName);
-        Bitmap bm = this.main.fav_datail.get(position).fav_bitmap;
+        holder.txt_Name.setText(this.main.fav_detail.get(position).fav_resName);
+        Bitmap bm = this.main.fav_detail.get(position).fav_bitmap;
         holder.img_Photo.setImageBitmap(bm);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent fav_detail = new Intent(context, FavoriteDetail.class);
-                fav_detail.putExtra("place_id", FavAdapter.this.main.fav_datail.get(position).Place_id);
+                fav_detail.putExtra("place_id", FavAdapter.this.main.fav_detail.get(position).Place_id);
                 fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(fav_detail);
-//                Toast.makeText(context, "onclick " + FavAdapter.this.main.fav_datail.get(position).Place_id, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -69,12 +56,12 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
     @Override
     public int getItemCount()
     {
-        return main.fav_datail.size();
+        return main.fav_detail.size();
     }
 
     public void removeItem(int position) {
         // also need to remove from firebase
-        main.fav_datail.remove(position);
+        main.fav_detail.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -94,16 +81,6 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder>
             img_Photo = (ImageView) itemView.findViewById(R.id.img_res);
             view_background = (RelativeLayout) itemView.findViewById(R.id.view_background);
             view_foreground = (RelativeLayout) itemView.findViewById(R.id.view_foreground);
-
-//            if (view == null) {
-//                throw new IllegalArgumentException("itemView may not be null");
-//            }
-//            view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
 
         }
     }
