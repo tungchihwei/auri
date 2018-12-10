@@ -20,7 +20,7 @@ import java.util.List;
 public class PlaceSearchUtils {
 
     private static String api_key = "AIzaSyCSSgGt6d67TiIUl0SiwEvkVkvGU1PL1-U";
-    private static int PROXIMITY_RADIUS = 250; // 250 meters or 0.15 miles away
+    private static int PROXIMITY_RADIUS = 150; // 250 meters or 0.15 miles away
 
     public static String getSearchResults(String strUrl) throws IOException {
         String data = "";
