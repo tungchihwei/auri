@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
@@ -38,10 +39,13 @@ public class PhotoLoadingUtil {
         Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(restaurantId);
         photoMetadataResponse.addOnCompleteListener(task1 -> {
             // Get the list of photos.
-            PlacePhotoMetadataResponse photos = task1.getResult();
-            PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+
+            PlacePhotoMetadataBuffer photoMetadataBuffer = null;
 
             try {
+                PlacePhotoMetadataResponse photos = task1.getResult();
+                photoMetadataBuffer = photos.getPhotoMetadata();
+
                 // Get the first photo in the list.
                 PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
 
@@ -57,7 +61,9 @@ public class PhotoLoadingUtil {
                 photoLoadingListener.onPhotoLoad(NA_BITMAP_STRING);
 
             } finally {
-                photoMetadataBuffer.release();
+                if (photoMetadataBuffer != null) {
+                    photoMetadataBuffer.release();
+                }
             }
         });
     }

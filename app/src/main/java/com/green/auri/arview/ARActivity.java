@@ -349,8 +349,12 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     }
 
     @Override
-    public void onLocationUpdated(double latitude, double longitude) {
-        Log.i("POSITIONED", "Location updated");
+    public void onLocationUpdated(boolean success, double latitude, double longitude) {
+        if (!success) {
+            LocationUtils.getCurrentLocation(ARActivity.this, this);
+            return;
+        }
+
         this.latitude = latitude;
         this.longitude = longitude;
         if (gotPlaces && !executed) {
@@ -364,7 +368,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     @Override
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
         this.nearbyPlaceList = nearbyPlacesList;
-        if (!nearbyPlacesList.isEmpty()) {
+        if (nearbyPlacesList == null || !nearbyPlacesList.isEmpty()) {
             if (gotLocation && !executed) {
                 executed = true;
                 getPositionedPlaces();

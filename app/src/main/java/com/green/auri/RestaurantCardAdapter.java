@@ -94,6 +94,13 @@ public class RestaurantCardAdapter extends PagerAdapter {
         String placeId = restaurantInfo.getRestaurantId();
         String restaurantPhoto = restaurantInfo.getRestaurantPhoto();
 
+        if (restaurantCardId == AR_CARD) {
+            ImageView restaurantImgView = view.findViewById(R.id.restaurant_image);
+            byte[] encodeByte = Base64.decode(restaurantPhoto, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            restaurantImgView.setImageBitmap(bitmap);
+        }
+
         // Set the card to be clickable
         LinearLayout layout_cardInfo = view.findViewById(R.id.ll_card_display);
         layout_cardInfo.setOnClickListener(v -> {
@@ -107,14 +114,6 @@ public class RestaurantCardAdapter extends PagerAdapter {
             fav_detail.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(fav_detail);
         });
-
-        if (restaurantCardId == AR_CARD) {
-            ImageView restaurantImgView = view.findViewById(R.id.restaurant_image);
-            byte[] encodeByte = Base64.decode(restaurantPhoto, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            restaurantImgView.setImageBitmap(bitmap);
-        }
-
 
         if (accountName == null) {
             container.addView(view);

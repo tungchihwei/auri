@@ -29,17 +29,17 @@ public class LocationUtils {
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
-                            Log.d("thisClass", "onComplete: found location!");
-                            Location mLastLocation = (Location) task.getResult();
+                            try {
+                                Location mLastLocation = (Location) task.getResult();
 
-                            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                            double latitude = mLastLocation.getLatitude();
-                            double longitude = mLastLocation.getLongitude();
+//                            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                                double latitude = mLastLocation.getLatitude();
+                                double longitude = mLastLocation.getLongitude();
 
-                            locationListener.onLocationUpdated(latitude, longitude);
-
-
-                            Log.d("thisClass", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
+                                locationListener.onLocationUpdated(true, latitude, longitude);
+                            } catch (NullPointerException e) {
+                                locationListener.onLocationUpdated(false, 0, 0);
+                            }
 
                         }else{ // Error of finding the current location
                             Log.d("errorfinding", "onComplete: current location is null");

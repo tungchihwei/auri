@@ -42,7 +42,7 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
         // Build infinite scroller from list of restaurants
         pager = restaurantBucket.findViewById(R.id.horizontal_cycle);
         gestureDetectorCompat = new GestureDetectorCompat(context, this);
-        restaurantBucket.setOnTouchListener(this);
+        pager.setOnTouchListener(this);
         updateAdapter(bucket);
     }
 
@@ -116,6 +116,8 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (startX1 != e1.getX()) {
+            startX1 = e1.getX();
+
             float diffX = e2.getX() - e1.getX();
             if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                 if (diffX > 0) {
@@ -135,7 +137,6 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetectorCompat.onTouchEvent(event);
     }
-
 
     /* Unused gesture methods required by the GestureDetector interface. */
 
@@ -158,5 +159,4 @@ public class RestaurantBucketNode extends Node implements View.OnTouchListener, 
     public boolean onSingleTapUp(MotionEvent e) {
         return false;
     }
-
 }

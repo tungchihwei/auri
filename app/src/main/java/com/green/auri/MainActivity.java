@@ -305,7 +305,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onLocationUpdated(double latitude, double longitude) {
+    public void onLocationUpdated(boolean success, double latitude, double longitude) {
+        if (!success) {
+            LocationUtils.getCurrentLocation(this, this);
+            return;
+        }
+
         this.latitude = latitude;
         this.longitude = longitude;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
