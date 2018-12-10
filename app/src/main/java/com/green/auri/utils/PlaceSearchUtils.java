@@ -1,6 +1,5 @@
 package com.green.auri.utils;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -20,7 +19,7 @@ import java.util.List;
 public class PlaceSearchUtils {
 
     private static String api_key = "AIzaSyCSSgGt6d67TiIUl0SiwEvkVkvGU1PL1-U";
-    private static int PROXIMITY_RADIUS = 150; // 250 meters or 0.15 miles away
+    private static int PROXIMITY_RADIUS = 250; // 250 meters or 0.15 miles away
 
     public static String getSearchResults(String strUrl) throws IOException {
         String data = "";
@@ -165,5 +164,22 @@ public class PlaceSearchUtils {
             return json.getString(field);
         }
         return "";
+    }
+
+    //Filters PlaceSearchResults to only get those within certain distance
+    public static List<PlaceSearchResult> filterResults(List<PlaceSearchResult> results, double maxDistance){
+        Log.i("DISTANCE", "filtering out by distance");
+        List<PlaceSearchResult> filteredResults = new ArrayList<>();
+        for (PlaceSearchResult result : results) {
+            Log.i("DISTANCE", result.getPlaceName()+" "+result.getDistance());
+            if (result.getDistance()<maxDistance){
+                filteredResults.add(result);
+            }
+            else{
+                Log.i("DISTANCE", "Filtered out" + result.getPlaceName());
+            }
+        }
+        return filteredResults;
+
     }
 }

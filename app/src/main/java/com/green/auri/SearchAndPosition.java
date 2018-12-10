@@ -3,6 +3,7 @@ package com.green.auri;
 import android.util.Log;
 
 import com.green.auri.utils.PlaceSearchResult;
+import com.green.auri.utils.PlaceSearchUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,8 @@ public class SearchAndPosition {
 
             Log.i("Position", relativePositionList[0]+ " " +relativePositionList[1]);
         }
+
+        positionedPlaces = PlaceSearchUtils.filterResults(positionedPlaces, .0015);
 
         HashMap<Double, List<PlaceSearchResult>> bucketedPlaces = new HashMap<>();
         for(PlaceSearchResult positionedPlace:positionedPlaces){
