@@ -20,8 +20,8 @@
     <string name="action_settings">Settings</string>
     <string name="text_hello">Hello,</string>
     <string name="text_title">Android Tutorials Hub</string>
-    <string name="google_maps_key">AIzaSyBRUsvkYevFwwKze5MBIM6kBBF168ZOyEw</string>
-    <string name="place_api_key">AIzaSyBRUsvkYevFwwKze5MBIM6kBBF168ZOyEw</string>
+    <string name="google_maps_key">AIzaSyCYC1v9VdeXlgssng4wjyEZD2OghGRHwac</string>
+    <string name="place_api_key">AIzaSyCYC1v9VdeXlgssng4wjyEZD2OghGRHwac</string>
 
     <!-- onboarding strings -->
     <string name="word_instruction1_1"><font color='#ffffaa00'>Au</font>gment Reality
