@@ -448,17 +448,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
                 PlaceSearchResult newGooglePlace = new PlaceSearchResult(googlePlace);
 
-//                double lat = Double.parseDouble(googlePlace.get("lat"));
-//                double lng = Double.parseDouble(googlePlace.get("lng"));
-//                    String placeName = googlePlace.get("place_name");
-//                String placeId = googlePlace.get("place_id");
-//                String currentRating = googlePlace.get("rating");
-//                if(currentRating==""){
-//                    // We will show 3 for rating if there isn't one
-//                    currentRating="3.0";
-//                }
-
-                // TODO: Catch double exception
                 addRestaurantResult(
                         newGooglePlace.getPlaceName(),
                         newGooglePlace.getVicinity(),
@@ -472,6 +461,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
             }
         }
+
+        Log.i("UICHANGE", "width: " + findViewById(R.id.horizontal_cycle).getWidth() + " height: " + findViewById(R.id.horizontal_cycle).getWidth());
     }
 
     private void addRestaurantResult(Place place) {
@@ -518,7 +509,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         RestaurantCardAdapter adapter = new RestaurantCardAdapter(restaurantList, getBaseContext());
         pager.setAdapter(adapter);
 
-        Log.i("TIMING", "FINISHED UPDATING CARDS");
         setCurrentCard();
 
         pager.setOnInfiniteCyclePageTransformListener(new OnInfiniteCyclePageTransformListener() {
@@ -538,7 +528,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onPostTransform(View page, float position) {
-                Log.i(TAG, Float.toString(position));
             }
         });
 
@@ -555,7 +544,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (selectedPlaceId != null) {
             for (int i = 0; i < restaurantList.size(); i++) {
                 if (selectedPlaceId.equals(restaurantList.get(i).getRestaurantId())) {
-                    Log.i("CARDS", "NULL? - " + String.valueOf(pager.getAdapter() == null));
                     pager.setCurrentItem(i, true);
                     return;
                 }

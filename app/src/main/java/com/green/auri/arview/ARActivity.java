@@ -208,7 +208,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
                     Log.i("POLL", "Executing update");
 
                     updateNearbyPlaces();
-                    handler.postDelayed(this, 20000);
+                    handler.postDelayed(this, 1200000);
                 } else {
                     Log.i("POLL", "NOT FINISHED");
                 }
@@ -235,7 +235,6 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     private void getPositionedPlaces() {
 
         try {
-
             //Get camera pose to update where we are facing
             Pose newPose = arSceneView.getArFrame().getCamera().getPose();
             Anchor anchor = arSceneView.getSession().createAnchor(newPose);
@@ -368,7 +367,7 @@ public class ARActivity extends AppCompatActivity implements LocationListener, P
     @Override
     public void onPlaceSearchComplete(List<HashMap<String, String>> nearbyPlacesList) {
         this.nearbyPlaceList = nearbyPlacesList;
-        if (nearbyPlacesList == null || !nearbyPlacesList.isEmpty()) {
+        if (nearbyPlacesList != null && !nearbyPlacesList.isEmpty()) {
             if (gotLocation && !executed) {
                 executed = true;
                 getPositionedPlaces();

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <fragment
         android:id="@+id/place_autocomplete_fragment"
@@ -25,6 +25,20 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
+        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
+            android:id="@+id/horizontal_cycle"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_alignBottom="@+id/map"
+            android:visibility="visible"
+            app:icvp_center_page_scale_offset="30dp"
+            app:icvp_interpolator="@android:anim/accelerate_decelerate_interpolator"
+            app:icvp_max_page_scale="0.9"
+            app:icvp_medium_scaled="false"
+            app:icvp_min_page_scale="0.55"
+            app:icvp_min_page_scale_offset="5dp"
+            app:icvp_scroll_duration="250" />
+
         <io.github.yavski.fabspeeddial.FabSpeedDial
             android:id="@+id/fab2"
             android:layout_width="wrap_content"
@@ -35,28 +49,9 @@
             app:fabMenu="@menu/menu"
             app:miniFabBackgroundTintList="@array/fab_menu_item_colors"
             app:miniFabDrawableTint="@android:color/white"
-            app:miniFabTitleTextColorList="@array/fab_menu_item_colors" />
+            app:miniFabTitleTextColorList="@array/fab_menu_item_colors">
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/layout_cycle"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_weight="2"
-        android:gravity="center">
-
-        <com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager
-            android:id="@+id/horizontal_cycle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:icvp_center_page_scale_offset="30dp"
-            app:icvp_interpolator="@android:anim/accelerate_decelerate_interpolator"
-            app:icvp_max_page_scale="0.9"
-            app:icvp_medium_scaled="false"
-            app:icvp_min_page_scale="0.55"
-            app:icvp_min_page_scale_offset="5dp"
-            app:icvp_scroll_duration="250" />
+        </io.github.yavski.fabspeeddial.FabSpeedDial>
 
     </RelativeLayout>
 
