@@ -8,13 +8,14 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.green.auri.login.LoginActivity;
+import com.green.auri.login.EditPasswordActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // set status bar
         getSupportActionBar().setTitle(R.string.settings);
 
@@ -50,12 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // log out
         logout = findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logout();
-            }
-        });
+        logout.setOnClickListener(v -> logout());
 
         // show image gallery and upload the firebase
         profile_image = findViewById(R.id.profile_image);
@@ -67,34 +64,27 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         changeProfile = findViewById(R.id.changeProfile);
-        changeProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-            }
+        changeProfile.setOnClickListener(v -> {
+            Intent pictureIntent = new Intent();
+            pictureIntent.setType("image/*");
+            pictureIntent.setAction(Intent.ACTION_PICK);
+            startActivityForResult(Intent.createChooser(pictureIntent, "Select Picture"), PICK_IMAGE);
         });
 
         // change the password
         txt_change_password = findViewById(R.id.txt_change_password);
-        txt_change_password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(SettingsActivity.this, PasswordChange.class);
-                startActivity(i);
-            }
+        txt_change_password.setOnClickListener(v -> {
+            Intent i1 = new Intent(SettingsActivity.this, EditPasswordActivity.class);
+            startActivity(i1);
         });
     }
 
     private void logout(){
         // sign out of this user and go to the log in page
-        Log.i("!!!logout", String.valueOf(FirebaseAuth.getInstance()));
         FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        Intent logoutIntent = new Intent(SettingsActivity.this, LoginActivity.class);
+        logoutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(logoutIntent);
         sp.edit().putBoolean("logged",false).apply();
         finish();
     }
@@ -108,6 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                         profile_image.setImageBitmap(bitmap);
+
                         // change photo bitmap to string
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.PNG, 10, baos);

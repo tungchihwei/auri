@@ -63,10 +63,10 @@ public class Intro extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0: return new instruction1();
-                case 1: return new instruction2();
-                case 2: return new instruction3();
-                default: return new instruction1();
+                case 0: return new PageOne();
+                case 1: return new PageTwo();
+                case 2: return new PageThree();
+                default: return new PageOne();
             }
 
         }

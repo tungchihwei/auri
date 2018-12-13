@@ -1,8 +1,6 @@
 package com.green.auri.favorites;
 
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,25 +18,28 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.green.auri.MainActivity;
 import com.green.auri.R;
-import com.green.auri.utils.RecyclerItemTouchHelper;
-import com.green.auri.utils.RecyclerItemTouchHelperListener;
+import com.green.auri.utils.recycler.RecyclerItemTouchHelper;
+import com.green.auri.utils.recycler.RecyclerItemTouchHelperListener;
 
 import java.util.ArrayList;
+import android.graphics.Bitmap;
 
-// Show user's favorites (by using RecyclerView)
+/**
+ * An activity to display user's favorites, using a recycler view.
+ */
 public class FavoriteView extends AppCompatActivity implements RecyclerItemTouchHelperListener {
     /* Constants */
     int fav_count;
     boolean firstRender;
     private String accountName;
-    private String[] favorite_list;
-    public ArrayList<FavoriteData> fav_detail = new ArrayList<FavoriteData>();
+    private String[] favoriteIds;
+    public ArrayList<Favorite> favoriteList = new ArrayList<Favorite>();
 
     /* Components */
-    private FavAdapter fav_Adapter;
-    public RecyclerView fav_recyclerView;
-    private SharedPreferences sp;
+    private FavoriteAdapter favoriteAdapter;
+    public RecyclerView recyclerView;
 
     /* Firebase */
     protected GeoDataClient mGeoDataClient;
@@ -56,13 +57,10 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        myRef.getDatabase();
 
-        sp = getSharedPreferences("login",MODE_PRIVATE);
-        accountName = sp.getString("account", "NA");
-
-        fav_Adapter = new FavAdapter(this, this.getBaseContext());
-        fav_recyclerView = (RecyclerView) findViewById(R.id.fav_recyclerView);
+        accountName = MainActivity.accountName;
+        favoriteAdapter = new FavoriteAdapter(this, this.getBaseContext());
+        recyclerView = (RecyclerView) findViewById(R.id.fav_recyclerView);
 
         firstRender = true;
 
@@ -71,48 +69,52 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 fav_count = (int)dataSnapshot.getChildrenCount();
-                favorite_list = new String[fav_count];
-                int k = 0;
+                favoriteIds = new String[fav_count];
+
                 if (!firstRender){
-                    fav_detail.clear();
+                    favoriteList.clear();
                 }
+
+                int k = 0;
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                    String key=childSnapshot.getKey();
+                    String restaurantId = childSnapshot.getKey();
 
                     // Get value from database
-                    favorite_list[k] = key;
-                    FavoriteData add = new FavoriteData();
-                    add.Place_id = key;
-                    add.fav_resName = childSnapshot.child("Name").getValue().toString();
+                    favoriteIds[k] = restaurantId;
+                    Bitmap bitmap;
 
                     try {
                         // Turn photo string to bitmap
                         String photo = childSnapshot.child("Photo").getValue().toString();
                         byte[] encodeByte = Base64.decode(photo, Base64.DEFAULT);
 
-                        add.fav_bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                        bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
                     } catch (Exception e) {
+
                         // Set default photo
-                        add.fav_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.na);
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.na);
                     }
-                    fav_detail.add(add);
-                    k ++;
+
+                    Favorite favorite = new Favorite(childSnapshot.child("Name").getValue().toString(), bitmap, restaurantId);
+                    favoriteList.add(favorite);
+                    k++;
                 }
+
                 firstRender = false;
 
                 // Set RecyclerView
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(FavoriteView.this);
-                fav_recyclerView.setLayoutManager(layoutManager);
-                fav_recyclerView.addItemDecoration(new DividerItemDecoration(FavoriteView.this, DividerItemDecoration.VERTICAL));
-                fav_recyclerView.setItemAnimator(new DefaultItemAnimator());
-                fav_recyclerView.setLayoutManager(layoutManager);
-                fav_recyclerView.setAdapter(fav_Adapter);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.addItemDecoration(new DividerItemDecoration(FavoriteView.this, DividerItemDecoration.VERTICAL));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(favoriteAdapter);
                 enableSwipe();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.i("Favorite Database Errore", databaseError.toString());
+                Log.i("Favorite Database Error", databaseError.toString());
             }
         });
     }
@@ -121,20 +123,20 @@ public class FavoriteView extends AppCompatActivity implements RecyclerItemTouch
     private void enableSwipe(){
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack
                     = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-                new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(fav_recyclerView);
+                new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
     }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof FavAdapter.ViewHolder){
+        if (viewHolder instanceof FavoriteAdapter.ViewHolder){
             final int deleteIndex = viewHolder.getAdapterPosition();
-            String Place_id = fav_detail.get(deleteIndex).Place_id;
-            fav_Adapter.removeItem(deleteIndex);
+            String restaurantId = favoriteList.get(deleteIndex).getPlaceId();
+            favoriteAdapter.removeItem(deleteIndex);
 
-            // delete from firebase
+            // Delete the unfavorited from firebase
             FirebaseDatabase fav_database;
             fav_database = FirebaseDatabase.getInstance();
-            fav_database.getReference(accountName).child(Place_id).removeValue();
+            fav_database.getReference(accountName).child(restaurantId).removeValue();
             firstRender = false;
         }
     }

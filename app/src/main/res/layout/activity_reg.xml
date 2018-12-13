@@ -10,7 +10,7 @@
     android:paddingTop="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegActivity">
+    tools:context=".login.RegistrationActivity">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"

@@ -31,17 +31,16 @@
         android:roundIcon="@mipmap/ic_auri_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegActivity" />
+        <activity android:name=".login.RegistrationActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".arview.ARActivity" />
-        <activity android:name=".Camdir" />
+        <activity android:name=".augmentedreality.ARActivity" />
         <!-- <activity android:name=".Intro" /> -->
         <activity android:name=".onboarding.Intro" />
 
@@ -65,10 +64,10 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".favorites.FavoriteDetail" />
+        <activity android:name=".restaurant.RestaurantActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".favorites.FavoriteView" />
-        <activity android:name=".PasswordChange"></activity>
+        <activity android:name=".login.EditPasswordActivity"></activity>
     </application>
 
 </manifest>

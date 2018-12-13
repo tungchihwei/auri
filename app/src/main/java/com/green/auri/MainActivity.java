@@ -40,14 +40,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.green.auri.arview.ARActivity;
+import com.green.auri.augmentedreality.ARActivity;
 import com.green.auri.favorites.FavoriteView;
-import com.green.auri.utils.LocationListener;
-import com.green.auri.utils.LocationUtils;
-import com.green.auri.utils.PhotoLoadingUtil;
-import com.green.auri.utils.PlaceSearchListener;
-import com.green.auri.utils.PlaceSearchUtils;
-import com.green.auri.utils.PlaceSearchResult;
+import com.green.auri.restaurant.RestaurantCardAdapter;
+import com.green.auri.restaurant.RestaurantResult;
+import com.green.auri.utils.location.LocationListener;
+import com.green.auri.utils.location.LocationUtils;
+import com.green.auri.utils.photo.PhotoLoadingUtil;
+import com.green.auri.utils.place.GetNearbyPlacesTask;
+import com.green.auri.utils.place.PlaceSearchListener;
+import com.green.auri.utils.place.PlaceSearchUtils;
+import com.green.auri.utils.place.PlaceSearchResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -244,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.d(TAG, "Nearby Restaurant is Clicked");
 
                             // Get the URL to send a get request for the nearby restaurants.
-                            String url = PlaceSearchUtils.getUrl(latitude, longitude, RESTAURANT_SEARCH);
+                            String url = PlaceSearchUtils.buildQueryUrl(latitude, longitude, RESTAURANT_SEARCH);
 
                             new GetNearbyPlacesTask().execute(url, MainActivity.this);
                             Toast.makeText(MainActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
@@ -382,7 +385,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (selectedPlaceId != null) {
             for (int i = 0; i < restaurantList.size(); i++) {
                 if (selectedPlaceId.equals(restaurantList.get(i).getRestaurantId())) {
-                    Log.i("CARDS", "NULL? - " + String.valueOf(pager.getAdapter() == null));
                     pager.setCurrentItem(i, true);
                     return false;
                 }
@@ -413,13 +415,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void selectMarker(Marker marker) {
 
-        Log.i("MARK",String.valueOf(marker));
-
         if (selectedPlaceId != null && mMarkers.containsKey(selectedPlaceId)) {
             mMarkers.get(selectedPlaceId).setIcon(RED_MARKER);
         }
 
-        Log.i("TIMING DELAYS", "SELECTING MARKER");
         marker.setIcon(SELECTED_MARKER);
         marker.showInfoWindow();
 
@@ -441,7 +440,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fullyUpdated = false;
 
         // Iterate through the nearby places that were returned and place a marker for each.
-        Log.d("onPostExecute", "Entered into showing locations");
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
 
             try {
@@ -462,12 +460,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        Log.i("UICHANGE", "width: " + findViewById(R.id.horizontal_cycle).getWidth() + " height: " + findViewById(R.id.horizontal_cycle).getWidth());
     }
 
     private void addRestaurantResult(Place place) {
-
-        // TODO: Catch exceptions
 
         addRestaurantResult(
                 place.getName().toString(),
