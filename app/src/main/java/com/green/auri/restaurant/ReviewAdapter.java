@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.green.auri.R;
 
-// List view for reviews
+// Adapter for the Reviews to be displayed for the restaurant
 public class ReviewAdapter extends BaseAdapter {
 
     private TextView txt_author;
