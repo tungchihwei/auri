@@ -11,4 +11,4 @@ If "google-services.json" file is not within the app folder, please download it 
 
 ## Demo video
 
-[![Watch the video](https://youtu.be/FSYgacKhbpM.png)](https://youtu.be/FSYgacKhbpM)
+[![Watch the video](https://img.youtube.com/vi/FSYgacKhbpM/0.jpg)](https://youtu.be/FSYgacKhbpM)
