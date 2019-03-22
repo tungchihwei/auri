@@ -9,6 +9,6 @@ If "google-services.json" file is not within the app folder, please download it 
 
 -Use Android Studio to open the project, gradlew clean the project, build, and run on an Android phone 28+. 
 
-## Demo video
+### Demo video
 
 [![Watch the video](https://img.youtube.com/vi/FSYgacKhbpM/0.jpg)](https://youtu.be/FSYgacKhbpM)
